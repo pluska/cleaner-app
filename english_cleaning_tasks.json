@@ -1,0 +1,224 @@
+[
+  {
+    "title": "Dust surfaces",
+    "frequency": "weekly",
+    "category": "living_room",
+    "priority": "high"
+  },
+  {
+    "title": "Vacuum carpets/floors",
+    "frequency": "weekly",
+    "category": "living_room",
+    "priority": "high"
+  },
+  {
+    "title": "Clean windows",
+    "frequency": "monthly",
+    "category": "living_room",
+    "priority": "medium"
+  },
+  {
+    "title": "Disinfect remote controls",
+    "frequency": "weekly",
+    "category": "living_room",
+    "priority": "medium"
+  },
+  {
+    "title": "Organize objects/decorations",
+    "frequency": "weekly",
+    "category": "living_room",
+    "priority": "low"
+  },
+  {
+    "title": "Wash dishes",
+    "frequency": "daily",
+    "category": "kitchen",
+    "priority": "high"
+  },
+  {
+    "title": "Clean countertops and surfaces",
+    "frequency": "daily",
+    "category": "kitchen",
+    "priority": "high"
+  },
+  {
+    "title": "Clean the stove",
+    "frequency": "daily",
+    "category": "kitchen",
+    "priority": "high"
+  },
+  {
+    "title": "Empty trash bin",
+    "frequency": "daily",
+    "category": "kitchen",
+    "priority": "high"
+  },
+  {
+    "title": "Clean the refrigerator",
+    "frequency": "monthly",
+    "category": "kitchen",
+    "priority": "high"
+  },
+  {
+    "title": "Clean microwave",
+    "frequency": "weekly",
+    "category": "kitchen",
+    "priority": "medium"
+  },
+  {
+    "title": "Mop the floor",
+    "frequency": "weekly",
+    "category": "kitchen",
+    "priority": "high"
+  },
+  {
+    "title": "Organize pantry",
+    "frequency": "monthly",
+    "category": "kitchen",
+    "priority": "medium"
+  },
+  {
+    "title": "Clean toilet",
+    "frequency": "weekly",
+    "category": "bathroom",
+    "priority": "high"
+  },
+  {
+    "title": "Clean sink and faucet",
+    "frequency": "weekly",
+    "category": "bathroom",
+    "priority": "high"
+  },
+  {
+    "title": "Clean shower/bathtub",
+    "frequency": "weekly",
+    "category": "bathroom",
+    "priority": "high"
+  },
+  {
+    "title": "Change towels",
+    "frequency": "weekly",
+    "category": "bathroom",
+    "priority": "medium"
+  },
+  {
+    "title": "Mop the floor",
+    "frequency": "weekly",
+    "category": "bathroom",
+    "priority": "high"
+  },
+  {
+    "title": "Clean mirrors",
+    "frequency": "weekly",
+    "category": "bathroom",
+    "priority": "medium"
+  },
+  {
+    "title": "Empty waste basket",
+    "frequency": "weekly",
+    "category": "bathroom",
+    "priority": "medium"
+  },
+  {
+    "title": "Make the bed",
+    "frequency": "daily",
+    "category": "bedroom",
+    "priority": "high"
+  },
+  {
+    "title": "Change sheets",
+    "frequency": "weekly",
+    "category": "bedroom",
+    "priority": "high"
+  },
+  {
+    "title": "Dust surfaces",
+    "frequency": "weekly",
+    "category": "bedroom",
+    "priority": "medium"
+  },
+  {
+    "title": "Vacuum carpet/floor",
+    "frequency": "weekly",
+    "category": "bedroom",
+    "priority": "high"
+  },
+  {
+    "title": "Organize closet/wardrobe",
+    "frequency": "monthly",
+    "category": "bedroom",
+    "priority": "medium"
+  },
+  {
+    "title": "Wash clothes",
+    "frequency": "weekly",
+    "category": "laundry",
+    "priority": "high"
+  },
+  {
+    "title": "Fold and put away clothes",
+    "frequency": "weekly",
+    "category": "laundry",
+    "priority": "high"
+  },
+  {
+    "title": "Clean dryer filter",
+    "frequency": "weekly",
+    "category": "laundry",
+    "priority": "high"
+  },
+  {
+    "title": "Clean washing machine (cleaning cycle)",
+    "frequency": "monthly",
+    "category": "laundry",
+    "priority": "medium"
+  },
+  {
+    "title": "Sweep patio/garage",
+    "frequency": "weekly",
+    "category": "exterior",
+    "priority": "medium"
+  },
+  {
+    "title": "Mow lawn",
+    "frequency": "weekly",
+    "category": "exterior",
+    "priority": "high"
+  },
+  {
+    "title": "Clean garden furniture",
+    "frequency": "monthly",
+    "category": "exterior",
+    "priority": "low"
+  },
+  {
+    "title": "Clean doors/handles",
+    "frequency": "weekly",
+    "category": "general",
+    "priority": "high"
+  },
+  {
+    "title": "Clean light switches",
+    "frequency": "weekly",
+    "category": "general",
+    "priority": "high"
+  },
+  {
+    "title": "Clean all house windows",
+    "frequency": "monthly",
+    "category": "general",
+    "priority": "medium"
+  },
+  {
+    "title": "Dust lamps",
+    "frequency": "monthly",
+    "category": "general",
+    "priority": "medium"
+  },
+  {
+    "title": "Shake curtains/blinds",
+    "frequency": "monthly",
+    "category": "general",
+    "priority": "medium"
+  }
+]
