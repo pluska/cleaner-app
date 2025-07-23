@@ -40,6 +40,11 @@ export function ScheduleView({ tasks, userId }: ScheduleViewProps) {
 
   const getDateRange = () => {
     switch (view) {
+      case "daily":
+        return {
+          start: currentDate,
+          end: currentDate,
+        };
       case "weekly":
         return {
           start: startOfWeek(currentDate, { weekStartsOn: 1 }),
@@ -49,6 +54,11 @@ export function ScheduleView({ tasks, userId }: ScheduleViewProps) {
         return {
           start: startOfMonth(currentDate),
           end: endOfMonth(currentDate),
+        };
+      case "yearly":
+        return {
+          start: new Date(currentDate.getFullYear(), 0, 1), // January 1st of current year
+          end: new Date(currentDate.getFullYear(), 11, 31), // December 31st of current year
         };
       default:
         return {
@@ -61,16 +71,55 @@ export function ScheduleView({ tasks, userId }: ScheduleViewProps) {
   const { start, end } = getDateRange();
 
   const filteredTasks = tasks.filter((task) => {
-    const taskDate = new Date(task.due_date || task.created_at);
+    // Handle date parsing more robustly
+    let taskDate: Date;
+    if (task.due_date) {
+      taskDate = new Date(task.due_date);
+    } else if (task.created_at) {
+      taskDate = new Date(task.created_at);
+    } else {
+      // If no date available, skip this task
+      return false;
+    }
+
     const categoryMatch =
       selectedCategory === "all" || task.category === selectedCategory;
-    const dateMatch = taskDate >= start && taskDate <= end;
+
+    // For date matching, compare only the date part (ignore time)
+    const taskDateOnly = new Date(
+      taskDate.getFullYear(),
+      taskDate.getMonth(),
+      taskDate.getDate()
+    );
+    const startDateOnly = new Date(
+      start.getFullYear(),
+      start.getMonth(),
+      start.getDate()
+    );
+    const endDateOnly = new Date(
+      end.getFullYear(),
+      end.getMonth(),
+      end.getDate()
+    );
+
+    const dateMatch =
+      taskDateOnly >= startDateOnly && taskDateOnly <= endDateOnly;
+
     return categoryMatch && dateMatch;
   });
 
   const getTasksForDate = (date: Date) => {
     return filteredTasks.filter((task) => {
-      const taskDate = new Date(task.due_date || task.created_at);
+      // Handle date parsing more robustly
+      let taskDate: Date;
+      if (task.due_date) {
+        taskDate = new Date(task.due_date);
+      } else if (task.created_at) {
+        taskDate = new Date(task.created_at);
+      } else {
+        return false;
+      }
+
       return isSameDay(taskDate, date);
     });
   };
@@ -235,10 +284,17 @@ export function ScheduleView({ tasks, userId }: ScheduleViewProps) {
 
   const renderListView = () => {
     const groupedTasks = filteredTasks.reduce((acc, task) => {
-      const date = format(
-        new Date(task.due_date || task.created_at),
-        "yyyy-MM-dd"
-      );
+      // Handle date parsing more robustly
+      let taskDate: Date;
+      if (task.due_date) {
+        taskDate = new Date(task.due_date);
+      } else if (task.created_at) {
+        taskDate = new Date(task.created_at);
+      } else {
+        return acc; // Skip tasks without dates
+      }
+
+      const date = format(taskDate, "yyyy-MM-dd");
       if (!acc[date]) acc[date] = [];
       acc[date].push(task);
       return acc;

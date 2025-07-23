@@ -6,6 +6,7 @@ export const translations = {
     CleanPlanner: "CleanPlanner",
     Today: "Today",
     Schedule: "Schedule",
+    "All Tasks": "All Tasks",
     Analytics: "Analytics",
     "Sign Out": "Sign Out",
     Language: "Language",
@@ -54,6 +55,10 @@ export const translations = {
       "No tasks for today. Add your first task to get started!",
     "No tasks found for the selected period and filters.":
       "No tasks found for the selected period and filters.",
+    "Select day of week": "Select day of week",
+    "Preferred time (optional)": "Preferred time (optional)",
+    "Make this a recurring task": "Make this a recurring task",
+    Recurring: "Recurring",
 
     // Categories
     General: "General",
@@ -141,6 +146,7 @@ export const translations = {
     CleanPlanner: "CleanPlanner",
     Today: "Hoy",
     Schedule: "Programa",
+    "All Tasks": "Todas las Tareas",
     Analytics: "Análisis",
     "Sign Out": "Cerrar Sesión",
     Language: "Idioma",
@@ -189,6 +195,10 @@ export const translations = {
       "No hay tareas para hoy. ¡Agrega tu primera tarea para comenzar!",
     "No tasks found for the selected period and filters.":
       "No se encontraron tareas para el período y filtros seleccionados.",
+    "Select day of week": "Seleccionar día de la semana",
+    "Preferred time (optional)": "Hora preferida (opcional)",
+    "Make this a recurring task": "Hacer esta tarea recurrente",
+    Recurring: "Recurrente",
 
     // Categories
     General: "General",

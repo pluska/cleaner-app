@@ -9,6 +9,7 @@ import {
   BarChart3,
   LogOut,
   User,
+  List,
 } from "lucide-react";
 import { createClient } from "@/libs/supabase";
 import { useRouter } from "next/navigation";
@@ -38,6 +39,11 @@ export function DashboardNav({ user }: DashboardNavProps) {
       href: "/dashboard/schedule",
       label: t("Schedule", language),
       icon: Calendar,
+    },
+    {
+      href: "/dashboard/all-tasks",
+      label: t("All Tasks", language),
+      icon: List,
     },
     {
       href: "/dashboard/analytics",

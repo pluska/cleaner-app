@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Plus, CheckCircle, Circle, Trash2, Edit } from "lucide-react";
-import { createClient } from "@/libs/supabase";
 import { Task, TaskFormData } from "@/types";
+import { createTask, updateTask, deleteTask, toggleTask } from "@/libs/api";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -24,60 +24,61 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
     frequency: "daily",
     category: "general",
     priority: "medium",
+    is_recurring: false,
   });
-  const supabase = createClient();
   const { language } = useLanguage();
+
+  const daysOfWeek = [
+    { value: 0, label: language === "es" ? "Domingo" : "Sunday" },
+    { value: 1, label: language === "es" ? "Lunes" : "Monday" },
+    { value: 2, label: language === "es" ? "Martes" : "Tuesday" },
+    { value: 3, label: language === "es" ? "Miércoles" : "Wednesday" },
+    { value: 4, label: language === "es" ? "Jueves" : "Thursday" },
+    { value: 5, label: language === "es" ? "Viernes" : "Friday" },
+    { value: 6, label: language === "es" ? "Sábado" : "Saturday" },
+  ];
 
   const handleAddTask = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title.trim()) return;
 
-    const newTask = {
-      ...formData,
-      user_id: userId,
-      completed: false,
-      due_date: new Date().toISOString().split("T")[0],
-    };
+    try {
+      const { task } = await createTask({
+        ...formData,
+        due_date: new Date().toISOString().split("T")[0],
+      });
 
-    const { data, error } = await supabase
-      .from("tasks")
-      .insert([newTask])
-      .select()
-      .single();
-
-    if (data && !error) {
-      setTasks([...tasks, data]);
+      setTasks([...tasks, task]);
       setFormData({
         title: "",
         description: "",
         frequency: "daily",
         category: "general",
         priority: "medium",
+        is_recurring: false,
       });
       setShowAddForm(false);
+    } catch (error) {
+      console.error("Error creating task:", error);
+      // You might want to show an error message to the user here
     }
   };
 
   const handleToggleTask = async (taskId: string, completed: boolean) => {
-    const { error } = await supabase
-      .from("tasks")
-      .update({ completed: !completed })
-      .eq("id", taskId);
-
-    if (!error) {
-      setTasks(
-        tasks.map((task) =>
-          task.id === taskId ? { ...task, completed: !completed } : task
-        )
-      );
+    try {
+      const { task } = await toggleTask(taskId);
+      setTasks(tasks.map((t) => (t.id === taskId ? task : t)));
+    } catch (error) {
+      console.error("Error toggling task:", error);
     }
   };
 
   const handleDeleteTask = async (taskId: string) => {
-    const { error } = await supabase.from("tasks").delete().eq("id", taskId);
-
-    if (!error) {
+    try {
+      await deleteTask(taskId);
       setTasks(tasks.filter((task) => task.id !== taskId));
+    } catch (error) {
+      console.error("Error deleting task:", error);
     }
   };
 
@@ -85,17 +86,9 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
     e.preventDefault();
     if (!editingTask || !formData.title.trim()) return;
 
-    const { error } = await supabase
-      .from("tasks")
-      .update(formData)
-      .eq("id", editingTask.id);
-
-    if (!error) {
-      setTasks(
-        tasks.map((task) =>
-          task.id === editingTask.id ? { ...task, ...formData } : task
-        )
-      );
+    try {
+      const { task } = await updateTask(editingTask.id, formData);
+      setTasks(tasks.map((t) => (t.id === editingTask.id ? task : t)));
       setEditingTask(null);
       setFormData({
         title: "",
@@ -103,7 +96,10 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
         frequency: "daily",
         category: "general",
         priority: "medium",
+        is_recurring: false,
       });
+    } catch (error) {
+      console.error("Error updating task:", error);
     }
   };
 
@@ -115,6 +111,9 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
       frequency: task.frequency,
       category: task.category,
       priority: task.priority,
+      is_recurring: task.is_recurring,
+      day_of_week: task.day_of_week,
+      preferred_time: task.preferred_time,
     });
   };
 
@@ -150,6 +149,149 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
     }
   };
 
+  const renderTaskForm = (isEditing = false) => (
+    <form
+      onSubmit={isEditing ? handleEditTask : handleAddTask}
+      className="space-y-4"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Input
+          placeholder={t("Task title", language)}
+          value={formData.title}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFormData({ ...formData, title: e.target.value })
+          }
+          required
+        />
+        <Input
+          placeholder={t("Description (optional)", language)}
+          value={formData.description}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFormData({ ...formData, description: e.target.value })
+          }
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <select
+          value={formData.category}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            setFormData({ ...formData, category: e.target.value as any })
+          }
+          className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+        >
+          <option value="general">{t("General", language)}</option>
+          <option value="kitchen">{t("Kitchen", language)}</option>
+          <option value="bathroom">{t("Bathroom", language)}</option>
+          <option value="bedroom">{t("Bedroom", language)}</option>
+          <option value="living_room">{t("Living Room", language)}</option>
+          <option value="laundry">{t("Laundry", language)}</option>
+          <option value="exterior">{t("Exterior", language)}</option>
+        </select>
+        <select
+          value={formData.priority}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            setFormData({ ...formData, priority: e.target.value as any })
+          }
+          className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+        >
+          <option value="low">{t("Low Priority", language)}</option>
+          <option value="medium">{t("Medium Priority", language)}</option>
+          <option value="high">{t("High Priority", language)}</option>
+        </select>
+        <select
+          value={formData.frequency}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            setFormData({ ...formData, frequency: e.target.value as any })
+          }
+          className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+        >
+          <option value="daily">{t("Daily", language)}</option>
+          <option value="weekly">{t("Weekly", language)}</option>
+          <option value="monthly">{t("Monthly", language)}</option>
+          <option value="yearly">{t("Yearly", language)}</option>
+        </select>
+      </div>
+
+      {/* Day of week selection for weekly tasks */}
+      {formData.frequency === "weekly" && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <select
+            value={formData.day_of_week || ""}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+              setFormData({
+                ...formData,
+                day_of_week: e.target.value
+                  ? parseInt(e.target.value)
+                  : undefined,
+              })
+            }
+            className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+          >
+            <option value="">{t("Select day of week", language)}</option>
+            {daysOfWeek.map((day) => (
+              <option key={day.value} value={day.value}>
+                {day.label}
+              </option>
+            ))}
+          </select>
+          <Input
+            type="time"
+            placeholder={t("Preferred time (optional)", language)}
+            value={formData.preferred_time || ""}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFormData({ ...formData, preferred_time: e.target.value })
+            }
+            className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+          />
+        </div>
+      )}
+
+      {/* Recurring task options */}
+      <div className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          id="is_recurring"
+          checked={formData.is_recurring}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFormData({ ...formData, is_recurring: e.target.checked })
+          }
+          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+        />
+        <label
+          htmlFor="is_recurring"
+          className="text-sm font-medium text-gray-700"
+        >
+          {t("Make this a recurring task", language)}
+        </label>
+      </div>
+
+      <div className="flex space-x-2">
+        <Button type="submit">
+          {isEditing ? t("Save Changes", language) : t("Add Task", language)}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => {
+            setShowAddForm(false);
+            setEditingTask(null);
+            setFormData({
+              title: "",
+              description: "",
+              frequency: "daily",
+              category: "general",
+              priority: "medium",
+              is_recurring: false,
+            });
+          }}
+        >
+          {t("Cancel", language)}
+        </Button>
+      </div>
+    </form>
+  );
+
   return (
     <div className="bg-white rounded-lg shadow">
       <div className="p-6 border-b">
@@ -168,79 +310,7 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
       </div>
 
       {showAddForm && (
-        <div className="p-6 border-b bg-gray-50">
-          <form onSubmit={handleAddTask} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
-                placeholder={t("Task title", language)}
-                value={formData.title}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setFormData({ ...formData, title: e.target.value })
-                }
-                required
-              />
-              <Input
-                placeholder={t("Description (optional)", language)}
-                value={formData.description}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <select
-                value={formData.category}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  setFormData({ ...formData, category: e.target.value as any })
-                }
-                className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
-              >
-                <option value="general">{t("General", language)}</option>
-                <option value="kitchen">{t("Kitchen", language)}</option>
-                <option value="bathroom">{t("Bathroom", language)}</option>
-                <option value="bedroom">{t("Bedroom", language)}</option>
-                <option value="living_room">
-                  {t("Living Room", language)}
-                </option>
-                <option value="laundry">{t("Laundry", language)}</option>
-                <option value="exterior">{t("Exterior", language)}</option>
-              </select>
-              <select
-                value={formData.priority}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  setFormData({ ...formData, priority: e.target.value as any })
-                }
-                className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
-              >
-                <option value="low">{t("Low Priority", language)}</option>
-                <option value="medium">{t("Medium Priority", language)}</option>
-                <option value="high">{t("High Priority", language)}</option>
-              </select>
-              <select
-                value={formData.frequency}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  setFormData({ ...formData, frequency: e.target.value as any })
-                }
-                className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
-              >
-                <option value="daily">{t("Daily", language)}</option>
-                <option value="weekly">{t("Weekly", language)}</option>
-                <option value="monthly">{t("Monthly", language)}</option>
-                <option value="yearly">{t("Yearly", language)}</option>
-              </select>
-            </div>
-            <div className="flex space-x-2">
-              <Button type="submit">{t("Add Task", language)}</Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setShowAddForm(false)}
-              >
-                {t("Cancel", language)}
-              </Button>
-            </div>
-          </form>
-        </div>
+        <div className="p-6 border-b bg-gray-50">{renderTaskForm()}</div>
       )}
 
       <div className="divide-y">
@@ -255,87 +325,9 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
           tasks.map((task) => (
             <div key={task.id} className="p-6 hover:bg-gray-50">
               {editingTask?.id === task.id ? (
-                <form onSubmit={handleEditTask} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input
-                      placeholder="Task title"
-                      value={formData.title}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setFormData({ ...formData, title: e.target.value })
-                      }
-                      required
-                    />
-                    <Input
-                      placeholder="Description (optional)"
-                      value={formData.description}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setFormData({
-                          ...formData,
-                          description: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <select
-                      value={formData.category}
-                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                        setFormData({
-                          ...formData,
-                          category: e.target.value as any,
-                        })
-                      }
-                      className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
-                    >
-                      <option value="general">General</option>
-                      <option value="kitchen">Kitchen</option>
-                      <option value="bathroom">Bathroom</option>
-                      <option value="bedroom">Bedroom</option>
-                      <option value="living_room">Living Room</option>
-                      <option value="laundry">Laundry</option>
-                      <option value="exterior">Exterior</option>
-                    </select>
-                    <select
-                      value={formData.priority}
-                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                        setFormData({
-                          ...formData,
-                          priority: e.target.value as any,
-                        })
-                      }
-                      className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
-                    >
-                      <option value="low">Low Priority</option>
-                      <option value="medium">Medium Priority</option>
-                      <option value="high">High Priority</option>
-                    </select>
-                    <select
-                      value={formData.frequency}
-                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                        setFormData({
-                          ...formData,
-                          frequency: e.target.value as any,
-                        })
-                      }
-                      className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
-                    >
-                      <option value="daily">Daily</option>
-                      <option value="weekly">Weekly</option>
-                      <option value="monthly">Monthly</option>
-                      <option value="yearly">Yearly</option>
-                    </select>
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button type="submit">Save Changes</Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setEditingTask(null)}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </form>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  {renderTaskForm(true)}
+                </div>
               ) : (
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
@@ -383,6 +375,17 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
                         >
                           {task.priority}
                         </span>
+                        {task.is_recurring && (
+                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-600">
+                            {t("Recurring", language)}
+                          </span>
+                        )}
+                        {task.day_of_week !== undefined &&
+                          task.frequency === "weekly" && (
+                            <span className="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-600">
+                              {daysOfWeek[task.day_of_week]?.label}
+                            </span>
+                          )}
                       </div>
                     </div>
                   </div>
