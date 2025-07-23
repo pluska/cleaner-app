@@ -14,13 +14,15 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseClasses =
-    "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+    "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
 
   const variants = {
-    primary: "bg-blue-600 text-white hover:bg-blue-700",
-    secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200",
+    primary:
+      "!bg-[#4CAF91] !text-white hover:!bg-[#4CAF91]/90 focus-visible:!ring-[#4CAF91]/20",
+    secondary:
+      "!bg-[#FFD265] !text-[#111827] hover:!bg-[#FFD265]/90 !border !border-[#FFD265] focus-visible:!ring-[#FFD265]/20",
     outline:
-      "border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50 hover:text-gray-900",
+      "!border !border-[#111827] !bg-transparent !text-[#111827] hover:!bg-[#111827] hover:!text-white",
   };
 
   const sizes = {

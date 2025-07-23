@@ -1,7 +1,7 @@
 import { createServerSupabaseClient } from "@/libs/supabase-server";
-import { DailyTasks } from "@/components/dashboard/DailyTasks";
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { DashboardDragDropProvider } from "@/components/dashboard/DashboardDragDropProvider";
 
 export default async function DashboardPage() {
   const supabase = await createServerSupabaseClient();
@@ -37,6 +37,14 @@ export default async function DashboardPage() {
     .eq("due_date", today)
     .order("created_at", { ascending: true });
 
+  // Get tasks that are coming soon (future due dates)
+  const { data: comingSoonTasks } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("user_id", user.id)
+    .gt("due_date", today)
+    .order("due_date", { ascending: true });
+
   // Combine tasks and instances for today
   const todayTasks = [];
 
@@ -61,23 +69,9 @@ export default async function DashboardPage() {
     });
   }
 
-  // Get all tasks for stats
-  const { data: allTasks } = await supabase
-    .from("tasks")
-    .select("*")
-    .eq("user_id", user.id);
-
-  // Get all task instances for stats
-  const { data: allInstances } = await supabase
-    .from("task_instances")
-    .select("*")
-    .eq("user_id", user.id);
-
-  // Calculate stats including both tasks and instances
-  const totalTasks = (allTasks?.length || 0) + (allInstances?.length || 0);
-  const completedTasks =
-    (allTasks?.filter((task) => task.completed).length || 0) +
-    (allInstances?.filter((instance) => instance.completed).length || 0);
+  // Calculate stats for today only
+  const totalTasks = todayTasks.length;
+  const completedTasks = todayTasks.filter((task) => task.completed).length;
   const pendingTasks = totalTasks - completedTasks;
   const completionRate =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
@@ -90,14 +84,18 @@ export default async function DashboardPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto bg-bg min-h-screen p-8">
       <DashboardHeader />
 
-      <DashboardStats stats={stats} />
-
-      <div className="mt-8">
-        <DailyTasks tasks={todayTasks} userId={user.id} />
+      <div className="mb-8">
+        <DashboardStats stats={stats} />
       </div>
+
+      <DashboardDragDropProvider
+        todayTasks={todayTasks}
+        comingSoonTasks={comingSoonTasks || []}
+        userId={user.id}
+      />
     </div>
   );
 }

@@ -16,8 +16,8 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
       label: t("Total Tasks", language),
       value: stats.totalTasks,
       icon: Target,
-      color: "text-blue-600",
-      bgColor: "bg-blue-100",
+      color: "text-primary",
+      bgColor: "bg-primary/10",
     },
     {
       label: t("Completed", language),
@@ -30,33 +30,36 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
       label: t("Pending", language),
       value: stats.pendingTasks,
       icon: Clock,
-      color: "text-yellow-600",
-      bgColor: "bg-yellow-100",
+      color: "text-accent",
+      bgColor: "bg-accent/20",
     },
     {
       label: t("Completion Rate", language),
       value: `${stats.completionRate}%`,
       icon: TrendingUp,
-      color: "text-purple-600",
-      bgColor: "bg-purple-100",
+      color: "text-primary",
+      bgColor: "bg-primary/10",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
       {statItems.map((item) => {
         const Icon = item.icon;
         return (
-          <div key={item.label} className="bg-white rounded-lg shadow p-6">
+          <div
+            key={item.label}
+            className="bg-bg rounded-xl shadow-lg border border-base p-8"
+          >
             <div className="flex items-center">
-              <div className={`p-2 rounded-lg ${item.bgColor}`}>
-                <Icon className={`h-6 w-6 ${item.color}`} />
+              <div className={`p-3 rounded-lg ${item.bgColor}`}>
+                <Icon className={`h-8 w-8 ${item.color}`} />
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">
+              <div className="ml-6">
+                <p className="text-sm font-medium text-text/70 mb-1">
                   {item.label}
                 </p>
-                <p className="text-2xl font-bold text-gray-900">{item.value}</p>
+                <p className="text-3xl font-bold text-text">{item.value}</p>
               </div>
             </div>
           </div>

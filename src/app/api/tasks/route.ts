@@ -24,6 +24,34 @@ export async function GET(request: NextRequest) {
     const completed = searchParams.get("completed");
     const dueDate = searchParams.get("dueDate");
     const includeInstances = searchParams.get("includeInstances") === "true";
+    const userId = searchParams.get("user_id");
+    const comingSoon = searchParams.get("coming_soon");
+    const today = searchParams.get("today");
+
+    if (userId && comingSoon && today) {
+      // Only return coming soon tasks
+      const { data: tasks, error } = await supabase
+        .from("tasks")
+        .select("*")
+        .eq("user_id", userId)
+        .gt("due_date", today)
+        .order("due_date", { ascending: true });
+
+      console.log(
+        "Coming soon tasks:",
+        tasks?.map((t) => ({ title: t.title, due_date: t.due_date }))
+      );
+
+      if (error) {
+        console.error("Error fetching coming soon tasks:", error);
+        return NextResponse.json(
+          { error: "Failed to fetch tasks" },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json({ tasks });
+    }
 
     // Build query
     let query = supabase.from("tasks").select("*").eq("user_id", user.id);

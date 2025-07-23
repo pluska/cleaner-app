@@ -1,23 +1,48 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, CheckCircle, Circle, Trash2, Edit } from "lucide-react";
+import {
+  Plus,
+  CheckCircle,
+  Circle,
+  Trash2,
+  Edit,
+  Calendar,
+} from "lucide-react";
 import { Task, TaskFormData } from "@/types";
 import { createTask, updateTask, deleteTask, toggleTask } from "@/libs/api";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
+import { DroppableArea } from "./DroppableArea";
+import { RescheduleModal } from "./RescheduleModal";
 
 interface DailyTasksProps {
   tasks: Task[];
   userId: string;
+  onTaskMoved?: () => void;
 }
 
-export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
+export function DailyTasks({
+  tasks: initialTasks,
+  userId,
+  onTaskMoved,
+}: DailyTasksProps) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [rescheduleModal, setRescheduleModal] = useState<{
+    isOpen: boolean;
+    taskId: string;
+    taskTitle: string;
+    currentDueDate: string;
+  }>({
+    isOpen: false,
+    taskId: "",
+    taskTitle: "",
+    currentDueDate: "",
+  });
   const [formData, setFormData] = useState<TaskFormData>({
     title: "",
     description: "",
@@ -27,6 +52,56 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
     is_recurring: false,
   });
   const { language } = useLanguage();
+
+  const handleTaskMoved = async (taskId: string) => {
+    try {
+      const res = await fetch(`/api/tasks/${taskId}/move`, {
+        method: "PATCH",
+      });
+      if (res.ok) {
+        const { task } = await res.json();
+        setTasks([...tasks, task]);
+        onTaskMoved?.();
+      }
+    } catch (error) {
+      console.error("Error moving task:", error);
+    }
+  };
+
+  const handleReschedule = async (taskId: string, newDate: string) => {
+    try {
+      const res = await fetch(`/api/tasks/${taskId}/reschedule`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ due_date: newDate }),
+      });
+      if (res.ok) {
+        // Remove the task from today's list since it's been rescheduled
+        setTasks(tasks.filter((task) => task.id !== taskId));
+        onTaskMoved?.();
+      }
+    } catch (error) {
+      console.error("Error rescheduling task:", error);
+    }
+  };
+
+  const openRescheduleModal = (task: Task) => {
+    setRescheduleModal({
+      isOpen: true,
+      taskId: task.id,
+      taskTitle: task.title,
+      currentDueDate: task.due_date || "",
+    });
+  };
+
+  const closeRescheduleModal = () => {
+    setRescheduleModal({
+      isOpen: false,
+      taskId: "",
+      taskTitle: "",
+      currentDueDate: "",
+    });
+  };
 
   const daysOfWeek = [
     { value: 0, label: language === "es" ? "Domingo" : "Sunday" },
@@ -122,31 +197,37 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
       case "high":
         return "text-red-600 bg-red-100";
       case "medium":
-        return "text-yellow-600 bg-yellow-100";
+        return "text-primary bg-primary/10";
       case "low":
-        return "text-green-600 bg-green-100";
+        return "text-accent bg-accent/20";
       default:
-        return "text-gray-600 bg-gray-100";
+        return "text-text bg-base";
     }
   };
 
   const getCategoryColor = (category: string) => {
-    switch (category) {
-      case "kitchen":
-        return "text-orange-600 bg-orange-100";
-      case "bathroom":
-        return "text-blue-600 bg-blue-100";
-      case "bedroom":
-        return "text-purple-600 bg-purple-100";
-      case "living_room":
-        return "text-green-600 bg-green-100";
-      case "laundry":
-        return "text-indigo-600 bg-indigo-100";
-      case "exterior":
-        return "text-teal-600 bg-teal-100";
-      default:
-        return "text-gray-600 bg-gray-100";
+    const colors: { [key: string]: string } = {
+      general: "bg-base text-text",
+      kitchen: "bg-orange-100 text-orange-800",
+      bathroom: "bg-primary/20 text-primary",
+      bedroom: "bg-purple-100 text-purple-800",
+      living_room: "bg-green-100 text-green-800",
+      laundry: "bg-accent/20 text-accent",
+      exterior: "bg-indigo-100 text-indigo-800",
+    };
+    return colors[category] || colors.general;
+  };
+
+  const isTaskOverdue = (task: Task) => {
+    const today = new Date().toISOString().split("T")[0];
+    return task.due_date && task.due_date < today && !task.completed;
+  };
+
+  const getOverdueStyle = (task: Task) => {
+    if (isTaskOverdue(task)) {
+      return "text-red-600 font-semibold";
     }
+    return task.completed ? "line-through text-gray-500" : "text-gray-900";
   };
 
   const renderTaskForm = (isEditing = false) => (
@@ -178,7 +259,7 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             setFormData({ ...formData, category: e.target.value as any })
           }
-          className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+          className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
           <option value="general">{t("General", language)}</option>
           <option value="kitchen">{t("Kitchen", language)}</option>
@@ -193,7 +274,7 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             setFormData({ ...formData, priority: e.target.value as any })
           }
-          className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+          className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
           <option value="low">{t("Low Priority", language)}</option>
           <option value="medium">{t("Medium Priority", language)}</option>
@@ -204,7 +285,7 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             setFormData({ ...formData, frequency: e.target.value as any })
           }
-          className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+          className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
           <option value="daily">{t("Daily", language)}</option>
           <option value="weekly">{t("Weekly", language)}</option>
@@ -226,7 +307,7 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
                   : undefined,
               })
             }
-            className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+            className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
           >
             <option value="">{t("Select day of week", language)}</option>
             {daysOfWeek.map((day) => (
@@ -242,7 +323,6 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setFormData({ ...formData, preferred_time: e.target.value })
             }
-            className="h-10 rounded-lg border-2 border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
           />
         </div>
       )}
@@ -256,23 +336,21 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setFormData({ ...formData, is_recurring: e.target.checked })
           }
-          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          className="h-4 w-4 text-primary focus:ring-primary border-base rounded"
         />
-        <label
-          htmlFor="is_recurring"
-          className="text-sm font-medium text-gray-700"
-        >
+        <label htmlFor="is_recurring" className="text-sm font-medium text-text">
           {t("Make this a recurring task", language)}
         </label>
       </div>
 
       <div className="flex space-x-2">
-        <Button type="submit">
+        <Button type="submit" className="w-full">
           {isEditing ? t("Save Changes", language) : t("Add Task", language)}
         </Button>
         <Button
           type="button"
           variant="outline"
+          className="w-full"
           onClick={() => {
             setShowAddForm(false);
             setEditingTask(null);
@@ -293,122 +371,150 @@ export function DailyTasks({ tasks: initialTasks, userId }: DailyTasksProps) {
   );
 
   return (
-    <div className="bg-white rounded-lg shadow">
-      <div className="p-6 border-b">
+    <div className="bg-bg rounded-xl shadow-lg border border-base mb-12">
+      <div className="p-8 border-b border-base">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-2xl font-semibold text-text">
             {t("Today's Tasks", language)}
           </h2>
           <Button
-            onClick={() => setShowAddForm(!showAddForm)}
-            className="flex items-center space-x-2"
+            onClick={() => {
+              setShowAddForm(!showAddForm);
+            }}
           >
-            <Plus className="h-4 w-4" />
-            <span>{t("Add Task", language)}</span>
+            <Plus className="h-5 w-5" />
+            <span className="font-medium">{t("Add Task", language)}</span>
           </Button>
         </div>
       </div>
 
       {showAddForm && (
-        <div className="p-6 border-b bg-gray-50">{renderTaskForm()}</div>
+        <div className="p-8 border-b bg-base">{renderTaskForm()}</div>
       )}
 
-      <div className="divide-y">
-        {tasks.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">
-            {t(
-              "No tasks for today. Add your first task to get started!",
-              language
-            )}
-          </div>
-        ) : (
-          tasks.map((task) => (
-            <div key={task.id} className="p-6 hover:bg-gray-50">
-              {editingTask?.id === task.id ? (
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  {renderTaskForm(true)}
-                </div>
-              ) : (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <button
-                      onClick={() => handleToggleTask(task.id, task.completed)}
-                      className="text-gray-400 hover:text-gray-600"
-                    >
-                      {task.completed ? (
-                        <CheckCircle className="h-5 w-5 text-green-500" />
-                      ) : (
-                        <Circle className="h-5 w-5" />
-                      )}
-                    </button>
-                    <div>
-                      <h3
-                        className={`font-medium ${
-                          task.completed
-                            ? "line-through text-gray-500"
-                            : "text-gray-900"
-                        }`}
+      <DroppableArea id="today-tasks" className="min-h-[200px]">
+        <div className="divide-y divide-base">
+          {tasks.length === 0 ? (
+            <div className="p-12 text-center text-text/70">
+              <p className="text-lg mb-2">
+                {t(
+                  "No tasks for today. Add your first task to get started!",
+                  language
+                )}
+              </p>
+            </div>
+          ) : (
+            tasks.map((task) => (
+              <div
+                key={task.id}
+                className="p-8 hover:bg-base transition-colors"
+              >
+                {editingTask?.id === task.id ? (
+                  <div className="bg-base p-6 rounded-lg">
+                    {renderTaskForm(true)}
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <button
+                        onClick={() =>
+                          handleToggleTask(task.id, task.completed)
+                        }
+                        className="text-text/40 hover:text-text/60 transition-colors p-2"
                       >
-                        {task.title}
-                      </h3>
-                      {task.description && (
-                        <p
-                          className={`text-sm ${
-                            task.completed ? "text-gray-400" : "text-gray-600"
-                          }`}
-                        >
-                          {task.description}
-                        </p>
-                      )}
-                      <div className="flex space-x-2 mt-2">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(
-                            task.category
-                          )}`}
-                        >
-                          {task.category.replace("_", " ")}
-                        </span>
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(
-                            task.priority
-                          )}`}
-                        >
-                          {task.priority}
-                        </span>
-                        {task.is_recurring && (
-                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-600">
-                            {t("Recurring", language)}
-                          </span>
+                        {task.completed ? (
+                          <CheckCircle className="h-6 w-6 text-green-500" />
+                        ) : (
+                          <Circle className="h-6 w-6" />
                         )}
-                        {task.day_of_week !== undefined &&
-                          task.frequency === "weekly" && (
-                            <span className="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-600">
-                              {daysOfWeek[task.day_of_week]?.label}
+                      </button>
+                      <div>
+                        <h3
+                          className={`text-lg font-medium ${getOverdueStyle(
+                            task
+                          )} mb-2`}
+                        >
+                          {task.title}
+                        </h3>
+                        {task.description && (
+                          <p
+                            className={`text-sm mb-3 ${
+                              task.completed ? "text-text/40" : "text-text/70"
+                            }`}
+                          >
+                            {task.description}
+                          </p>
+                        )}
+                        <div className="flex space-x-3">
+                          {isTaskOverdue(task) && (
+                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-600">
+                              {t("Overdue", language)}
                             </span>
                           )}
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(
+                              task.category
+                            )}`}
+                          >
+                            {task.category.replace("_", " ")}
+                          </span>
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-medium ${getPriorityColor(
+                              task.priority
+                            )}`}
+                          >
+                            {task.priority}
+                          </span>
+                          {task.is_recurring && (
+                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                              {t("Recurring", language)}
+                            </span>
+                          )}
+                          {task.day_of_week !== undefined &&
+                            task.frequency === "weekly" && (
+                              <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-600">
+                                {daysOfWeek[task.day_of_week]?.label}
+                              </span>
+                            )}
+                        </div>
                       </div>
                     </div>
+                    <div className="flex items-center space-x-3">
+                      <button
+                        onClick={() => openRescheduleModal(task)}
+                        className="text-text/40 hover:text-primary transition-colors p-2"
+                        title={language === "es" ? "Reprogramar" : "Reschedule"}
+                      >
+                        <Calendar className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => startEditing(task)}
+                        className="text-text/40 hover:text-text/60 transition-colors p-2"
+                      >
+                        <Edit className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTask(task.id)}
+                        className="text-text/40 hover:text-red-600 transition-colors p-2"
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => startEditing(task)}
-                      className="text-gray-400 hover:text-gray-600"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteTask(task.id)}
-                      className="text-gray-400 hover:text-red-600"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))
-        )}
-      </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      </DroppableArea>
+      <RescheduleModal
+        isOpen={rescheduleModal.isOpen}
+        onClose={closeRescheduleModal}
+        taskId={rescheduleModal.taskId}
+        taskTitle={rescheduleModal.taskTitle}
+        currentDueDate={rescheduleModal.currentDueDate}
+        onReschedule={handleReschedule}
+      />
     </div>
   );
 }

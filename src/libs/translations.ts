@@ -38,6 +38,8 @@ export const translations = {
     "Completion Rate": "Completion Rate",
     "This Week": "This Week",
     "Today's Tasks": "Today's Tasks",
+    "Coming Soon": "Coming Soon",
+    "No coming soon tasks. Add one!": "No coming soon tasks. Add one!",
 
     // Task Management
     "Add Task": "Add Task",
@@ -51,6 +53,7 @@ export const translations = {
     Priority: "Priority",
     Frequency: "Frequency",
     "Due Date": "Due Date",
+    Overdue: "Overdue",
     "No tasks for today. Add your first task to get started!":
       "No tasks for today. Add your first task to get started!",
     "No tasks found for the selected period and filters.":
@@ -178,6 +181,8 @@ export const translations = {
     "Completion Rate": "Tasa de Completado",
     "This Week": "Esta Semana",
     "Today's Tasks": "Tareas de Hoy",
+    "Coming Soon": "Próximamente",
+    "No coming soon tasks. Add one!": "No hay tareas próximas. ¡Agrega una!",
 
     // Task Management
     "Add Task": "Agregar Tarea",
@@ -191,6 +196,7 @@ export const translations = {
     Priority: "Prioridad",
     Frequency: "Frecuencia",
     "Due Date": "Fecha de Vencimiento",
+    Overdue: "Vencida",
     "No tasks for today. Add your first task to get started!":
       "No hay tareas para hoy. ¡Agrega tu primera tarea para comenzar!",
     "No tasks found for the selected period and filters.":
