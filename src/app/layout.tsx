@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CleanPlanner",
   description: "Organize your home cleaning tasks efficiently",
+  icons: {
+    icon: "/sparkles-icon.svg",
+  },
 };
 
 export default function RootLayout({
