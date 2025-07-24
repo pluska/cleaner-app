@@ -14,16 +14,50 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseClasses =
-    "inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none rounded-2xl shadow-md hover:shadow-lg";
+    "inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none rounded-2xl";
+
+  const getVariantStyles = () => {
+    switch (variant) {
+      case "primary":
+        return {
+          backgroundColor: "var(--color-primary)",
+          color: "white",
+          "--tw-ring-color": "var(--color-primary)",
+        };
+      case "secondary":
+        return {
+          backgroundColor: "var(--color-accent)",
+          color: "var(--color-text)",
+          borderColor: "var(--color-accent)",
+          "--tw-ring-color": "var(--color-accent)",
+        };
+      case "outline":
+        return {
+          backgroundColor: "transparent",
+          color: "var(--color-text)",
+          borderColor: "var(--color-text)",
+          "--tw-ring-color": "var(--color-text)",
+        };
+      case "ghost":
+        return {
+          backgroundColor: "transparent",
+          color: "var(--color-text)",
+          "--tw-ring-color": "var(--color-text)",
+        };
+      default:
+        return {};
+    }
+  };
 
   const variants = {
     primary:
-      "bg-primary text-white hover:bg-primary/90 focus-visible:ring-primary/20 shadow-lg",
+      "text-white hover:bg-opacity-90 focus-visible:ring-opacity-20 shadow-lg",
     secondary:
-      "bg-accent text-text hover:bg-accent/90 border border-accent focus-visible:ring-accent/20 shadow-lg",
+      "text-text hover:bg-opacity-90 border focus-visible:ring-opacity-20 shadow-lg",
     outline:
-      "border-2 border-text bg-transparent text-text hover:bg-text hover:text-white focus-visible:ring-text/20 shadow-lg",
-    ghost: "bg-transparent text-text hover:bg-base focus-visible:ring-text/20",
+      "border-2 bg-transparent text-text hover:bg-text hover:text-white focus-visible:ring-opacity-20 shadow-lg",
+    ghost:
+      "bg-transparent text-text hover:bg-opacity-10 focus-visible:ring-opacity-20",
   };
 
   const sizes = {
@@ -35,7 +69,7 @@ export function Button({
   const classes = `${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`;
 
   return (
-    <button className={classes} {...props}>
+    <button className={classes} style={getVariantStyles()} {...props}>
       {children}
     </button>
   );

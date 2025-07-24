@@ -80,10 +80,8 @@ export function DailyTasks({
 
   // Check if the selected date is in the past
   const isPastDate = (dateString: string): boolean => {
-    const selectedDate = new Date(dateString);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time to start of day
-    return selectedDate < today;
+    const today = formatDateToYYYYMMDD(new Date());
+    return dateString < today;
   };
 
   const handleReschedule = async (taskId: string, newDate: string) => {
@@ -119,7 +117,7 @@ export function DailyTasks({
     try {
       const { task } = await createTask({
         ...formData,
-        due_date: new Date().toISOString().split("T")[0],
+        due_date: selectedDate,
       });
 
       setTasks([...tasks, task]);

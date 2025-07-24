@@ -12,4 +12,10 @@ module.exports = {
       },
     },
   },
+  safelist: [
+    {
+      pattern:
+        /(bg|text|border|hover:bg|hover:text|focus-visible:ring)-(primary|accent|text|base)/,
+    },
+  ],
 };
