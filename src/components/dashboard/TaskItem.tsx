@@ -48,6 +48,15 @@ export function TaskItem({
     taskTitle: "",
     currentDueDate: "",
   });
+  const [deleteConfirmModal, setDeleteConfirmModal] = useState<{
+    isOpen: boolean;
+    taskId: string;
+    taskTitle: string;
+  }>({
+    isOpen: false,
+    taskId: "",
+    taskTitle: "",
+  });
   const [formData, setFormData] = useState<TaskFormData>({
     title: "",
     description: "",
@@ -81,9 +90,22 @@ export function TaskItem({
     try {
       await deleteTask(taskId);
       onTaskDeleted(taskId);
+      setDeleteConfirmModal({ isOpen: false, taskId: "", taskTitle: "" });
     } catch (error) {
       console.error("Error deleting task:", error);
     }
+  };
+
+  const openDeleteConfirmModal = (task: Task) => {
+    setDeleteConfirmModal({
+      isOpen: true,
+      taskId: task.id,
+      taskTitle: task.title,
+    });
+  };
+
+  const closeDeleteConfirmModal = () => {
+    setDeleteConfirmModal({ isOpen: false, taskId: "", taskTitle: "" });
   };
 
   const handleEditTask = async (e: React.FormEvent) => {
@@ -378,7 +400,7 @@ export function TaskItem({
                 <Edit className="h-5 w-5" />
               </button>
               <button
-                onClick={() => handleDeleteTask(task.id)}
+                onClick={() => openDeleteConfirmModal(task)}
                 className="text-text/40 hover:text-red-600 transition-colors p-2"
               >
                 <Trash2 className="h-5 w-5" />
@@ -395,6 +417,48 @@ export function TaskItem({
         currentDueDate={rescheduleModal.currentDueDate}
         onReschedule={onReschedule}
       />
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmModal.isOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-lg max-w-md w-full p-6">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Trash2 className="h-6 w-6 text-red-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-text mb-2">
+                {t("Delete", language)}
+              </h3>
+              <p className="text-text/70 mb-6">
+                {language === "es"
+                  ? `¿Estás seguro de que quieres eliminar "${deleteConfirmModal.taskTitle}"?`
+                  : `Are you sure you want to delete "${deleteConfirmModal.taskTitle}"?`}
+                <br />
+                <span className="text-sm text-text/60">
+                  {language === "es"
+                    ? "Esta acción no se puede deshacer."
+                    : "This action cannot be undone."}
+                </span>
+              </p>
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                <Button
+                  onClick={closeDeleteConfirmModal}
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                >
+                  {t("Cancel", language)}
+                </Button>
+                <Button
+                  onClick={() => handleDeleteTask(deleteConfirmModal.taskId)}
+                  className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white"
+                >
+                  {t("Delete", language)}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
