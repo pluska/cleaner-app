@@ -2,13 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import { ComingSoonTasks } from "./ComingSoonTasks";
-
-interface Task {
-  id: string;
-  title: string;
-  due_date: string;
-  completed: boolean;
-}
+import { Task } from "@/types";
 
 interface ComingSoonTasksWrapperProps {
   userId: string;
@@ -31,7 +25,8 @@ export const ComingSoonTasksWrapper: React.FC<ComingSoonTasksWrapperProps> = ({
       // Sort tasks by due_date in ascending order as backup
       const sortedTasks = (data.tasks || []).sort(
         (a: Task, b: Task) =>
-          new Date(a.due_date).getTime() - new Date(b.due_date).getTime()
+          new Date(a.due_date || "").getTime() -
+          new Date(b.due_date || "").getTime()
       );
       setTasks(sortedTasks);
     }

@@ -6,8 +6,9 @@ import { Sparkles, AlertCircle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
+import { Suspense } from "react";
 
-export default function AuthErrorPage() {
+function AuthErrorContent() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
   const errorDescription = searchParams.get("error_description");
@@ -65,5 +66,22 @@ export default function AuthErrorPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AuthErrorPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-6">
+          <div className="max-w-md w-full text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <AuthErrorContent />
+    </Suspense>
   );
 }

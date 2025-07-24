@@ -1,7 +1,6 @@
 import { createServerSupabaseClient } from "@/libs/supabase-server";
 import { ScheduleView } from "@/components/dashboard/ScheduleView";
 import { ScheduleHeader } from "@/components/dashboard/ScheduleHeader";
-import { getAllTasksForSchedule } from "@/libs/task-utils";
 
 export default async function SchedulePage() {
   const supabase = await createServerSupabaseClient();
@@ -13,14 +12,23 @@ export default async function SchedulePage() {
     return null;
   }
 
-  // Get all tasks for the schedule view, including instances
-  const allTasks = await getAllTasksForSchedule(user.id);
+  // Get all tasks for the schedule view
+  const { data: tasks, error } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("due_date", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching tasks for schedule:", error);
+    return null;
+  }
 
   return (
     <div className="max-w-7xl mx-auto">
       <ScheduleHeader />
 
-      <ScheduleView tasks={allTasks} userId={user.id} />
+      <ScheduleView tasks={tasks || []} />
     </div>
   );
 }

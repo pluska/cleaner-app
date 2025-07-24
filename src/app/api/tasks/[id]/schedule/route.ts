@@ -4,7 +4,7 @@ import { createServerSupabaseClient } from "@/libs/supabase-server";
 // PATCH /api/tasks/[id]/schedule - Update task due date (for drag & drop)
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createServerSupabaseClient();
@@ -39,7 +39,7 @@ export async function PATCH(
           recurrence_start_date: newDueDate,
           last_generated_date: null, // Reset to regenerate instances
         })
-        .eq("id", params.id)
+        .eq("id", (await params).id)
         .eq("user_id", user.id)
         .select()
         .single();
@@ -58,7 +58,7 @@ export async function PATCH(
       const { data: task, error } = await supabase
         .from("tasks")
         .update({ due_date: newDueDate })
-        .eq("id", params.id)
+        .eq("id", (await params).id)
         .eq("user_id", user.id)
         .select()
         .single();

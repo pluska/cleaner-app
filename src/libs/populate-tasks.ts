@@ -1,5 +1,4 @@
 import { createServerSupabaseClient } from "./supabase-server";
-import { generateMissingInstances } from "./task-utils";
 
 // Sample tasks data with enhanced scheduling
 const sampleTasks = [
@@ -128,10 +127,6 @@ export async function populateSampleTasks(userId: string) {
       console.log("Created task:", data.title);
     }
   }
-
-  // Generate missing instances for all recurring tasks
-  console.log("Generating missing task instances...");
-  await generateMissingInstances();
 
   console.log("Sample tasks populated successfully!");
 }

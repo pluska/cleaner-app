@@ -5,7 +5,7 @@ import { TaskFormData } from "@/types";
 // GET /api/tasks/[id] - Get a specific task
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createServerSupabaseClient();
@@ -23,7 +23,7 @@ export async function GET(
     const { data: task, error } = await supabase
       .from("tasks")
       .select("*")
-      .eq("id", params.id)
+      .eq("id", (await params).id)
       .eq("user_id", user.id)
       .single();
 
@@ -51,7 +51,7 @@ export async function GET(
 // PUT /api/tasks/[id] - Update a specific task
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createServerSupabaseClient();
@@ -128,7 +128,7 @@ export async function PUT(
     const { data: task, error } = await supabase
       .from("tasks")
       .update(updateData)
-      .eq("id", params.id)
+      .eq("id", (await params).id)
       .eq("user_id", user.id)
       .select()
       .single();
@@ -157,7 +157,7 @@ export async function PUT(
 // DELETE /api/tasks/[id] - Delete a specific task
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createServerSupabaseClient();
@@ -175,7 +175,7 @@ export async function DELETE(
     const { error } = await supabase
       .from("tasks")
       .delete()
-      .eq("id", params.id)
+      .eq("id", (await params).id)
       .eq("user_id", user.id);
 
     if (error) {

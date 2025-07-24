@@ -3,7 +3,7 @@ import { createServerSupabaseClient } from "@/libs/supabase-server";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createServerSupabaseClient();
@@ -18,7 +18,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const taskId = params.id;
+    const taskId = (await params).id;
     const { due_date } = await request.json();
 
     if (!due_date) {
