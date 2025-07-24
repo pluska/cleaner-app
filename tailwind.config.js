@@ -5,12 +5,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        base: "var(--color-base)",
-        primary: "var(--color-primary)",
-        accent: "var(--color-accent)",
-        dark: "var(--color-dark)",
-        text: "var(--color-text)",
-        bg: "var(--color-bg)",
+        base: "#F9FAFB",
+        primary: "#4CAF91",
+        accent: "#FFD265",
+        dark: "#1F2937",
+        text: "#111827",
+        bg: "#F9FAFB",
       },
     },
   },
@@ -22,8 +22,8 @@ module.exports = {
           "--color-primary": "#4CAF91",
           "--color-accent": "#FFD265",
           "--color-dark": "#1F2937",
-          "--color-text": "var(--color-dark)",
-          "--color-bg": "var(--color-base)",
+          "--color-text": "#111827",
+          "--color-bg": "#F9FAFB",
         },
       });
     }),

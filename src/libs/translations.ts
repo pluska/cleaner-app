@@ -5,6 +5,7 @@ export const translations = {
     // Navigation
     CleanPlanner: "CleanPlanner",
     Today: "Today",
+    Routine: "Routine",
     Schedule: "Schedule",
     "All Tasks": "All Tasks",
     Analytics: "Analytics",
@@ -42,6 +43,7 @@ export const translations = {
     "No coming soon tasks. Add one!": "No coming soon tasks. Great job!",
     "Great job!": "Great job!",
     "Moving task...": "Moving task...",
+    "Go to Today": "Go to Today",
 
     // Task Management
     "Add Task": "Add Task",
@@ -58,6 +60,9 @@ export const translations = {
     Overdue: "Overdue",
     "No tasks for today. Add your first task to get started!":
       "No tasks for today. Add your first task to get started!",
+    "No tasks for this date. Add a task to get started!":
+      "No tasks for this date. Add a task to get started!",
+    "Today was a lazy day": "Today was a lazy day 🥱",
     "No tasks found for the selected period and filters.":
       "No tasks found for the selected period and filters.",
     "Select day of week": "Select day of week",
@@ -150,6 +155,7 @@ export const translations = {
     // Navigation
     CleanPlanner: "CleanPlanner",
     Today: "Hoy",
+    Routine: "Rutina",
     Schedule: "Programa",
     "All Tasks": "Todas las Tareas",
     Analytics: "Análisis",
@@ -188,6 +194,7 @@ export const translations = {
       "No hay tareas próximas. ¡Excelente trabajo!",
     "Great job!": "¡Excelente trabajo!",
     "Moving task...": "Moviendo tarea...",
+    "Go to Today": "Ir a Hoy",
 
     // Task Management
     "Add Task": "Agregar Tarea",
@@ -204,6 +211,9 @@ export const translations = {
     Overdue: "Vencida",
     "No tasks for today. Add your first task to get started!":
       "No hay tareas para hoy. ¡Agrega tu primera tarea para comenzar!",
+    "No tasks for this date. Add a task to get started!":
+      "No hay tareas para esta fecha. ¡Agrega una tarea para comenzar!",
+    "Today was a lazy day": "Hoy fue un día flojo 🥱",
     "No tasks found for the selected period and filters.":
       "No se encontraron tareas para el período y filtros seleccionados.",
     "Select day of week": "Seleccionar día de la semana",

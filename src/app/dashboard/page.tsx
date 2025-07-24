@@ -1,7 +1,6 @@
 import { createServerSupabaseClient } from "@/libs/supabase-server";
-import { DashboardStats } from "@/components/dashboard/DashboardStats";
-import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
-import { DashboardDragDropProvider } from "@/components/dashboard/DashboardDragDropProvider";
+import { DashboardContent } from "@/components/dashboard/DashboardContent";
+import { getTodayDate } from "@/libs/date-utils";
 
 export default async function DashboardPage() {
   const supabase = await createServerSupabaseClient();
@@ -14,7 +13,7 @@ export default async function DashboardPage() {
   }
 
   // Get today's date
-  const today = new Date().toISOString().split("T")[0];
+  const today = getTodayDate();
 
   // Get tasks that are due today (including recurring tasks)
   const { data: tasks } = await supabase
@@ -69,33 +68,11 @@ export default async function DashboardPage() {
     });
   }
 
-  // Calculate stats for today only
-  const totalTasks = todayTasks.length;
-  const completedTasks = todayTasks.filter((task) => task.completed).length;
-  const pendingTasks = totalTasks - completedTasks;
-  const completionRate =
-    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-
-  const stats = {
-    totalTasks,
-    completedTasks,
-    pendingTasks,
-    completionRate,
-  };
-
   return (
-    <div className="max-w-7xl mx-auto bg-bg min-h-screen p-8">
-      <DashboardHeader />
-
-      <div className="mb-8">
-        <DashboardStats stats={stats} />
-      </div>
-
-      <DashboardDragDropProvider
-        todayTasks={todayTasks}
-        comingSoonTasks={comingSoonTasks || []}
-        userId={user.id}
-      />
-    </div>
+    <DashboardContent
+      initialTodayTasks={todayTasks}
+      initialComingSoonTasks={comingSoonTasks || []}
+      userId={user.id}
+    />
   );
 }

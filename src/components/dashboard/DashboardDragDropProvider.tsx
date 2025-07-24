@@ -16,11 +16,14 @@ import { DailyTasks } from "./DailyTasks";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
+import { formatDateToYYYYMMDD } from "@/libs/date-utils";
 
 interface DashboardDragDropProviderProps {
   todayTasks: Task[];
   comingSoonTasks: any[]; // Using any for coming soon tasks since they have a different structure
   userId: string;
+  selectedDate: string;
+  isLoadingTasks: boolean;
 }
 
 export const DashboardDragDropProvider: React.FC<
@@ -29,6 +32,8 @@ export const DashboardDragDropProvider: React.FC<
   todayTasks: initialTodayTasks,
   comingSoonTasks: initialComingSoonTasks,
   userId,
+  selectedDate,
+  isLoadingTasks,
 }) => {
   const [todayTasks, setTodayTasks] = useState(initialTodayTasks);
   const [comingSoonTasks, setComingSoonTasks] = useState(
@@ -37,6 +42,9 @@ export const DashboardDragDropProvider: React.FC<
   const [activeTask, setActiveTask] = useState<any>(null);
   const [isMovingTask, setIsMovingTask] = useState(false);
   const { language } = useLanguage();
+
+  // Check if the selected date is today
+  const isToday = selectedDate === formatDateToYYYYMMDD(new Date());
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -160,14 +168,18 @@ export const DashboardDragDropProvider: React.FC<
         <DailyTasks
           tasks={todayTasks}
           userId={userId}
+          selectedDate={selectedDate}
+          isLoading={isLoadingTasks}
           onTaskMoved={handleTodayTasksUpdate}
         />
 
-        <ComingSoonTasks
-          tasks={comingSoonTasks}
-          userId={userId}
-          onTaskAdded={handleComingSoonTasksUpdate}
-        />
+        {isToday && (
+          <ComingSoonTasks
+            tasks={comingSoonTasks}
+            userId={userId}
+            onTaskAdded={handleComingSoonTasksUpdate}
+          />
+        )}
 
         {/* Loading overlay during task movement */}
         {isMovingTask && (

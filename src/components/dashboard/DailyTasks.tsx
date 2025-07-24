@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Plus,
   CheckCircle,
@@ -13,9 +13,10 @@ import { Task, TaskFormData } from "@/types";
 import { createTask, updateTask, deleteTask, toggleTask } from "@/libs/api";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { LoadingSpinner, TaskSkeletons } from "@/components/ui/LoadingSpinner";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
+import { formatDateToYYYYMMDD } from "@/libs/date-utils";
 import { DroppableArea } from "./DroppableArea";
 import { DraggableTask } from "./DraggableTask";
 import { RescheduleModal } from "./RescheduleModal";
@@ -23,15 +24,24 @@ import { RescheduleModal } from "./RescheduleModal";
 interface DailyTasksProps {
   tasks: Task[];
   userId: string;
+  selectedDate: string;
+  isLoading?: boolean;
   onTaskMoved?: () => void;
 }
 
 export function DailyTasks({
   tasks: initialTasks,
   userId,
+  selectedDate,
+  isLoading = false,
   onTaskMoved,
 }: DailyTasksProps) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
+
+  // Update tasks when props change
+  useEffect(() => {
+    setTasks(initialTasks);
+  }, [initialTasks]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [rescheduleModal, setRescheduleModal] = useState<{
@@ -55,6 +65,42 @@ export function DailyTasks({
   });
   const [togglingTasks, setTogglingTasks] = useState<Set<string>>(new Set());
   const { language } = useLanguage();
+
+  // Format the selected date for display
+  const formatSelectedDate = (dateString: string): string => {
+    const [year, month, day] = dateString.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+    const today = formatDateToYYYYMMDD(new Date());
+    const isToday = dateString === today;
+
+    if (isToday) {
+      return language === "es" ? "Hoy" : "Today";
+    }
+
+    if (language === "es") {
+      // Spanish format: "Sábado, 24/7/2024"
+      const weekday = date.toLocaleDateString("es-ES", { weekday: "long" });
+      const capitalizedWeekday =
+        weekday.charAt(0).toUpperCase() + weekday.slice(1);
+      const formattedDate = `${day}/${month}/${year}`;
+      return `${capitalizedWeekday}, ${formattedDate}`;
+    } else {
+      // English format: "Saturday, 24/07/2025"
+      const weekday = date.toLocaleDateString("en-US", { weekday: "long" });
+      const formattedDate = `${day.toString().padStart(2, "0")}/${month
+        .toString()
+        .padStart(2, "0")}/${year}`;
+      return `${weekday}, ${formattedDate}`;
+    }
+  };
+
+  // Check if the selected date is in the past
+  const isPastDate = (dateString: string): boolean => {
+    const selectedDate = new Date(dateString);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to start of day
+    return selectedDate < today;
+  };
 
   const handleTaskMoved = async (taskId: string) => {
     try {
@@ -245,7 +291,7 @@ export function DailyTasks({
       onSubmit={isEditing ? handleEditTask : handleAddTask}
       className="space-y-4"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4">
         <Input
           placeholder={t("Task title", language)}
           value={formData.title}
@@ -263,7 +309,7 @@ export function DailyTasks({
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <select
           value={formData.category}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
@@ -306,7 +352,7 @@ export function DailyTasks({
 
       {/* Day of week selection for weekly tasks */}
       {formData.frequency === "weekly" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <select
             value={formData.day_of_week || ""}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
@@ -381,145 +427,173 @@ export function DailyTasks({
   );
 
   return (
-    <div className="bg-bg rounded-xl shadow-lg border border-base mb-12">
-      <div className="p-8 border-b border-base">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold text-text">
-            {t("Today's Tasks", language)}
-          </h2>
-          <Button
-            onClick={() => {
-              setShowAddForm(!showAddForm);
-            }}
-          >
-            <Plus className="h-5 w-5" />
-            <span className="font-medium">{t("Add Task", language)}</span>
-          </Button>
+    <div
+      className={`bg-bg rounded-xl shadow-lg border border-base mb-12 ${
+        isPastDate(selectedDate) ? "opacity-90" : ""
+      }`}
+    >
+      <div className="p-4 sm:p-8 border-b border-base">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+          {selectedDate === formatDateToYYYYMMDD(new Date()) ? (
+            <h2 className="text-xl sm:text-2xl font-semibold text-text">
+              {t("Today's Tasks", language)}
+            </h2>
+          ) : (
+            <h2 className="text-xl sm:text-2xl font-semibold text-text">
+              {language === "es"
+                ? `Tareas del ${formatSelectedDate(selectedDate)}`
+                : `${formatSelectedDate(selectedDate)} ${t("tasks", language)}`}
+            </h2>
+          )}
+          {!isPastDate(selectedDate) && (
+            <Button
+              onClick={() => {
+                setShowAddForm(!showAddForm);
+              }}
+              className="w-full sm:w-auto"
+            >
+              <Plus className="h-5 w-5" />
+              <span className="font-medium">{t("Add Task", language)}</span>
+            </Button>
+          )}
         </div>
       </div>
 
-      {showAddForm && (
-        <div className="p-8 border-b bg-base">{renderTaskForm()}</div>
+      {showAddForm && !isPastDate(selectedDate) && (
+        <div className="p-4 sm:p-8 border-b bg-base">{renderTaskForm()}</div>
       )}
 
       <DroppableArea id="today-tasks" className="min-h-[200px]">
-        <div className="divide-y divide-base">
-          {tasks.length === 0 ? (
-            <div className="p-12 text-center text-text/70">
-              <p className="text-lg mb-2">
-                {t(
-                  "No tasks for today. Add your first task to get started!",
-                  language
-                )}
-              </p>
-            </div>
-          ) : (
-            tasks.map((task) => (
-              <DraggableTask key={task.id} task={task}>
-                <div className="p-8 hover:bg-base transition-colors">
-                  {editingTask?.id === task.id ? (
-                    <div className="bg-base p-6 rounded-lg">
-                      {renderTaskForm(true)}
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <button
-                          onClick={() =>
-                            handleToggleTask(task.id, task.completed)
-                          }
-                          disabled={togglingTasks.has(task.id)}
-                          className="text-text/40 hover:text-text/60 transition-colors p-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {togglingTasks.has(task.id) ? (
-                            <LoadingSpinner size="sm" />
-                          ) : task.completed ? (
-                            <CheckCircle className="h-6 w-6 text-green-500" />
-                          ) : (
-                            <Circle className="h-6 w-6" />
-                          )}
-                        </button>
-                        <div>
-                          <h3
-                            className={`text-lg font-medium ${getOverdueStyle(
-                              task
-                            )} mb-2`}
+        {isLoading ? (
+          <TaskSkeletons count={3} />
+        ) : (
+          <div className="divide-y divide-base">
+            {tasks.length === 0 ? (
+              <div className="p-8 sm:p-12 text-center text-text/70">
+                <p className="text-base sm:text-lg mb-2">
+                  {selectedDate === formatDateToYYYYMMDD(new Date())
+                    ? t(
+                        "No tasks for today. Add your first task to get started!",
+                        language
+                      )
+                    : isPastDate(selectedDate)
+                    ? t("Today was a lazy day", language)
+                    : t(
+                        "No tasks for this date. Add a task to get started!",
+                        language
+                      )}
+                </p>
+              </div>
+            ) : (
+              tasks.map((task) => (
+                <DraggableTask key={task.id} task={task}>
+                  <div className="p-4 sm:p-8 hover:bg-base transition-colors">
+                    {editingTask?.id === task.id ? (
+                      <div className="bg-base p-4 sm:p-6 rounded-lg">
+                        {renderTaskForm(true)}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+                        <div className="flex items-center space-x-4">
+                          <button
+                            onClick={() =>
+                              handleToggleTask(task.id, task.completed)
+                            }
+                            disabled={togglingTasks.has(task.id)}
+                            className="text-text/40 hover:text-text/60 transition-colors p-2 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            {task.title}
-                          </h3>
-                          {task.description && (
-                            <p
-                              className={`text-sm mb-3 ${
-                                task.completed ? "text-text/40" : "text-text/70"
-                              }`}
-                            >
-                              {task.description}
-                            </p>
-                          )}
-                          <div className="flex space-x-3">
-                            {isTaskOverdue(task) && (
-                              <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-600">
-                                {t("Overdue", language)}
-                              </span>
+                            {togglingTasks.has(task.id) ? (
+                              <LoadingSpinner size="sm" />
+                            ) : task.completed ? (
+                              <CheckCircle className="h-6 w-6 text-green-500" />
+                            ) : (
+                              <Circle className="h-6 w-6" />
                             )}
-                            <span
-                              className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(
-                                task.category
-                              )}`}
+                          </button>
+                          <div className="flex-1">
+                            <h3
+                              className={`text-base sm:text-lg font-medium ${getOverdueStyle(
+                                task
+                              )} mb-2`}
                             >
-                              {task.category.replace("_", " ")}
-                            </span>
-                            <span
-                              className={`px-3 py-1 rounded-full text-xs font-medium ${getPriorityColor(
-                                task.priority
-                              )}`}
-                            >
-                              {task.priority}
-                            </span>
-                            {task.is_recurring && (
-                              <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                                {t("Recurring", language)}
-                              </span>
+                              {task.title}
+                            </h3>
+                            {task.description && (
+                              <p
+                                className={`text-sm mb-3 ${
+                                  task.completed
+                                    ? "text-text/40"
+                                    : "text-text/70"
+                                }`}
+                              >
+                                {task.description}
+                              </p>
                             )}
-                            {task.day_of_week !== undefined &&
-                              task.frequency === "weekly" && (
-                                <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-600">
-                                  {daysOfWeek[task.day_of_week]?.label}
+                            <div className="flex flex-wrap gap-2 sm:space-x-3">
+                              {isTaskOverdue(task) && (
+                                <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-600">
+                                  {t("Overdue", language)}
                                 </span>
                               )}
+                              <span
+                                className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(
+                                  task.category
+                                )}`}
+                              >
+                                {task.category.replace("_", " ")}
+                              </span>
+                              <span
+                                className={`px-3 py-1 rounded-full text-xs font-medium ${getPriorityColor(
+                                  task.priority
+                                )}`}
+                              >
+                                {task.priority}
+                              </span>
+                              {task.is_recurring && (
+                                <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                                  {t("Recurring", language)}
+                                </span>
+                              )}
+                              {task.day_of_week !== undefined &&
+                                task.frequency === "weekly" && (
+                                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-600">
+                                    {daysOfWeek[task.day_of_week]?.label}
+                                  </span>
+                                )}
+                            </div>
                           </div>
                         </div>
+                        <div className="flex items-center justify-end space-x-2 sm:space-x-3">
+                          <button
+                            onClick={() => openRescheduleModal(task)}
+                            className="text-text/40 hover:text-primary transition-colors p-2"
+                            title={
+                              language === "es" ? "Reprogramar" : "Reschedule"
+                            }
+                          >
+                            <Calendar className="h-5 w-5" />
+                          </button>
+                          <button
+                            onClick={() => startEditing(task)}
+                            className="text-text/40 hover:text-text/60 transition-colors p-2"
+                          >
+                            <Edit className="h-5 w-5" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteTask(task.id)}
+                            className="text-text/40 hover:text-red-600 transition-colors p-2"
+                          >
+                            <Trash2 className="h-5 w-5" />
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex items-center space-x-3">
-                        <button
-                          onClick={() => openRescheduleModal(task)}
-                          className="text-text/40 hover:text-primary transition-colors p-2"
-                          title={
-                            language === "es" ? "Reprogramar" : "Reschedule"
-                          }
-                        >
-                          <Calendar className="h-5 w-5" />
-                        </button>
-                        <button
-                          onClick={() => startEditing(task)}
-                          className="text-text/40 hover:text-text/60 transition-colors p-2"
-                        >
-                          <Edit className="h-5 w-5" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteTask(task.id)}
-                          className="text-text/40 hover:text-red-600 transition-colors p-2"
-                        >
-                          <Trash2 className="h-5 w-5" />
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </DraggableTask>
-            ))
-          )}
-        </div>
+                    )}
+                  </div>
+                </DraggableTask>
+              ))
+            )}
+          </div>
+        )}
       </DroppableArea>
       <RescheduleModal
         isOpen={rescheduleModal.isOpen}
