@@ -7,13 +7,13 @@ import { updateTask, deleteTask, toggleTask } from "@/libs/api";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { Badge } from "@/components/ui/Badge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 import { RescheduleModal } from "./RescheduleModal";
 import {
   getPriorityColor,
   getCategoryColor,
-  isTaskOverdue,
   getOverdueStyle,
   getDaysOfWeek,
   getTaskCategories,
@@ -63,7 +63,7 @@ export function TaskItem({
 
   const daysOfWeek = getDaysOfWeek(language);
 
-  const handleToggleTask = async (taskId: string, completed: boolean) => {
+  const handleToggleTask = async (taskId: string) => {
     setTogglingTasks((prev) => new Set(prev).add(taskId));
     try {
       const { task: updatedTask } = await toggleTask(taskId);
@@ -165,7 +165,10 @@ export function TaskItem({
         <select
           value={formData.category}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            setFormData({ ...formData, category: e.target.value as any })
+            setFormData({
+              ...formData,
+              category: e.target.value as Task["category"],
+            })
           }
           className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
@@ -178,7 +181,10 @@ export function TaskItem({
         <select
           value={formData.priority}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            setFormData({ ...formData, priority: e.target.value as any })
+            setFormData({
+              ...formData,
+              priority: e.target.value as Task["priority"],
+            })
           }
           className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
@@ -191,7 +197,10 @@ export function TaskItem({
         <select
           value={formData.frequency}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            setFormData({ ...formData, frequency: e.target.value as any })
+            setFormData({
+              ...formData,
+              frequency: e.target.value as Task["frequency"],
+            })
           }
           className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
@@ -289,7 +298,7 @@ export function TaskItem({
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => handleToggleTask(task.id, task.completed)}
+                onClick={() => handleToggleTask(task.id)}
                 disabled={togglingTasks.has(task.id) || isPastDate}
                 className="text-text/40 hover:text-text/60 transition-colors p-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -322,35 +331,36 @@ export function TaskItem({
                   {(() => {
                     const statusBadge = getTaskStatusBadge(task, language);
                     return statusBadge ? (
-                      <span className={statusBadge.className}>
+                      <Badge variant="warning" size="sm">
                         {statusBadge.text}
-                      </span>
+                      </Badge>
                     ) : null;
                   })()}
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(
-                      task.category
-                    )}`}
-                  >
+                  <Badge variant="secondary" size="sm">
                     {formatTaskCategory(task.category)}
-                  </span>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${getPriorityColor(
-                      task.priority
-                    )}`}
+                  </Badge>
+                  <Badge
+                    variant={
+                      task.priority === "high"
+                        ? "error"
+                        : task.priority === "medium"
+                        ? "warning"
+                        : "success"
+                    }
+                    size="sm"
                   >
                     {task.priority}
-                  </span>
+                  </Badge>
                   {task.is_recurring && (
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                    <Badge variant="primary" size="sm">
                       {t("Recurring", language)}
-                    </span>
+                    </Badge>
                   )}
                   {task.day_of_week !== undefined &&
                     task.frequency === "weekly" && (
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-600">
+                      <Badge variant="default" size="sm">
                         {daysOfWeek[task.day_of_week]?.label}
-                      </span>
+                      </Badge>
                     )}
                 </div>
               </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/libs/supabase";
 
@@ -10,20 +10,7 @@ export function AuthCallback() {
   const code = searchParams.get("code");
   const error = searchParams.get("error");
 
-  useEffect(() => {
-    if (code) {
-      handleAuthCallback();
-    } else if (error) {
-      // Handle error - redirect to error page
-      router.push(
-        `/auth/error?error=${error}&error_description=${
-          searchParams.get("error_description") || ""
-        }`
-      );
-    }
-  }, [code, error]);
-
-  const handleAuthCallback = async () => {
+  const handleAuthCallback = useCallback(async () => {
     try {
       const supabase = createClient();
 
@@ -51,7 +38,20 @@ export function AuthCallback() {
         "/auth/error?error=callback_error&error_description=An unexpected error occurred"
       );
     }
-  };
+  }, [code, router]);
+
+  useEffect(() => {
+    if (code) {
+      handleAuthCallback();
+    } else if (error) {
+      // Handle error - redirect to error page
+      router.push(
+        `/auth/error?error=${error}&error_description=${
+          searchParams.get("error_description") || ""
+        }`
+      );
+    }
+  }, [code, error, handleAuthCallback, router, searchParams]);
 
   // Show loading state while processing
   if (code || error) {

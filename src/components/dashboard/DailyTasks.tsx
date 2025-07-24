@@ -30,10 +30,8 @@ interface DailyTasksProps {
 
 export function DailyTasks({
   tasks: initialTasks,
-  userId,
   selectedDate,
   isLoading = false,
-  onTaskMoved,
 }: DailyTasksProps) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
 
@@ -88,21 +86,6 @@ export function DailyTasks({
     return selectedDate < today;
   };
 
-  const handleTaskMoved = async (taskId: string) => {
-    try {
-      const res = await fetch(`/api/tasks/${taskId}/move`, {
-        method: "PATCH",
-      });
-      if (res.ok) {
-        const { task } = await res.json();
-        setTasks([...tasks, task]);
-        onTaskMoved?.();
-      }
-    } catch (error) {
-      console.error("Error moving task:", error);
-    }
-  };
-
   const handleReschedule = async (taskId: string, newDate: string) => {
     try {
       const res = await fetch(`/api/tasks/${taskId}/reschedule`, {
@@ -113,7 +96,6 @@ export function DailyTasks({
       if (res.ok) {
         // Remove the task from today's list since it's been rescheduled
         setTasks(tasks.filter((task) => task.id !== taskId));
-        onTaskMoved?.();
       }
     } catch (error) {
       console.error("Error rescheduling task:", error);
@@ -180,7 +162,10 @@ export function DailyTasks({
         <select
           value={formData.category}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            setFormData({ ...formData, category: e.target.value as any })
+            setFormData({
+              ...formData,
+              category: e.target.value as Task["category"],
+            })
           }
           className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
@@ -193,7 +178,10 @@ export function DailyTasks({
         <select
           value={formData.priority}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            setFormData({ ...formData, priority: e.target.value as any })
+            setFormData({
+              ...formData,
+              priority: e.target.value as Task["priority"],
+            })
           }
           className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
@@ -206,7 +194,10 @@ export function DailyTasks({
         <select
           value={formData.frequency}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-            setFormData({ ...formData, frequency: e.target.value as any })
+            setFormData({
+              ...formData,
+              frequency: e.target.value as Task["frequency"],
+            })
           }
           className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >

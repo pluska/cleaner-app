@@ -134,7 +134,6 @@ export const WeeklyView: React.FC<WeeklyViewProps> = ({
       <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {weekDays.map((date) => {
           const isSelected = date === selectedDate;
-          const isTodayDate = date === formatDateToYYYYMMDD(new Date());
 
           return (
             <Button

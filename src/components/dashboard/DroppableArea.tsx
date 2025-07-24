@@ -7,14 +7,12 @@ interface DroppableAreaProps {
   id: string;
   children: React.ReactNode;
   className?: string;
-  onDrop?: (taskId: string) => void;
 }
 
 export const DroppableArea: React.FC<DroppableAreaProps> = ({
   id,
   children,
   className = "",
-  onDrop,
 }) => {
   const { setNodeRef, isOver } = useDroppable({
     id,

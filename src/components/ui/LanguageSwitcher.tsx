@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { t } from "@/libs/translations";
+
 import { Globe } from "lucide-react";
 
 export function LanguageSwitcher() {

@@ -18,10 +18,9 @@ import { t } from "@/libs/translations";
 
 interface ScheduleViewProps {
   tasks: Task[];
-  userId: string;
 }
 
-export function ScheduleView({ tasks, userId }: ScheduleViewProps) {
+export function ScheduleView({ tasks }: ScheduleViewProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<TimeView>("weekly");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -431,7 +430,7 @@ export function ScheduleView({ tasks, userId }: ScheduleViewProps) {
                   <option key={category} value={category}>
                     {category === "all"
                       ? t("All Categories", language)
-                      : t(category.replace("_", " "), language)}
+                      : category.replace("_", " ")}
                   </option>
                 ))}
               </select>
@@ -440,9 +439,7 @@ export function ScheduleView({ tasks, userId }: ScheduleViewProps) {
 
           <div className="text-sm font-semibold text-gray-800 bg-gray-100 px-3 py-2 rounded-lg">
             {filteredTasks.length}{" "}
-            {filteredTasks.length === 1
-              ? t("task found", language)
-              : t("tasks found", language)}
+            {filteredTasks.length === 1 ? "task" : "tasks"} found
           </div>
         </div>
       </div>

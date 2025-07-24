@@ -8,7 +8,7 @@ import {
   endOfWeek,
   eachDayOfInterval,
 } from "date-fns";
-import { enUS, es } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 import { BarChart3, TrendingUp, Calendar, Target } from "lucide-react";
 import { Task } from "@/types";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -97,7 +97,7 @@ export function AnalyticsView({ tasks }: AnalyticsViewProps) {
       weeklyTrend,
       dailyStats,
     };
-  }, [tasks]);
+  }, [tasks, language]);
 
   const getCategoryColor = (category: string) => {
     switch (category) {

@@ -3,9 +3,10 @@
 import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Task } from "@/types";
 
 interface DraggableTaskProps {
-  task: { id: string; [key: string]: any };
+  task: Task;
   children: React.ReactNode;
   className?: string;
 }

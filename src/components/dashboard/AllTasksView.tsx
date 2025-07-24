@@ -3,13 +3,12 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import { Task } from "@/types";
-import { useLanguage } from "@/contexts/LanguageContext";
+
 import {
   getPriorityColor,
   getCategoryColor,
   formatTaskCategory,
 } from "@/libs/task-utils";
-import { t } from "@/libs/translations";
 
 interface TaskInstance {
   id: string;
@@ -39,11 +38,9 @@ export function AllTasksView({
   baseTasks,
   taskInstances,
   generationState,
-  userId,
 }: AllTasksViewProps) {
   const [showInstances, setShowInstances] = useState(true);
   const [showCompleted, setShowCompleted] = useState(true);
-  const { language } = useLanguage();
 
   const getGenerationState = (taskId: string) => {
     return generationState.find((gs) => gs.task_id === taskId);

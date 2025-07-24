@@ -7,16 +7,18 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export function Input({ label, error, className = "", ...props }: InputProps) {
   const baseClasses =
-    "flex h-10 w-full rounded-md border border-base bg-bg px-3 py-2 text-sm text-text shadow-sm ring-offset-bg file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-text/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+    "flex h-10 w-full rounded-2xl border-2 border-base bg-bg px-6 py-2 text-base text-text shadow-md ring-offset-bg file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-text/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-2 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200";
 
   const classes = `${baseClasses} ${
-    error ? "border-red-500" : ""
+    error
+      ? "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/20"
+      : ""
   } ${className}`;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {label && (
-        <label className="text-sm font-medium text-text leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+        <label className="text-base font-medium text-text leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
           {label}
         </label>
       )}

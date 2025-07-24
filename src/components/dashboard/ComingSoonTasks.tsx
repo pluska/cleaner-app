@@ -5,25 +5,15 @@ import { t } from "@/libs/translations";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { DraggableTask } from "./DraggableTask";
 import { DroppableArea } from "./DroppableArea";
-
-interface ComingSoonTask {
-  id: string;
-  title: string;
-  due_date: string;
-  completed: boolean;
-}
+import { Task } from "@/types";
 
 interface ComingSoonTasksProps {
-  tasks: ComingSoonTask[];
+  tasks: Task[];
   userId: string;
   onTaskAdded: () => void;
 }
 
-export const ComingSoonTasks: React.FC<ComingSoonTasksProps> = ({
-  tasks,
-  userId,
-  onTaskAdded,
-}) => {
+export const ComingSoonTasks: React.FC<ComingSoonTasksProps> = ({ tasks }) => {
   const { language } = useLanguage();
 
   return (

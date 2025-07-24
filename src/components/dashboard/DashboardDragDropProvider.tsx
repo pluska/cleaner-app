@@ -20,7 +20,7 @@ import { formatDateToYYYYMMDD } from "@/libs/date-utils";
 
 interface DashboardDragDropProviderProps {
   todayTasks: Task[];
-  comingSoonTasks: any[]; // Using any for coming soon tasks since they have a different structure
+  comingSoonTasks: Task[];
   userId: string;
   selectedDate: string;
   isLoadingTasks: boolean;
@@ -39,7 +39,7 @@ export const DashboardDragDropProvider: React.FC<
   const [comingSoonTasks, setComingSoonTasks] = useState(
     initialComingSoonTasks
   );
-  const [activeTask, setActiveTask] = useState<any>(null);
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [isMovingTask, setIsMovingTask] = useState(false);
   const { language } = useLanguage();
 

@@ -116,10 +116,10 @@ export async function PUT(
     }
 
     // Prepare update data
-    const updateData: any = {};
+    const updateData: Partial<TaskFormData> = {};
     if (body.title !== undefined) updateData.title = body.title.trim();
     if (body.description !== undefined)
-      updateData.description = body.description?.trim() || null;
+      updateData.description = body.description?.trim() || undefined;
     if (body.frequency !== undefined) updateData.frequency = body.frequency;
     if (body.category !== undefined) updateData.category = body.category;
     if (body.priority !== undefined) updateData.priority = body.priority;

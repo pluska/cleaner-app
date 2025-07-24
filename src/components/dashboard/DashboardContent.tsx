@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { DashboardHeader } from "./DashboardHeader";
 import { DashboardDragDropProvider } from "./DashboardDragDropProvider";
 import { WeeklyView } from "./WeeklyView";
+import { Loading } from "@/components/ui/Loading";
 import { Task, ComingSoonTask, TaskInstance } from "@/types";
 import { formatDateToYYYYMMDD } from "@/libs/date-utils";
 
@@ -22,12 +23,10 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
     formatDateToYYYYMMDD(new Date())
   );
   const [todayTasks, setTodayTasks] = useState(initialTodayTasks);
-  const [comingSoonTasks, setComingSoonTasks] = useState(
-    initialComingSoonTasks
-  );
+  const [comingSoonTasks] = useState(initialComingSoonTasks);
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
 
-  const handleDateChange = async (date: string) => {
+  const handleDateChange = useCallback(async (date: string) => {
     setSelectedDate(date);
     setIsLoadingTasks(true);
 
@@ -73,7 +72,7 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
     } finally {
       setIsLoadingTasks(false);
     }
-  };
+  }, []);
 
   // Initialize tasks for the current date on component mount
   useEffect(() => {
@@ -83,7 +82,16 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
     } else {
       handleDateChange(selectedDate);
     }
-  }, []);
+  }, [initialTodayTasks, selectedDate, handleDateChange]);
+
+  if (isLoadingTasks) {
+    return (
+      <div className="max-w-7xl mx-auto bg-bg min-h-screen p-4 sm:p-8">
+        <DashboardHeader />
+        <Loading size="lg" text="Loading tasks..." className="mt-12" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto bg-bg min-h-screen p-4 sm:p-8">
