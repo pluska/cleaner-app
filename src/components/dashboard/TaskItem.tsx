@@ -12,8 +12,6 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 import { RescheduleModal } from "./RescheduleModal";
 import {
-  getPriorityColor,
-  getCategoryColor,
   getOverdueStyle,
   getDaysOfWeek,
   getTaskCategories,
