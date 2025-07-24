@@ -139,8 +139,8 @@ export function DailyTasks({
   };
 
   const renderTaskForm = () => (
-    <form onSubmit={handleAddTask} className="space-y-4">
-      <div className="grid grid-cols-1 gap-4">
+    <form onSubmit={handleAddTask} className="space-y-3 sm:space-y-4">
+      <div className="grid grid-cols-1 gap-3 sm:gap-4">
         <Input
           placeholder={t("Task title", language)}
           value={formData.title}
@@ -158,7 +158,7 @@ export function DailyTasks({
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         <select
           value={formData.category}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
@@ -211,7 +211,7 @@ export function DailyTasks({
 
       {/* Day of week selection for weekly tasks */}
       {formData.frequency === "weekly" && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <select
             value={formData.day_of_week || ""}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
@@ -258,7 +258,7 @@ export function DailyTasks({
         </label>
       </div>
 
-      <div className="flex space-x-2">
+      <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
         <Button type="submit" className="w-full">
           {t("Add Task", language)}
         </Button>
@@ -286,18 +286,18 @@ export function DailyTasks({
 
   return (
     <div
-      className={`bg-bg rounded-xl shadow-lg border border-base mb-12 ${
+      className={`bg-bg rounded-xl shadow-lg border border-base mb-8 sm:mb-12 ${
         isPastDate(selectedDate) ? "opacity-90" : ""
       }`}
     >
-      <div className="p-4 sm:p-8 border-b border-base">
+      <div className="p-4 sm:p-6 lg:p-8 border-b border-base">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
           {selectedDate === formatDateToYYYYMMDD(new Date()) ? (
-            <h2 className="text-xl sm:text-2xl font-semibold text-text">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-text">
               {t("Today's Tasks", language)}
             </h2>
           ) : (
-            <h2 className="text-xl sm:text-2xl font-semibold text-text">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-text">
               {language === "es"
                 ? `Tareas del ${formatSelectedDate(selectedDate)}`
                 : `${formatSelectedDate(selectedDate)} ${t("tasks", language)}`}
@@ -308,17 +308,22 @@ export function DailyTasks({
               onClick={() => {
                 setShowAddForm(!showAddForm);
               }}
+              size="sm"
               className="w-full sm:w-auto"
             >
-              <Plus className="h-5 w-5" />
-              <span className="font-medium">{t("Add Task", language)}</span>
+              <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="font-medium text-sm sm:text-base">
+                {t("Add Task", language)}
+              </span>
             </Button>
           )}
         </div>
       </div>
 
       {showAddForm && !isPastDate(selectedDate) && (
-        <div className="p-4 sm:p-8 border-b bg-base">{renderTaskForm()}</div>
+        <div className="p-4 sm:p-6 lg:p-8 border-b bg-base">
+          {renderTaskForm()}
+        </div>
       )}
 
       <DroppableArea id="today-tasks" className="min-h-[200px]">
@@ -327,8 +332,8 @@ export function DailyTasks({
         ) : (
           <div className="divide-y divide-base">
             {tasks.length === 0 ? (
-              <div className="p-8 sm:p-12 text-center text-text/70">
-                <p className="text-base sm:text-lg mb-2">
+              <div className="p-6 sm:p-8 lg:p-12 text-center text-text/70">
+                <p className="text-sm sm:text-base lg:text-lg mb-2">
                   {selectedDate === formatDateToYYYYMMDD(new Date())
                     ? t(
                         "No tasks for today. Add your first task to get started!",

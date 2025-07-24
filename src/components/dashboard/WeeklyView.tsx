@@ -93,13 +93,13 @@ export const WeeklyView: React.FC<WeeklyViewProps> = ({
   return (
     <div className="mb-8">
       {/* Go to Today button */}
-      <div className="mb-4" style={{ minHeight: "40px" }}>
+      <div className="mb-4 px-2 sm:px-0" style={{ minHeight: "40px" }}>
         {!isToday && (
           <Button
             onClick={goToToday}
             variant="outline"
             size="sm"
-            className="text-sm"
+            className="text-xs sm:text-sm"
           >
             {t("Go to Today", language)}
           </Button>
@@ -107,15 +107,15 @@ export const WeeklyView: React.FC<WeeklyViewProps> = ({
       </div>
 
       {/* Week navigation */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 px-2 sm:px-0">
         <button
           onClick={goToPreviousWeek}
           className="p-2 hover:bg-base rounded-md transition-colors"
         >
-          <ChevronLeft className="h-5 w-5 text-text" />
+          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 text-text" />
         </button>
 
-        <div className="text-base sm:text-lg font-semibold text-text text-center">
+        <div className="text-sm sm:text-base lg:text-lg font-semibold text-text text-center px-2">
           {currentWeekStart.toLocaleDateString(
             language === "es" ? "es-ES" : "en-US",
             { month: "long", year: "numeric" }
@@ -126,7 +126,7 @@ export const WeeklyView: React.FC<WeeklyViewProps> = ({
           onClick={goToNextWeek}
           className="p-2 hover:bg-base rounded-md transition-colors"
         >
-          <ChevronRight className="h-5 w-5 text-text" />
+          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-text" />
         </button>
       </div>
 
@@ -140,9 +140,10 @@ export const WeeklyView: React.FC<WeeklyViewProps> = ({
               key={date}
               onClick={() => onDateChange(date)}
               variant={isSelected ? "primary" : "outline"}
-              className="w-full min-h-[40px] sm:min-h-[auto]"
+              size="sm"
+              className="w-full h-10 sm:h-12 px-1 sm:px-2"
             >
-              <div className="text-xs sm:text-sm font-medium">
+              <div className="text-xs sm:text-sm font-medium leading-tight">
                 {formatDate(date)}
               </div>
             </Button>
