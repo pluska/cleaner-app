@@ -18,11 +18,11 @@ export function Button({
 
   const variants = {
     primary:
-      "bg-primary text-white hover:bg-primary/90 focus-visible:ring-primary/20 shadow-primary/25",
+      "bg-primary text-white hover:bg-primary/90 focus-visible:ring-primary/20 shadow-lg",
     secondary:
-      "bg-accent text-text hover:bg-accent/90 border border-accent focus-visible:ring-accent/20 shadow-accent/25",
+      "bg-accent text-text hover:bg-accent/90 border border-accent focus-visible:ring-accent/20 shadow-lg",
     outline:
-      "border-2 border-text bg-transparent text-text hover:bg-text hover:text-white focus-visible:ring-text/20 shadow-text/25",
+      "border-2 border-text bg-transparent text-text hover:bg-text hover:text-white focus-visible:ring-text/20 shadow-lg",
     ghost: "bg-transparent text-text hover:bg-base focus-visible:ring-text/20",
   };
 

@@ -420,37 +420,43 @@ export function TaskItem({
 
       {/* Delete Confirmation Modal */}
       {deleteConfirmModal.isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-lg max-w-md w-full p-6">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border border-gray-100">
             <div className="text-center">
-              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Trash2 className="h-6 w-6 text-red-600" />
+              <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Trash2 className="h-8 w-8 text-red-600" />
               </div>
-              <h3 className="text-lg font-semibold text-text mb-2">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
                 {t("Delete", language)}
               </h3>
-              <p className="text-text/70 mb-6">
-                {language === "es"
-                  ? `¿Estás seguro de que quieres eliminar "${deleteConfirmModal.taskTitle}"?`
-                  : `Are you sure you want to delete "${deleteConfirmModal.taskTitle}"?`}
-                <br />
-                <span className="text-sm text-text/60">
+              <div className="mb-8">
+                <p className="text-gray-700 text-base leading-relaxed mb-3">
+                  {language === "es"
+                    ? `¿Estás seguro de que quieres eliminar`
+                    : `Are you sure you want to delete`}
+                </p>
+                <p className="text-gray-900 font-semibold text-lg mb-3">
+                  &ldquo;{deleteConfirmModal.taskTitle}&rdquo;?
+                </p>
+                <p className="text-gray-500 text-sm">
                   {language === "es"
                     ? "Esta acción no se puede deshacer."
                     : "This action cannot be undone."}
-                </span>
-              </p>
-              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
                 <Button
                   onClick={closeDeleteConfirmModal}
                   variant="outline"
-                  className="w-full sm:w-auto"
+                  size="lg"
+                  className="w-full sm:w-auto border-gray-300 text-gray-700 hover:bg-gray-50"
                 >
                   {t("Cancel", language)}
                 </Button>
                 <Button
                   onClick={() => handleDeleteTask(deleteConfirmModal.taskId)}
-                  className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white"
+                  size="lg"
+                  className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white shadow-red-200"
                 >
                   {t("Delete", language)}
                 </Button>
