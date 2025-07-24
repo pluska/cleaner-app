@@ -63,6 +63,42 @@ export interface TaskInstance {
   completed: boolean;
   user_id: string;
   created_at: string;
+  tasks?: Task; // For joined queries
+}
+
+export interface TaskWithInstance extends Task {
+  is_instance?: boolean;
+  original_task_id?: string;
+}
+
+export interface ComingSoonTask extends Task {
+  daysUntilDue?: number;
+}
+
+export interface TaskFilters {
+  category?: string;
+  frequency?: string;
+  completed?: boolean;
+  dueDate?: string;
+  includeInstances?: boolean;
+  userId?: string;
+  comingSoon?: boolean;
+  today?: string;
+}
+
+export interface ApiResponse<T> {
+  data?: T;
+  error?: string;
+  success?: boolean;
+}
+
+export interface TasksResponse {
+  tasks: Task[];
+  instances?: TaskInstance[];
+}
+
+export interface TaskInstanceResponse {
+  taskInstances: TaskInstance[];
 }
 
 export type TimeView = "daily" | "weekly" | "monthly" | "yearly";
@@ -72,4 +108,36 @@ export interface DashboardStats {
   completedTasks: number;
   pendingTasks: number;
   completionRate: number;
+}
+
+export interface RescheduleModalState {
+  isOpen: boolean;
+  taskId: string;
+  taskTitle: string;
+  currentDueDate: string;
+}
+
+export interface DayOfWeek {
+  value: number;
+  label: string;
+}
+
+export interface TaskCategory {
+  value: string;
+  label: string;
+}
+
+export interface TaskPriority {
+  value: string;
+  label: string;
+}
+
+export interface TaskFrequency {
+  value: string;
+  label: string;
+}
+
+export interface TaskStatusBadge {
+  text: string;
+  className: string;
 }

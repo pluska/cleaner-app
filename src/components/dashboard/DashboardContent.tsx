@@ -4,12 +4,12 @@ import React, { useState, useEffect } from "react";
 import { DashboardHeader } from "./DashboardHeader";
 import { DashboardDragDropProvider } from "./DashboardDragDropProvider";
 import { WeeklyView } from "./WeeklyView";
-import { Task } from "@/types";
+import { Task, ComingSoonTask, TaskInstance } from "@/types";
 import { formatDateToYYYYMMDD } from "@/libs/date-utils";
 
 interface DashboardContentProps {
   initialTodayTasks: Task[];
-  initialComingSoonTasks: any[];
+  initialComingSoonTasks: ComingSoonTask[];
   userId: string;
 }
 
@@ -50,7 +50,7 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
 
         // Add recurring task instances
         if (taskInstances) {
-          taskInstances.forEach((instance: any) => {
+          taskInstances.forEach((instance: TaskInstance) => {
             if (instance.tasks) {
               combinedTasks.push({
                 ...instance.tasks,
