@@ -13,6 +13,9 @@ import {
 import { Task } from "@/types";
 import { ComingSoonTasks } from "./ComingSoonTasks";
 import { DailyTasks } from "./DailyTasks";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { t } from "@/libs/translations";
 
 interface DashboardDragDropProviderProps {
   todayTasks: Task[];
@@ -32,6 +35,8 @@ export const DashboardDragDropProvider: React.FC<
     initialComingSoonTasks
   );
   const [activeTask, setActiveTask] = useState<any>(null);
+  const [isMovingTask, setIsMovingTask] = useState(false);
+  const { language } = useLanguage();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -66,6 +71,16 @@ export const DashboardDragDropProvider: React.FC<
     const taskId = active.id as string;
     const dropZoneId = over.id as string;
 
+    // Find the task being moved
+    const taskToMove = [...todayTasks, ...comingSoonTasks].find(
+      (t) => t.id === taskId
+    );
+
+    if (!taskToMove) return;
+
+    // Show loading state
+    setIsMovingTask(true);
+
     // If dropping on today's tasks area, move the task to today
     if (dropZoneId === "today-tasks") {
       try {
@@ -75,24 +90,64 @@ export const DashboardDragDropProvider: React.FC<
         if (res.ok) {
           const { task } = await res.json();
 
-          // Update local state
-          setTodayTasks((prev) => [...prev, task]);
+          // Update local state - remove from both arrays first, then add to today
+          setTodayTasks((prev) => {
+            const filtered = prev.filter((t) => t.id !== taskId);
+            return [...filtered, task];
+          });
           setComingSoonTasks((prev) => prev.filter((t) => t.id !== taskId));
+
+          // Refresh the page to update stats and ensure consistency
+          setTimeout(() => {
+            handleTodayTasksUpdate();
+          }, 100);
         }
       } catch (error) {
         console.error("Error moving task:", error);
+      } finally {
+        setIsMovingTask(false);
+      }
+    }
+
+    // If dropping on coming soon area, move the task to tomorrow
+    if (dropZoneId === "coming-soon-tasks") {
+      try {
+        const res = await fetch(`/api/tasks/${taskId}/move-to-tomorrow`, {
+          method: "PATCH",
+        });
+        if (res.ok) {
+          const { task } = await res.json();
+
+          // Update local state - remove from both arrays first, then add to coming soon
+          setComingSoonTasks((prev) => {
+            const filtered = prev.filter((t) => t.id !== taskId);
+            return [...filtered, task];
+          });
+          setTodayTasks((prev) => prev.filter((t) => t.id !== taskId));
+
+          // Since today's tasks has complex data structure, we need to refresh
+          // to ensure stats and data consistency
+          setTimeout(() => {
+            handleTodayTasksUpdate();
+          }, 100);
+        }
+      } catch (error) {
+        console.error("Error moving task to tomorrow:", error);
+      } finally {
+        setIsMovingTask(false);
       }
     }
   };
 
   const handleTodayTasksUpdate = () => {
-    // Refresh today's tasks
+    // For now, we'll keep the reload for today's tasks due to complex data structure
+    // TODO: Implement proper local state management for stats
     window.location.reload();
   };
 
   const handleComingSoonTasksUpdate = () => {
-    // Refresh coming soon tasks
-    window.location.reload();
+    // Coming soon works fine with local state, no reload needed
+    // This function is called but doesn't need to do anything
   };
 
   return (
@@ -101,7 +156,7 @@ export const DashboardDragDropProvider: React.FC<
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="space-y-8">
+      <div className="space-y-8 relative">
         <DailyTasks
           tasks={todayTasks}
           userId={userId}
@@ -113,6 +168,18 @@ export const DashboardDragDropProvider: React.FC<
           userId={userId}
           onTaskAdded={handleComingSoonTasksUpdate}
         />
+
+        {/* Loading overlay during task movement */}
+        {isMovingTask && (
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-lg p-6 flex items-center space-x-3">
+              <LoadingSpinner size="md" />
+              <span className="text-text font-medium">
+                {t("Moving task...", language)}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       <DragOverlay>

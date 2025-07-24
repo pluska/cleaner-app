@@ -13,9 +13,11 @@ import { Task, TaskFormData } from "@/types";
 import { createTask, updateTask, deleteTask, toggleTask } from "@/libs/api";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 import { DroppableArea } from "./DroppableArea";
+import { DraggableTask } from "./DraggableTask";
 import { RescheduleModal } from "./RescheduleModal";
 
 interface DailyTasksProps {
@@ -51,6 +53,7 @@ export function DailyTasks({
     priority: "medium",
     is_recurring: false,
   });
+  const [togglingTasks, setTogglingTasks] = useState<Set<string>>(new Set());
   const { language } = useLanguage();
 
   const handleTaskMoved = async (taskId: string) => {
@@ -140,11 +143,18 @@ export function DailyTasks({
   };
 
   const handleToggleTask = async (taskId: string, completed: boolean) => {
+    setTogglingTasks((prev) => new Set(prev).add(taskId));
     try {
       const { task } = await toggleTask(taskId);
       setTasks(tasks.map((t) => (t.id === taskId ? task : t)));
     } catch (error) {
       console.error("Error toggling task:", error);
+    } finally {
+      setTogglingTasks((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(taskId);
+        return newSet;
+      });
     }
   };
 
@@ -405,104 +415,108 @@ export function DailyTasks({
             </div>
           ) : (
             tasks.map((task) => (
-              <div
-                key={task.id}
-                className="p-8 hover:bg-base transition-colors"
-              >
-                {editingTask?.id === task.id ? (
-                  <div className="bg-base p-6 rounded-lg">
-                    {renderTaskForm(true)}
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <button
-                        onClick={() =>
-                          handleToggleTask(task.id, task.completed)
-                        }
-                        className="text-text/40 hover:text-text/60 transition-colors p-2"
-                      >
-                        {task.completed ? (
-                          <CheckCircle className="h-6 w-6 text-green-500" />
-                        ) : (
-                          <Circle className="h-6 w-6" />
-                        )}
-                      </button>
-                      <div>
-                        <h3
-                          className={`text-lg font-medium ${getOverdueStyle(
-                            task
-                          )} mb-2`}
+              <DraggableTask key={task.id} task={task}>
+                <div className="p-8 hover:bg-base transition-colors">
+                  {editingTask?.id === task.id ? (
+                    <div className="bg-base p-6 rounded-lg">
+                      {renderTaskForm(true)}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <button
+                          onClick={() =>
+                            handleToggleTask(task.id, task.completed)
+                          }
+                          disabled={togglingTasks.has(task.id)}
+                          className="text-text/40 hover:text-text/60 transition-colors p-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          {task.title}
-                        </h3>
-                        {task.description && (
-                          <p
-                            className={`text-sm mb-3 ${
-                              task.completed ? "text-text/40" : "text-text/70"
-                            }`}
-                          >
-                            {task.description}
-                          </p>
-                        )}
-                        <div className="flex space-x-3">
-                          {isTaskOverdue(task) && (
-                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-600">
-                              {t("Overdue", language)}
-                            </span>
+                          {togglingTasks.has(task.id) ? (
+                            <LoadingSpinner size="sm" />
+                          ) : task.completed ? (
+                            <CheckCircle className="h-6 w-6 text-green-500" />
+                          ) : (
+                            <Circle className="h-6 w-6" />
                           )}
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(
-                              task.category
-                            )}`}
+                        </button>
+                        <div>
+                          <h3
+                            className={`text-lg font-medium ${getOverdueStyle(
+                              task
+                            )} mb-2`}
                           >
-                            {task.category.replace("_", " ")}
-                          </span>
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-medium ${getPriorityColor(
-                              task.priority
-                            )}`}
-                          >
-                            {task.priority}
-                          </span>
-                          {task.is_recurring && (
-                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                              {t("Recurring", language)}
-                            </span>
+                            {task.title}
+                          </h3>
+                          {task.description && (
+                            <p
+                              className={`text-sm mb-3 ${
+                                task.completed ? "text-text/40" : "text-text/70"
+                              }`}
+                            >
+                              {task.description}
+                            </p>
                           )}
-                          {task.day_of_week !== undefined &&
-                            task.frequency === "weekly" && (
-                              <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-600">
-                                {daysOfWeek[task.day_of_week]?.label}
+                          <div className="flex space-x-3">
+                            {isTaskOverdue(task) && (
+                              <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-600">
+                                {t("Overdue", language)}
                               </span>
                             )}
+                            <span
+                              className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(
+                                task.category
+                              )}`}
+                            >
+                              {task.category.replace("_", " ")}
+                            </span>
+                            <span
+                              className={`px-3 py-1 rounded-full text-xs font-medium ${getPriorityColor(
+                                task.priority
+                              )}`}
+                            >
+                              {task.priority}
+                            </span>
+                            {task.is_recurring && (
+                              <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                                {t("Recurring", language)}
+                              </span>
+                            )}
+                            {task.day_of_week !== undefined &&
+                              task.frequency === "weekly" && (
+                                <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-600">
+                                  {daysOfWeek[task.day_of_week]?.label}
+                                </span>
+                              )}
+                          </div>
                         </div>
                       </div>
+                      <div className="flex items-center space-x-3">
+                        <button
+                          onClick={() => openRescheduleModal(task)}
+                          className="text-text/40 hover:text-primary transition-colors p-2"
+                          title={
+                            language === "es" ? "Reprogramar" : "Reschedule"
+                          }
+                        >
+                          <Calendar className="h-5 w-5" />
+                        </button>
+                        <button
+                          onClick={() => startEditing(task)}
+                          className="text-text/40 hover:text-text/60 transition-colors p-2"
+                        >
+                          <Edit className="h-5 w-5" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteTask(task.id)}
+                          className="text-text/40 hover:text-red-600 transition-colors p-2"
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <button
-                        onClick={() => openRescheduleModal(task)}
-                        className="text-text/40 hover:text-primary transition-colors p-2"
-                        title={language === "es" ? "Reprogramar" : "Reschedule"}
-                      >
-                        <Calendar className="h-5 w-5" />
-                      </button>
-                      <button
-                        onClick={() => startEditing(task)}
-                        className="text-text/40 hover:text-text/60 transition-colors p-2"
-                      >
-                        <Edit className="h-5 w-5" />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteTask(task.id)}
-                        className="text-text/40 hover:text-red-600 transition-colors p-2"
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              </DraggableTask>
             ))
           )}
         </div>

@@ -39,7 +39,9 @@ export const translations = {
     "This Week": "This Week",
     "Today's Tasks": "Today's Tasks",
     "Coming Soon": "Coming Soon",
-    "No coming soon tasks. Add one!": "No coming soon tasks. Add one!",
+    "No coming soon tasks. Add one!": "No coming soon tasks. Great job!",
+    "Great job!": "Great job!",
+    "Moving task...": "Moving task...",
 
     // Task Management
     "Add Task": "Add Task",
@@ -182,7 +184,10 @@ export const translations = {
     "This Week": "Esta Semana",
     "Today's Tasks": "Tareas de Hoy",
     "Coming Soon": "Próximamente",
-    "No coming soon tasks. Add one!": "No hay tareas próximas. ¡Agrega una!",
+    "No coming soon tasks. Add one!":
+      "No hay tareas próximas. ¡Excelente trabajo!",
+    "Great job!": "¡Excelente trabajo!",
+    "Moving task...": "Moviendo tarea...",
 
     // Task Management
     "Add Task": "Agregar Tarea",
