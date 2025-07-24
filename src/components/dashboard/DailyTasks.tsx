@@ -1,25 +1,24 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  Plus,
-  CheckCircle,
-  Circle,
-  Trash2,
-  Edit,
-  Calendar,
-} from "lucide-react";
+import { Plus } from "lucide-react";
 import { Task, TaskFormData } from "@/types";
-import { createTask, updateTask, deleteTask, toggleTask } from "@/libs/api";
+import { createTask } from "@/libs/api";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { LoadingSpinner, TaskSkeletons } from "@/components/ui/LoadingSpinner";
+import { TaskSkeletons } from "@/components/ui/LoadingSpinner";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 import { formatDateToYYYYMMDD } from "@/libs/date-utils";
 import { DroppableArea } from "./DroppableArea";
 import { DraggableTask } from "./DraggableTask";
-import { RescheduleModal } from "./RescheduleModal";
+import { TaskItem } from "./TaskItem";
+import {
+  getDaysOfWeek,
+  getTaskCategories,
+  getTaskPriorities,
+  getTaskFrequencies,
+} from "@/libs/task-utils";
 
 interface DailyTasksProps {
   tasks: Task[];
@@ -43,18 +42,6 @@ export function DailyTasks({
     setTasks(initialTasks);
   }, [initialTasks]);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [rescheduleModal, setRescheduleModal] = useState<{
-    isOpen: boolean;
-    taskId: string;
-    taskTitle: string;
-    currentDueDate: string;
-  }>({
-    isOpen: false,
-    taskId: "",
-    taskTitle: "",
-    currentDueDate: "",
-  });
   const [formData, setFormData] = useState<TaskFormData>({
     title: "",
     description: "",
@@ -63,7 +50,6 @@ export function DailyTasks({
     priority: "medium",
     is_recurring: false,
   });
-  const [togglingTasks, setTogglingTasks] = useState<Set<string>>(new Set());
   const { language } = useLanguage();
 
   // Format the selected date for display
@@ -134,33 +120,15 @@ export function DailyTasks({
     }
   };
 
-  const openRescheduleModal = (task: Task) => {
-    setRescheduleModal({
-      isOpen: true,
-      taskId: task.id,
-      taskTitle: task.title,
-      currentDueDate: task.due_date || "",
-    });
+  const handleTaskUpdated = (updatedTask: Task) => {
+    setTasks(tasks.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
   };
 
-  const closeRescheduleModal = () => {
-    setRescheduleModal({
-      isOpen: false,
-      taskId: "",
-      taskTitle: "",
-      currentDueDate: "",
-    });
+  const handleTaskDeleted = (taskId: string) => {
+    setTasks(tasks.filter((task) => task.id !== taskId));
   };
 
-  const daysOfWeek = [
-    { value: 0, label: language === "es" ? "Domingo" : "Sunday" },
-    { value: 1, label: language === "es" ? "Lunes" : "Monday" },
-    { value: 2, label: language === "es" ? "Martes" : "Tuesday" },
-    { value: 3, label: language === "es" ? "Miércoles" : "Wednesday" },
-    { value: 4, label: language === "es" ? "Jueves" : "Thursday" },
-    { value: 5, label: language === "es" ? "Viernes" : "Friday" },
-    { value: 6, label: language === "es" ? "Sábado" : "Saturday" },
-  ];
+  const daysOfWeek = getDaysOfWeek(language);
 
   const handleAddTask = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -188,109 +156,8 @@ export function DailyTasks({
     }
   };
 
-  const handleToggleTask = async (taskId: string, completed: boolean) => {
-    setTogglingTasks((prev) => new Set(prev).add(taskId));
-    try {
-      const { task } = await toggleTask(taskId);
-      setTasks(tasks.map((t) => (t.id === taskId ? task : t)));
-    } catch (error) {
-      console.error("Error toggling task:", error);
-    } finally {
-      setTogglingTasks((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(taskId);
-        return newSet;
-      });
-    }
-  };
-
-  const handleDeleteTask = async (taskId: string) => {
-    try {
-      await deleteTask(taskId);
-      setTasks(tasks.filter((task) => task.id !== taskId));
-    } catch (error) {
-      console.error("Error deleting task:", error);
-    }
-  };
-
-  const handleEditTask = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingTask || !formData.title.trim()) return;
-
-    try {
-      const { task } = await updateTask(editingTask.id, formData);
-      setTasks(tasks.map((t) => (t.id === editingTask.id ? task : t)));
-      setEditingTask(null);
-      setFormData({
-        title: "",
-        description: "",
-        frequency: "daily",
-        category: "general",
-        priority: "medium",
-        is_recurring: false,
-      });
-    } catch (error) {
-      console.error("Error updating task:", error);
-    }
-  };
-
-  const startEditing = (task: Task) => {
-    setEditingTask(task);
-    setFormData({
-      title: task.title,
-      description: task.description || "",
-      frequency: task.frequency,
-      category: task.category,
-      priority: task.priority,
-      is_recurring: task.is_recurring,
-      day_of_week: task.day_of_week,
-      preferred_time: task.preferred_time,
-    });
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return "text-red-600 bg-red-100";
-      case "medium":
-        return "text-primary bg-primary/10";
-      case "low":
-        return "text-accent bg-accent/20";
-      default:
-        return "text-text bg-base";
-    }
-  };
-
-  const getCategoryColor = (category: string) => {
-    const colors: { [key: string]: string } = {
-      general: "bg-base text-text",
-      kitchen: "bg-orange-100 text-orange-800",
-      bathroom: "bg-primary/20 text-primary",
-      bedroom: "bg-purple-100 text-purple-800",
-      living_room: "bg-green-100 text-green-800",
-      laundry: "bg-accent/20 text-accent",
-      exterior: "bg-indigo-100 text-indigo-800",
-    };
-    return colors[category] || colors.general;
-  };
-
-  const isTaskOverdue = (task: Task) => {
-    const today = new Date().toISOString().split("T")[0];
-    return task.due_date && task.due_date < today && !task.completed;
-  };
-
-  const getOverdueStyle = (task: Task) => {
-    if (isTaskOverdue(task)) {
-      return "text-red-600 font-semibold";
-    }
-    return task.completed ? "line-through text-gray-500" : "text-gray-900";
-  };
-
-  const renderTaskForm = (isEditing = false) => (
-    <form
-      onSubmit={isEditing ? handleEditTask : handleAddTask}
-      className="space-y-4"
-    >
+  const renderTaskForm = () => (
+    <form onSubmit={handleAddTask} className="space-y-4">
       <div className="grid grid-cols-1 gap-4">
         <Input
           placeholder={t("Task title", language)}
@@ -317,13 +184,11 @@ export function DailyTasks({
           }
           className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
-          <option value="general">{t("General", language)}</option>
-          <option value="kitchen">{t("Kitchen", language)}</option>
-          <option value="bathroom">{t("Bathroom", language)}</option>
-          <option value="bedroom">{t("Bedroom", language)}</option>
-          <option value="living_room">{t("Living Room", language)}</option>
-          <option value="laundry">{t("Laundry", language)}</option>
-          <option value="exterior">{t("Exterior", language)}</option>
+          {getTaskCategories(language).map((category) => (
+            <option key={category.value} value={category.value}>
+              {category.label}
+            </option>
+          ))}
         </select>
         <select
           value={formData.priority}
@@ -332,9 +197,11 @@ export function DailyTasks({
           }
           className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
-          <option value="low">{t("Low Priority", language)}</option>
-          <option value="medium">{t("Medium Priority", language)}</option>
-          <option value="high">{t("High Priority", language)}</option>
+          {getTaskPriorities(language).map((priority) => (
+            <option key={priority.value} value={priority.value}>
+              {priority.label}
+            </option>
+          ))}
         </select>
         <select
           value={formData.frequency}
@@ -343,10 +210,11 @@ export function DailyTasks({
           }
           className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
-          <option value="daily">{t("Daily", language)}</option>
-          <option value="weekly">{t("Weekly", language)}</option>
-          <option value="monthly">{t("Monthly", language)}</option>
-          <option value="yearly">{t("Yearly", language)}</option>
+          {getTaskFrequencies(language).map((frequency) => (
+            <option key={frequency.value} value={frequency.value}>
+              {frequency.label}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -401,7 +269,7 @@ export function DailyTasks({
 
       <div className="flex space-x-2">
         <Button type="submit" className="w-full">
-          {isEditing ? t("Save Changes", language) : t("Add Task", language)}
+          {t("Add Task", language)}
         </Button>
         <Button
           type="button"
@@ -409,7 +277,6 @@ export function DailyTasks({
           className="w-full"
           onClick={() => {
             setShowAddForm(false);
-            setEditingTask(null);
             setFormData({
               title: "",
               description: "",
@@ -487,122 +354,19 @@ export function DailyTasks({
             ) : (
               tasks.map((task) => (
                 <DraggableTask key={task.id} task={task}>
-                  <div className="p-4 sm:p-8 hover:bg-base transition-colors">
-                    {editingTask?.id === task.id ? (
-                      <div className="bg-base p-4 sm:p-6 rounded-lg">
-                        {renderTaskForm(true)}
-                      </div>
-                    ) : (
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
-                        <div className="flex items-center space-x-4">
-                          <button
-                            onClick={() =>
-                              handleToggleTask(task.id, task.completed)
-                            }
-                            disabled={togglingTasks.has(task.id)}
-                            className="text-text/40 hover:text-text/60 transition-colors p-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            {togglingTasks.has(task.id) ? (
-                              <LoadingSpinner size="sm" />
-                            ) : task.completed ? (
-                              <CheckCircle className="h-6 w-6 text-green-500" />
-                            ) : (
-                              <Circle className="h-6 w-6" />
-                            )}
-                          </button>
-                          <div className="flex-1">
-                            <h3
-                              className={`text-base sm:text-lg font-medium ${getOverdueStyle(
-                                task
-                              )} mb-2`}
-                            >
-                              {task.title}
-                            </h3>
-                            {task.description && (
-                              <p
-                                className={`text-sm mb-3 ${
-                                  task.completed
-                                    ? "text-text/40"
-                                    : "text-text/70"
-                                }`}
-                              >
-                                {task.description}
-                              </p>
-                            )}
-                            <div className="flex flex-wrap gap-2 sm:space-x-3">
-                              {isTaskOverdue(task) && (
-                                <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-600">
-                                  {t("Overdue", language)}
-                                </span>
-                              )}
-                              <span
-                                className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(
-                                  task.category
-                                )}`}
-                              >
-                                {task.category.replace("_", " ")}
-                              </span>
-                              <span
-                                className={`px-3 py-1 rounded-full text-xs font-medium ${getPriorityColor(
-                                  task.priority
-                                )}`}
-                              >
-                                {task.priority}
-                              </span>
-                              {task.is_recurring && (
-                                <span className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                                  {t("Recurring", language)}
-                                </span>
-                              )}
-                              {task.day_of_week !== undefined &&
-                                task.frequency === "weekly" && (
-                                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-600">
-                                    {daysOfWeek[task.day_of_week]?.label}
-                                  </span>
-                                )}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-end space-x-2 sm:space-x-3">
-                          <button
-                            onClick={() => openRescheduleModal(task)}
-                            className="text-text/40 hover:text-primary transition-colors p-2"
-                            title={
-                              language === "es" ? "Reprogramar" : "Reschedule"
-                            }
-                          >
-                            <Calendar className="h-5 w-5" />
-                          </button>
-                          <button
-                            onClick={() => startEditing(task)}
-                            className="text-text/40 hover:text-text/60 transition-colors p-2"
-                          >
-                            <Edit className="h-5 w-5" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteTask(task.id)}
-                            className="text-text/40 hover:text-red-600 transition-colors p-2"
-                          >
-                            <Trash2 className="h-5 w-5" />
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  <TaskItem
+                    task={task}
+                    onTaskUpdated={handleTaskUpdated}
+                    onTaskDeleted={handleTaskDeleted}
+                    onReschedule={handleReschedule}
+                    isPastDate={isPastDate(selectedDate)}
+                  />
                 </DraggableTask>
               ))
             )}
           </div>
         )}
       </DroppableArea>
-      <RescheduleModal
-        isOpen={rescheduleModal.isOpen}
-        onClose={closeRescheduleModal}
-        taskId={rescheduleModal.taskId}
-        taskTitle={rescheduleModal.taskTitle}
-        currentDueDate={rescheduleModal.currentDueDate}
-        onReschedule={handleReschedule}
-      />
     </div>
   );
 }

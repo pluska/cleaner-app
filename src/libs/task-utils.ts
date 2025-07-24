@@ -1,239 +1,111 @@
-import { createServerSupabaseClient } from "./supabase-server";
+import { Task } from "@/types";
 
-export interface TaskWithInstances {
-  id: string;
-  title: string;
-  description?: string;
-  frequency: "daily" | "weekly" | "monthly" | "yearly";
-  category: string;
-  priority: "low" | "medium" | "high";
-  completed: boolean;
-  due_date?: string;
-  user_id: string;
-  created_at: string;
-  updated_at: string;
-  is_recurring: boolean;
-  recurrence_start_date: string;
-  recurrence_end_date?: string;
-  last_generated_date?: string;
-  original_task_id?: string;
-  day_of_week?: number;
-  preferred_time?: string;
-  is_instance?: boolean;
-}
-
-/**
- * Generate missing task instances for recurring tasks
- */
-export async function generateMissingInstances() {
-  const supabase = await createServerSupabaseClient();
-
-  // Get all recurring tasks that need instance generation
-  const { data: recurringTasks, error } = await supabase
-    .from("tasks")
-    .select("*")
-    .eq("is_recurring", true)
-    .or("last_generated_date.is.null,last_generated_date.lt.now()");
-
-  if (error) {
-    console.error("Error fetching recurring tasks:", error);
-    return;
+export const getPriorityColor = (priority: string) => {
+  switch (priority) {
+    case "high":
+      return "text-red-600 bg-red-100";
+    case "medium":
+      return "text-primary bg-primary/10";
+    case "low":
+      return "text-accent bg-accent/20";
+    default:
+      return "text-text bg-base";
   }
+};
 
-  if (!recurringTasks) return;
-
-  for (const task of recurringTasks) {
-    // Update the task to trigger the database trigger for instance generation
-    await supabase
-      .from("tasks")
-      .update({
-        last_generated_date:
-          task.last_generated_date || task.recurrence_start_date,
-      })
-      .eq("id", task.id);
-  }
-}
-
-/**
- * Get tasks for a specific date range, including instances
- */
-export async function getTasksForDateRange(
-  userId: string,
-  startDate: string,
-  endDate: string
-): Promise<TaskWithInstances[]> {
-  const supabase = await createServerSupabaseClient();
-
-  // Get regular tasks in the date range
-  const { data: tasks } = await supabase
-    .from("tasks")
-    .select("*")
-    .eq("user_id", userId)
-    .gte("due_date", startDate)
-    .lte("due_date", endDate);
-
-  // Get task instances in the date range
-  const { data: instances } = await supabase
-    .from("task_instances")
-    .select(
-      `
-      *,
-      tasks (*)
-    `
-    )
-    .eq("user_id", userId)
-    .gte("due_date", startDate)
-    .lte("due_date", endDate);
-
-  const result: TaskWithInstances[] = [];
-
-  // Add regular tasks
-  if (tasks) {
-    result.push(...tasks);
-  }
-
-  // Add task instances
-  if (instances) {
-    instances.forEach((instance) => {
-      if (instance.tasks) {
-        result.push({
-          ...instance.tasks,
-          id: instance.id,
-          completed: instance.completed,
-          due_date: instance.due_date,
-          is_instance: true,
-          original_task_id: instance.task_id,
-        });
-      }
-    });
-  }
-
-  return result;
-}
-
-/**
- * Get all tasks for the schedule view, including instances
- */
-export async function getAllTasksForSchedule(
-  userId: string
-): Promise<TaskWithInstances[]> {
-  const supabase = await createServerSupabaseClient();
-
-  // Get all tasks for the user (including recurring tasks)
-  const { data: tasks } = await supabase
-    .from("tasks")
-    .select("*")
-    .eq("user_id", userId)
-    .order("due_date", { ascending: true });
-
-  // Get all task instances for the user
-  const { data: taskInstances } = await supabase
-    .from("task_instances")
-    .select(
-      `
-      *,
-      tasks (*)
-    `
-    )
-    .eq("user_id", userId)
-    .order("due_date", { ascending: true });
-
-  const result: TaskWithInstances[] = [];
-
-  // Add regular tasks
-  if (tasks) {
-    result.push(...tasks);
-  }
-
-  // Add recurring task instances
-  if (taskInstances) {
-    taskInstances.forEach((instance) => {
-      if (instance.tasks) {
-        result.push({
-          ...instance.tasks,
-          id: instance.id, // Use instance ID for proper identification
-          completed: instance.completed,
-          due_date: instance.due_date,
-          is_instance: true,
-          original_task_id: instance.task_id,
-        });
-      }
-    });
-  }
-
-  return result;
-}
-
-/**
- * Calculate the next occurrence date for a recurring task
- */
-export function calculateNextOccurrence(
-  startDate: Date,
-  frequency: string,
-  dayOfWeek?: number
-): Date {
-  const nextDate = new Date(startDate);
-
-  switch (frequency) {
-    case "daily":
-      nextDate.setDate(nextDate.getDate() + 1);
-      break;
-    case "weekly":
-      if (dayOfWeek !== undefined) {
-        const currentDayOfWeek = nextDate.getDay();
-        let daysToAdd = 0;
-
-        if (dayOfWeek > currentDayOfWeek) {
-          daysToAdd = dayOfWeek - currentDayOfWeek;
-        } else if (dayOfWeek < currentDayOfWeek) {
-          daysToAdd = 7 - currentDayOfWeek + dayOfWeek;
-        } else {
-          daysToAdd = 7; // Same day, schedule for next week
-        }
-
-        nextDate.setDate(nextDate.getDate() + daysToAdd);
-      } else {
-        nextDate.setDate(nextDate.getDate() + 7);
-      }
-      break;
-    case "monthly":
-      nextDate.setMonth(nextDate.getMonth() + 1);
-      break;
-    case "yearly":
-      nextDate.setFullYear(nextDate.getFullYear() + 1);
-      break;
-  }
-
-  return nextDate;
-}
-
-/**
- * Get the day name from day of week number
- */
-export function getDayName(
-  dayOfWeek: number,
-  language: "en" | "es" = "en"
-): string {
-  const days = {
-    en: [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ],
-    es: [
-      "Domingo",
-      "Lunes",
-      "Martes",
-      "Miércoles",
-      "Jueves",
-      "Viernes",
-      "Sábado",
-    ],
+export const getCategoryColor = (category: string) => {
+  const colors: { [key: string]: string } = {
+    general: "bg-base text-text",
+    kitchen: "bg-orange-100 text-orange-800",
+    bathroom: "bg-primary/20 text-primary",
+    bedroom: "bg-purple-100 text-purple-800",
+    living_room: "bg-green-100 text-green-800",
+    laundry: "bg-accent/20 text-accent",
+    exterior: "bg-indigo-100 text-indigo-800",
   };
+  return colors[category] || colors.general;
+};
 
-  return days[language][dayOfWeek] || "";
-}
+export const isTaskOverdue = (task: Task) => {
+  const today = new Date().toISOString().split("T")[0];
+  return task.due_date && task.due_date < today && !task.completed;
+};
+
+export const getOverdueStyle = (task: Task) => {
+  if (isTaskOverdue(task)) {
+    return "text-red-600 font-semibold";
+  }
+  return task.completed ? "line-through text-gray-500" : "text-gray-900";
+};
+
+export const getDaysOfWeek = (language: "en" | "es" = "en") => [
+  { value: 0, label: language === "es" ? "Domingo" : "Sunday" },
+  { value: 1, label: language === "es" ? "Lunes" : "Monday" },
+  { value: 2, label: language === "es" ? "Martes" : "Tuesday" },
+  { value: 3, label: language === "es" ? "Miércoles" : "Wednesday" },
+  { value: 4, label: language === "es" ? "Jueves" : "Thursday" },
+  { value: 5, label: language === "es" ? "Viernes" : "Friday" },
+  { value: 6, label: language === "es" ? "Sábado" : "Saturday" },
+];
+
+export const getTaskCategories = (language: "en" | "es" = "en") => [
+  { value: "general", label: language === "es" ? "General" : "General" },
+  { value: "kitchen", label: language === "es" ? "Cocina" : "Kitchen" },
+  { value: "bathroom", label: language === "es" ? "Baño" : "Bathroom" },
+  { value: "bedroom", label: language === "es" ? "Dormitorio" : "Bedroom" },
+  {
+    value: "living_room",
+    label: language === "es" ? "Sala de estar" : "Living Room",
+  },
+  { value: "laundry", label: language === "es" ? "Lavandería" : "Laundry" },
+  { value: "exterior", label: language === "es" ? "Exterior" : "Exterior" },
+];
+
+export const getTaskPriorities = (language: "en" | "es" = "en") => [
+  {
+    value: "low",
+    label: language === "es" ? "Baja prioridad" : "Low Priority",
+  },
+  {
+    value: "medium",
+    label: language === "es" ? "Prioridad media" : "Medium Priority",
+  },
+  {
+    value: "high",
+    label: language === "es" ? "Alta prioridad" : "High Priority",
+  },
+];
+
+export const getTaskFrequencies = (language: "en" | "es" = "en") => [
+  { value: "daily", label: language === "es" ? "Diario" : "Daily" },
+  { value: "weekly", label: language === "es" ? "Semanal" : "Weekly" },
+  { value: "monthly", label: language === "es" ? "Mensual" : "Monthly" },
+  { value: "yearly", label: language === "es" ? "Anual" : "Yearly" },
+];
+
+export const formatTaskCategory = (category: string) => {
+  return category.replace("_", " ");
+};
+
+export const getTaskStatusBadge = (
+  task: Task,
+  language: "en" | "es" = "en"
+) => {
+  if (isTaskOverdue(task)) {
+    return {
+      text: language === "es" ? "Atrasado" : "Overdue",
+      className:
+        "px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-600",
+    };
+  }
+
+  if (task.completed) {
+    return {
+      text: language === "es" ? "Completado" : "Completed",
+      className:
+        "px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-600",
+    };
+  }
+
+  return null;
+};

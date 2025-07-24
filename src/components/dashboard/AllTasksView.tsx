@@ -4,6 +4,11 @@ import { useState } from "react";
 import { format } from "date-fns";
 import { Task } from "@/types";
 import { useLanguage } from "@/contexts/LanguageContext";
+import {
+  getPriorityColor,
+  getCategoryColor,
+  formatTaskCategory,
+} from "@/libs/task-utils";
 import { t } from "@/libs/translations";
 
 interface TaskInstance {
@@ -39,38 +44,6 @@ export function AllTasksView({
   const [showInstances, setShowInstances] = useState(true);
   const [showCompleted, setShowCompleted] = useState(true);
   const { language } = useLanguage();
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return "bg-red-100 text-red-800";
-      case "medium":
-        return "bg-yellow-100 text-yellow-800";
-      case "low":
-        return "bg-green-100 text-green-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case "kitchen":
-        return "bg-orange-100 text-orange-800";
-      case "bathroom":
-        return "bg-blue-100 text-blue-800";
-      case "bedroom":
-        return "bg-purple-100 text-purple-800";
-      case "living_room":
-        return "bg-green-100 text-green-800";
-      case "laundry":
-        return "bg-indigo-100 text-indigo-800";
-      case "exterior":
-        return "bg-teal-100 text-teal-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
 
   const getGenerationState = (taskId: string) => {
     return generationState.find((gs) => gs.task_id === taskId);
@@ -204,7 +177,7 @@ export function AllTasksView({
                           task.category
                         )}`}
                       >
-                        {task.category.replace("_", " ")}
+                        {formatTaskCategory(task.category)}
                       </span>
                     </div>
 
