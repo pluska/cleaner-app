@@ -14,7 +14,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseClasses =
-    "inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none rounded-2xl";
+    "inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none rounded-2xl cursor-pointer";
 
   const getVariantStyles = () => {
     switch (variant) {
@@ -51,13 +51,12 @@ export function Button({
 
   const variants = {
     primary:
-      "text-white hover:bg-opacity-90 focus-visible:ring-opacity-20 shadow-lg",
+      "text-white hover:bg-opacity-90 focus-visible:ring-opacity-20 shadow-md hover:shadow-lg",
     secondary:
-      "text-text hover:bg-opacity-90 border focus-visible:ring-opacity-20 shadow-lg",
+      "hover:bg-opacity-90 border focus-visible:ring-opacity-20 shadow-md hover:shadow-lg",
     outline:
-      "border-2 bg-transparent text-text hover:bg-text hover:text-white focus-visible:ring-opacity-20 shadow-lg",
-    ghost:
-      "bg-transparent text-text hover:bg-opacity-10 focus-visible:ring-opacity-20",
+      "border-2 bg-transparent hover:bg-text hover:text-white focus-visible:ring-opacity-20 shadow-md hover:shadow-lg",
+    ghost: "bg-transparent hover:bg-opacity-10 focus-visible:ring-opacity-20",
   };
 
   const sizes = {

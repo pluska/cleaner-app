@@ -28,6 +28,11 @@ export const translations = {
     "Authentication Error": "Authentication Error",
     "Try Again": "Try Again",
     "Back to Home": "Back to Home",
+    "This email is already registered. Please sign in instead.":
+      "This email is already registered. Please sign in instead.",
+    "Account created successfully! Please check your email.":
+      "Account created successfully! Please check your email.",
+    "Successfully signed in!": "Successfully signed in!",
 
     // Dashboard
     "Welcome back": "Welcome back",
@@ -178,6 +183,11 @@ export const translations = {
     "Authentication Error": "Error de Autenticación",
     "Try Again": "Intentar de Nuevo",
     "Back to Home": "Volver al Inicio",
+    "This email is already registered. Please sign in instead.":
+      "Este correo ya está registrado. Por favor inicia sesión.",
+    "Account created successfully! Please check your email.":
+      "Cuenta creada exitosamente. Por favor revisa tu correo.",
+    "Successfully signed in!": "¡Sesión iniciada exitosamente!",
 
     // Dashboard
     "Welcome back": "Bienvenido de vuelta",

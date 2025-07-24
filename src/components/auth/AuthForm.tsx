@@ -24,6 +24,29 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
   const supabase = createClient();
   const { language } = useLanguage();
 
+  const checkEmailExists = async (email: string): Promise<boolean> => {
+    try {
+      const response = await fetch("/api/auth/check-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to check email:", response.statusText);
+        return false; // Assume email doesn't exist if check fails
+      }
+
+      const data = await response.json();
+      return data.exists;
+    } catch (error) {
+      console.error("Error checking email:", error);
+      return false; // Assume email doesn't exist if check fails
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -32,6 +55,20 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
 
     try {
       if (mode === "signup") {
+        // Secure server-side email check
+        const emailExists = await checkEmailExists(email);
+
+        if (emailExists) {
+          setError(
+            t(
+              "This email is already registered. Please sign in instead.",
+              language
+            )
+          );
+          return;
+        }
+
+        // Proceed with signup
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -39,12 +76,30 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
             emailRedirectTo: `${window.location.origin}/auth/login`,
           },
         });
-        if (error) throw error;
 
-        // Check if email confirmation is required
+        if (error) {
+          // Check for various possible error messages
+          const errorMessage = error.message.toLowerCase();
+          if (
+            errorMessage.includes("already") ||
+            errorMessage.includes("exists") ||
+            errorMessage.includes("registered") ||
+            errorMessage.includes("duplicate")
+          ) {
+            setError(
+              t(
+                "This email is already registered. Please sign in instead.",
+                language
+              )
+            );
+            return;
+          }
+          throw error;
+        }
+
+        // Check if user was created but needs email confirmation
         if (data.user && !data.session) {
           setSuccess(true);
-          // Show message about email confirmation
           setTimeout(() => {
             setSuccess(false);
             setError(
@@ -57,11 +112,13 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
           return;
         }
 
-        setSuccess(true);
-        // For signup, show success message and redirect after a delay
-        setTimeout(() => {
-          onSuccess?.();
-        }, 2000);
+        // If we have a session, user was created and signed in
+        if (data.session) {
+          setSuccess(true);
+          setTimeout(() => {
+            onSuccess?.();
+          }, 2000);
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -118,8 +175,11 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
         <SuccessMessage
           message={
             mode === "signup"
-              ? t("Success!", language)
-              : t("Success!", language)
+              ? t(
+                  "Account created successfully! Please check your email.",
+                  language
+                )
+              : t("Successfully signed in!", language)
           }
         />
       )}
