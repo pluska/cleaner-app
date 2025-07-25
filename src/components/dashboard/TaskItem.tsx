@@ -1,7 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle, Circle, Trash2, Edit, Calendar } from "lucide-react";
+import {
+  CheckCircle,
+  Circle,
+  Trash2,
+  Edit,
+  Calendar,
+  Star,
+  Zap,
+  Heart,
+} from "lucide-react";
 import { Task, LegacyTaskFormData } from "@/types";
 import { updateTask, deleteTask, toggleTask } from "@/libs/api";
 import { Button } from "@/components/ui/Button";
@@ -73,8 +82,28 @@ export function TaskItem({
   const handleToggleTask = async (taskId: string) => {
     setTogglingTasks((prev) => new Set(prev).add(taskId));
     try {
-      const { task: updatedTask } = await toggleTask(taskId);
-      onTaskUpdated(updatedTask);
+      // Use the new gamified completion endpoint
+      const response = await fetch(`/api/tasks/${taskId}/complete`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const { task: updatedTask, rewards } = await response.json();
+        onTaskUpdated(updatedTask);
+
+        // Show rewards notification
+        if (rewards) {
+          // You can implement a toast notification here
+          console.log("Task completed! Rewards:", rewards);
+        }
+      } else {
+        // Fallback to old toggle endpoint
+        const { task: updatedTask } = await toggleTask(taskId);
+        onTaskUpdated(updatedTask);
+      }
     } catch (error) {
       console.error("Error toggling task:", error);
     } finally {
@@ -380,6 +409,38 @@ export function TaskItem({
                     task.frequency === "weekly" && (
                       <Badge variant="default" size="sm">
                         {daysOfWeek[task.day_of_week]?.label}
+                      </Badge>
+                    )}
+                  {/* Gamification Elements */}
+                  {(task as any).exp_reward && (
+                    <Badge
+                      variant="primary"
+                      size="sm"
+                      className="flex items-center space-x-1"
+                    >
+                      <Star className="w-3 h-3" />
+                      <span>{(task as any).exp_reward} XP</span>
+                    </Badge>
+                  )}
+                  {(task as any).area_health_impact && (
+                    <Badge
+                      variant="success"
+                      size="sm"
+                      className="flex items-center space-x-1"
+                    >
+                      <Heart className="w-3 h-3" />
+                      <span>+{(task as any).area_health_impact} Health</span>
+                    </Badge>
+                  )}
+                  {(task as any).tools_required &&
+                    (task as any).tools_required.length > 0 && (
+                      <Badge
+                        variant="warning"
+                        size="sm"
+                        className="flex items-center space-x-1"
+                      >
+                        <Zap className="w-3 h-3" />
+                        <span>{(task as any).tools_required.length} Tools</span>
                       </Badge>
                     )}
                 </div>

@@ -5,8 +5,9 @@ import { DashboardHeader } from "./DashboardHeader";
 import { DashboardDragDropProvider } from "./DashboardDragDropProvider";
 import { WeeklyView } from "./WeeklyView";
 import { Loading } from "@/components/ui/Loading";
-import { Task, ComingSoonTask, TaskInstance } from "@/types";
+import { Task, ComingSoonTask, TaskInstance, UserProfile } from "@/types";
 import { formatDateToYYYYMMDD } from "@/libs/date-utils";
+import { UserProfile as UserProfileComponent } from "./UserProfile";
 
 interface DashboardContentProps {
   initialTodayTasks: Task[];
@@ -25,6 +26,9 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
   const [todayTasks, setTodayTasks] = useState(initialTodayTasks);
   const [comingSoonTasks] = useState(initialComingSoonTasks);
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
+  const [userProfile, setUserProfile] = useState<UserProfile | undefined>(
+    undefined
+  );
 
   const handleDateChange = useCallback(async (date: string) => {
     setSelectedDate(date);
@@ -84,6 +88,23 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
     }
   }, [initialTodayTasks, selectedDate, handleDateChange]);
 
+  // Fetch user profile
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch("/api/user/profile");
+        if (response.ok) {
+          const { profile } = await response.json();
+          setUserProfile(profile);
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   if (isLoadingTasks) {
     return (
       <div className="max-w-7xl mx-auto bg-bg min-h-screen p-4 sm:p-8">
@@ -96,6 +117,14 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
   return (
     <div className="max-w-7xl mx-auto bg-bg min-h-screen p-4 sm:p-8">
       <DashboardHeader />
+
+      {/* User Profile Section */}
+      <div className="mb-8">
+        <UserProfileComponent
+          profile={userProfile}
+          onProfileUpdate={setUserProfile}
+        />
+      </div>
 
       <WeeklyView selectedDate={selectedDate} onDateChange={handleDateChange} />
 

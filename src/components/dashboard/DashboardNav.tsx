@@ -11,6 +11,7 @@ import {
   User,
   List,
   BrushCleaning,
+  Trophy,
 } from "lucide-react";
 import { createClient } from "@/libs/supabase";
 import { useRouter } from "next/navigation";
@@ -51,6 +52,11 @@ export function DashboardNav({ user }: DashboardNavProps) {
       href: "/dashboard/analytics",
       label: t("Analytics", language),
       icon: BarChart3,
+    },
+    {
+      href: "/dashboard/profile",
+      label: language === "es" ? "Perfil" : "Profile",
+      icon: Trophy,
     },
   ];
 
