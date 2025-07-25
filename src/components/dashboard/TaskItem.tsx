@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { CheckCircle, Circle, Trash2, Edit, Calendar } from "lucide-react";
-import { Task, TaskFormData } from "@/types";
+import { Task, LegacyTaskFormData } from "@/types";
 import { updateTask, deleteTask, toggleTask } from "@/libs/api";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -57,7 +57,7 @@ export function TaskItem({
     taskId: "",
     taskTitle: "",
   });
-  const [formData, setFormData] = useState<TaskFormData>({
+  const [formData, setFormData] = useState<LegacyTaskFormData>({
     title: "",
     description: "",
     frequency: "daily",

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
-import { Task, TaskFormData } from "@/types";
+import { Task, LegacyTaskFormData } from "@/types";
 import { createTask } from "@/libs/api";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -40,7 +40,7 @@ export function DailyTasks({
     setTasks(initialTasks);
   }, [initialTasks]);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [formData, setFormData] = useState<TaskFormData>({
+  const [formData, setFormData] = useState<LegacyTaskFormData>({
     title: "",
     description: "",
     frequency: "daily",

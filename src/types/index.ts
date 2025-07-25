@@ -236,10 +236,10 @@ export type ToolRarity = "common" | "uncommon" | "rare" | "epic" | "legendary";
 
 // Additional types for backward compatibility
 export type ComingSoonTask = TaskInstanceView;
-export type TimeView = "daily" | "weekly" | "monthly";
+export type TimeView = "daily" | "weekly" | "monthly" | "yearly";
 export type User = {
   id: string;
-  email: string;
+  email?: string;
   created_at: string;
 };
 
@@ -330,6 +330,19 @@ export interface TaskFormData {
   is_recurring?: boolean;
   recurrence_start_date?: string;
   recurrence_end_date?: string;
+}
+
+// Legacy TaskFormData for backward compatibility
+export interface LegacyTaskFormData {
+  title: string;
+  description?: string;
+  frequency: "daily" | "weekly" | "monthly" | "yearly";
+  category: TaskCategory;
+  priority: "low" | "medium" | "high";
+  is_recurring: boolean;
+  day_of_week?: number;
+  preferred_time?: string;
+  due_date?: string;
 }
 
 export interface SubtaskFormData {

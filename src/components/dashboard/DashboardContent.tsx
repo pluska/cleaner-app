@@ -10,7 +10,7 @@ import { formatDateToYYYYMMDD } from "@/libs/date-utils";
 
 interface DashboardContentProps {
   initialTodayTasks: Task[];
-  initialComingSoonTasks: ComingSoonTask[];
+  initialComingSoonTasks: any[]; // Using any for backward compatibility
   userId: string;
 }
 
@@ -49,7 +49,7 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
 
         // Add recurring task instances
         if (taskInstances) {
-          taskInstances.forEach((instance: TaskInstance) => {
+          taskInstances.forEach((instance: any) => {
             if (instance.tasks) {
               combinedTasks.push({
                 ...instance.tasks,

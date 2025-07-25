@@ -18,6 +18,7 @@ interface TaskInstance {
   user_id: string;
   created_at: string;
   tasks: Task;
+  recurrence_start_date?: string;
 }
 
 interface GenerationState {
@@ -196,10 +197,11 @@ export function AllTasksView({
                         <div>
                           <p>
                             Recurrence start:{" "}
-                            {format(
-                              new Date(task.recurrence_start_date),
-                              "PPP"
-                            )}
+                            {task.recurrence_start_date &&
+                              format(
+                                new Date(task.recurrence_start_date),
+                                "PPP"
+                              )}
                           </p>
                           {task.recurrence_end_date && (
                             <p>

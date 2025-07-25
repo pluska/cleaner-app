@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
 
     // Validate frequency
     const validFrequencies = ["daily", "weekly", "monthly", "yearly"];
-    if (!validFrequencies.includes(body.frequency)) {
+    if (body.frequency && !validFrequencies.includes(body.frequency)) {
       return NextResponse.json({ error: "Invalid frequency" }, { status: 400 });
     }
 
@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
 
     // Validate priority
     const validPriorities = ["low", "medium", "high"];
-    if (!validPriorities.includes(body.priority)) {
+    if (body.priority && !validPriorities.includes(body.priority)) {
       return NextResponse.json({ error: "Invalid priority" }, { status: 400 });
     }
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Task, TaskFormData } from "@/types";
+import { Task, LegacyTaskFormData } from "@/types";
 import { updateTask } from "@/libs/api";
 
 interface UseTaskFormProps {
@@ -8,7 +8,7 @@ interface UseTaskFormProps {
 
 export function useTaskForm({ onTaskUpdated }: UseTaskFormProps) {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [formData, setFormData] = useState<TaskFormData>({
+  const [formData, setFormData] = useState<LegacyTaskFormData>({
     title: "",
     description: "",
     frequency: "daily",
@@ -45,7 +45,7 @@ export function useTaskForm({ onTaskUpdated }: UseTaskFormProps) {
 
   const handleEditTask = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingTask || !formData.title.trim()) return;
+    if (!editingTask || !formData.title?.trim()) return;
 
     try {
       const { task: updatedTask } = await updateTask(editingTask.id, formData);
@@ -57,9 +57,9 @@ export function useTaskForm({ onTaskUpdated }: UseTaskFormProps) {
     }
   };
 
-  const updateFormField = <K extends keyof TaskFormData>(
+  const updateFormField = <K extends keyof LegacyTaskFormData>(
     field: K,
-    value: TaskFormData[K]
+    value: LegacyTaskFormData[K]
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };

@@ -1,4 +1,4 @@
-import { Task, TaskFormData } from "@/types";
+import { Task, TaskFormData, LegacyTaskFormData } from "@/types";
 
 // API utility functions for secure server-side operations
 
@@ -26,7 +26,7 @@ export async function fetchTasks(filters?: {
 }
 
 export async function createTask(
-  taskData: TaskFormData
+  taskData: TaskFormData | LegacyTaskFormData
 ): Promise<{ task: Task }> {
   const response = await fetch("/api/tasks", {
     method: "POST",
@@ -46,7 +46,7 @@ export async function createTask(
 
 export async function updateTask(
   taskId: string,
-  taskData: Partial<TaskFormData>
+  taskData: Partial<TaskFormData | LegacyTaskFormData>
 ): Promise<{ task: Task }> {
   const response = await fetch(`/api/tasks/${taskId}`, {
     method: "PUT",
