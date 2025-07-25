@@ -310,3 +310,360 @@ The Cleaner Planner project has been **completely transformed** from a functiona
 - Consistent use of design tokens
 - Modern UI components with proper shadows and rounded corners
 - Responsive design patterns
+
+---
+
+## 🚨 **CRITICAL ARCHITECTURAL ISSUES IDENTIFIED**
+
+### **❌ Database Design Problems**
+
+**Current State:** The database is being populated with too many tasks immediately, which is not optimal for the application's purpose.
+
+**Issues Identified:**
+
+- [ ] ❌ **Over-population**: Too many tasks created at once
+- [ ] ❌ **Poor User Experience**: Users overwhelmed with tasks they didn't create
+- [ ] ❌ **Inefficient Storage**: Tasks created before user needs them
+- [ ] ❌ **No Personalization**: Tasks not tailored to user's specific home
+
+**Proposed Solution:**
+
+- [ ] ✅ **Template-based System**: Store only task templates, not instances
+- [ ] ✅ **On-Demand Creation**: Create task instances only when user completes a task
+- [ ] ✅ **Repetitive Task Logic**: When user marks task as complete, create next instance automatically
+- [ ] ✅ **User Control**: Let users decide which tasks to add/remove
+
+### **🤖 AI-Powered Task Generation (NEW FEATURE)**
+
+**Vision:** The application should facilitate task creation, not require manual creation.
+
+**Core Features Needed:**
+
+- [ ] 🤖 **AI Interview System**: Guided questions about user's home
+- [ ] 🤖 **Smart Task Generation**: AI creates personalized cleaning tasks
+- [ ] 🤖 **Frequency Recommendations**: AI suggests optimal cleaning frequencies
+- [ ] 🤖 **Importance Explanations**: AI explains why each task is important
+
+**Implementation Requirements:**
+
+#### **1. AI Interview Flow**
+
+```typescript
+interface HomeAssessment {
+  homeType: "apartment" | "house" | "studio";
+  rooms: Room[];
+  pets: boolean;
+  children: boolean;
+  allergies: boolean;
+  lifestyle: "busy" | "moderate" | "relaxed";
+  cleaningPreferences: "minimal" | "standard" | "thorough";
+}
+```
+
+#### **2. AI Task Generation**
+
+- [ ] 🤖 **OpenAI Integration**: Use GPT-4 for intelligent task creation
+- [ ] 🤖 **Professional Sanitation Expert**: AI acts as cleaning professional
+- [ ] 🤖 **Evidence-Based Recommendations**: Include scientific sources
+- [ ] 🤖 **Friendly Explanations**: User-friendly language with expert backing
+
+#### **3. Educational Content**
+
+```typescript
+interface TaskExplanation {
+  task: string;
+  frequency: string;
+  importance: string;
+  healthImpact: string;
+  scientificSource: string;
+  sourceUrl: string;
+  friendlyExplanation: string;
+}
+```
+
+**Example AI Response:**
+
+> "**Floor Cleaning - Every 4 days** 🧹
+>
+> _Why this frequency?_ Regular floor cleaning prevents the buildup of allergens, dust mites, and bacteria that can cause respiratory issues. According to the American Academy of Allergy, Asthma & Immunology, floors should be cleaned at least twice a week to maintain healthy indoor air quality.
+>
+> _Health Impact:_ Dirty floors can harbor up to 400,000 bacteria per square inch, including E. coli and staphylococcus, which can cause infections and worsen allergies.
+>
+> _Source:_ [American Academy of Allergy, Asthma & Immunology](https://www.aaaai.org/)"
+
+### **📊 New Database Schema**
+
+#### **Current Schema (Problematic):**
+
+```sql
+-- Too many task instances created upfront
+CREATE TABLE task_instances (
+  id SERIAL PRIMARY KEY,
+  task_name TEXT,
+  due_date DATE,
+  completed BOOLEAN,
+  -- ... many instances per user
+);
+```
+
+#### **Proposed Schema (Optimized):**
+
+```sql
+-- Task templates (AI-generated)
+CREATE TABLE task_templates (
+  id SERIAL PRIMARY KEY,
+  name TEXT,
+  description TEXT,
+  category TEXT,
+  base_frequency_days INTEGER,
+  importance_level INTEGER,
+  health_impact TEXT,
+  scientific_source TEXT,
+  source_url TEXT,
+  ai_explanation TEXT
+);
+
+-- User's selected tasks
+CREATE TABLE user_tasks (
+  id SERIAL PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id),
+  template_id INTEGER REFERENCES task_templates(id),
+  custom_frequency_days INTEGER,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Task instances (created on-demand)
+CREATE TABLE task_instances (
+  id SERIAL PRIMARY KEY,
+  user_task_id INTEGER REFERENCES user_tasks(id),
+  due_date DATE,
+  completed BOOLEAN DEFAULT false,
+  completed_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### **🎯 Implementation Priority**
+
+#### **Phase 1: Database Restructure** 🔄
+
+- [x] ✅ **Create optimized schema** with subtasks support
+- [x] ✅ **Design task templates** table with AI integration
+- [x] ✅ **Implement subtasks system** with metadata and tracking
+- [x] ✅ **Add on-demand task** instance creation
+- [x] ✅ **Add repetitive task** logic with triggers
+- [x] ✅ **Create comprehensive** RLS policies
+- [x] ✅ **Add performance indexes** for optimal queries
+- [x] ✅ **Create database views** for easy querying
+- [x] ✅ **Update TypeScript types** to match new schema
+- [ ] **Apply migration** to Supabase production
+- [ ] **Update application code** to use new schema
+
+#### **Phase 2: AI Integration** 🤖
+
+- [ ] **Set up OpenAI** API integration
+- [ ] **Create interview flow** components
+- [ ] **Implement AI task** generation
+- [ ] **Add educational** content system
+
+#### **Phase 3: User Experience** ✨
+
+- [ ] **Redesign onboarding** with AI interview
+- [ ] **Add task explanations** and sources
+- [ ] **Implement task** customization
+- [ ] **Add progress tracking** and analytics
+
+### **💡 Key Benefits of New Approach**
+
+1. **🎯 Personalized Experience**: Tasks tailored to user's specific home
+2. **🧠 AI-Powered Intelligence**: Professional cleaning recommendations
+3. **📚 Educational Value**: Users understand why tasks are important
+4. **⚡ Efficient Storage**: Only create tasks when needed
+5. **🔄 Smart Repetition**: Automatic task regeneration on completion
+6. **🎨 User Control**: Users can customize and modify tasks
+7. **🗓️ Dynamic Calendar**: Real-time task scheduling with flexible modifications
+8. **📅 Task Override System**: Modify individual instances without breaking patterns
+
+**This new approach transforms Cleaner Planner from a simple task manager into an intelligent cleaning assistant that educates and empowers users to maintain a healthier home environment.** 🏠✨
+
+---
+
+## 🗓️ **CALENDAR SYSTEM & TASK MODIFICATION FEATURES**
+
+### **📅 Dynamic Calendar Implementation**
+
+#### **A. Calendar Features**
+
+- [ ] **Monthly View**: Interactive calendar with task indicators
+- [ ] **Weekly View**: Timeline view with detailed task breakdown
+- [ ] **Daily View**: Detailed view of tasks for specific day
+- [ ] **Task Counters**: Show number of tasks and estimated time per day
+- [ ] **Category Indicators**: Color-coded task categories
+- [ ] **Importance Levels**: Visual indicators for task priority
+- [ ] **Drag & Drop**: Reposition tasks between days
+- [ ] **Quick Actions**: Mark complete, skip, or modify from calendar
+
+#### **B. Calendar API Endpoints**
+
+- [ ] **GET /api/tasks/calendar?year=X&month=Y**: Fetch monthly calendar data
+- [ ] **GET /api/tasks/calendar/week?date=YYYY-MM-DD**: Fetch weekly data
+- [ ] **GET /api/tasks/calendar/day?date=YYYY-MM-DD**: Fetch daily data
+- [ ] **POST /api/tasks/calendar/move**: Move task to different date
+- [ ] **POST /api/tasks/calendar/skip**: Skip specific task instance
+
+#### **C. Database Functions**
+
+- [ ] **get_monthly_tasks()**: Calculate tasks for entire month
+- [ ] **get_weekly_tasks()**: Calculate tasks for specific week
+- [ ] **get_daily_tasks()**: Get detailed tasks for specific day
+- [ ] **calculate_task_occurrences()**: Generate future task dates
+
+### **🔧 Task Modification System (3 Options)**
+
+#### **Scenario Example:**
+
+_User has "Sweep Floors" every 4 days, but wants to modify the task on Week 3_
+
+#### **Option 1: Modify Single Instance Only** 🎯
+
+- **Action**: Create a one-time override for that specific date
+- **Behavior**:
+  - Original pattern continues unchanged
+  - New "override" task created for specific date
+  - No impact on future occurrences
+- **Use Case**: "I want to sweep tomorrow instead of the scheduled day"
+- **Database**: Creates `task_instance_override` record
+
+#### **Option 2: Modify All Future Instances** 🔄
+
+- **Action**: Change the pattern starting from that date
+- **Behavior**:
+  - Updates `user_tasks.custom_frequency_days`
+  - All future instances follow new pattern
+  - Past instances remain unchanged
+- **Use Case**: "I want to sweep every 3 days instead of 4 from now on"
+- **Database**: Updates `user_tasks` record
+
+#### **Option 3: Modify All Instances (Past & Future)** ⚡
+
+- **Action**: Complete pattern reset
+- **Behavior**:
+  - Updates base frequency for all instances
+  - Recalculates all past and future dates
+  - Complete pattern overhaul
+- **Use Case**: "I want to change this to a weekly task completely"
+- **Database**: Updates `user_tasks` + recalculates all instances
+
+### **🗄️ Database Schema for Task Modifications**
+
+```sql
+-- Task instance overrides (for single instance modifications)
+CREATE TABLE task_instance_overrides (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_task_id UUID REFERENCES user_tasks(id) ON DELETE CASCADE,
+  original_due_date DATE NOT NULL,
+  new_due_date DATE NOT NULL,
+  override_type TEXT NOT NULL CHECK (override_type IN ('moved', 'skipped', 'completed_early')),
+  reason TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(user_task_id, original_due_date)
+);
+
+-- Task modification history (audit trail)
+CREATE TABLE task_modification_history (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_task_id UUID REFERENCES user_tasks(id) ON DELETE CASCADE,
+  modification_type TEXT NOT NULL CHECK (modification_type IN ('single_override', 'future_pattern', 'complete_reset')),
+  old_frequency_days INTEGER,
+  new_frequency_days INTEGER,
+  modified_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  modified_by UUID REFERENCES auth.users(id)
+);
+```
+
+### **🎨 UI Components for Task Modification**
+
+#### **A. Task Modification Modal**
+
+```typescript
+interface TaskModificationModalProps {
+  task: TaskInstanceView;
+  onModify: (type: "single" | "future" | "all", newDate?: Date) => void;
+  onCancel: () => void;
+}
+```
+
+#### **B. Modification Options UI**
+
+- **Single Instance**: "Just this one time"
+- **Future Pattern**: "From now on"
+- **Complete Reset**: "Change entire pattern"
+
+#### **C. Calendar Integration**
+
+- **Right-click** on task for modification options
+- **Drag & drop** with confirmation dialog
+- **Quick actions** menu on each task
+
+### **🔌 API Endpoints for Task Modifications**
+
+```typescript
+// Modify single task instance
+POST /api/tasks/[id]/modify-single
+{
+  "new_due_date": "2024-01-15",
+  "reason": "Moving to tomorrow"
+}
+
+// Modify future pattern
+POST /api/tasks/[id]/modify-future
+{
+  "new_frequency_days": 3,
+  "reason": "Want to clean more frequently"
+}
+
+// Modify complete pattern
+POST /api/tasks/[id]/modify-all
+{
+  "new_frequency_days": 7,
+  "reason": "Changing to weekly schedule"
+}
+```
+
+### **📊 Benefits of This System**
+
+1. **🎯 Flexibility**: Users can handle real-life schedule changes
+2. **🔄 Pattern Preservation**: Original schedules aren't broken
+3. **📈 User Control**: Three levels of modification granularity
+4. **📝 Audit Trail**: Track all modifications for analytics
+5. **🎨 Intuitive UI**: Clear options for different use cases
+6. **⚡ Performance**: Efficient calculation of modified schedules
+
+### **🚀 Implementation Priority**
+
+#### **Phase 1.5: Calendar & Modification System** 📅
+
+- [ ] **Add task modification tables** to database schema
+- [ ] **Create calendar API endpoints** for dynamic task calculation
+- [ ] **Build CalendarView component** with monthly/weekly views
+- [ ] **Implement task modification modal** with 3 options
+- [ ] **Add drag & drop functionality** for task repositioning
+- [ ] **Create modification history tracking** for analytics
+
+#### **Phase 2: Enhanced Calendar Features** 🎨
+
+- [ ] **Weekly timeline view** with detailed breakdown
+- [ ] **Daily detailed view** with subtask progress
+- [ ] **Category filters** and importance sorting
+- [ ] **Export to Google Calendar** integration
+- [ ] **Push notifications** for daily tasks
+- [ ] **Calendar sharing** with family members
+
+#### **Phase 3: Advanced Calendar Features** 🤖
+
+- [ ] **AI-powered scheduling suggestions** based on user patterns
+- [ ] **Smart conflict resolution** when multiple tasks overlap
+- [ ] **Weather-based task recommendations** (e.g., don't clean windows when raining)
+- [ ] **Energy level optimization** (suggest easier tasks on busy days)
+- [ ] **Social calendar integration** (avoid cleaning when guests are coming)
