@@ -3,16 +3,340 @@
   "language": "en",
   "templates": [
     {
-      "id": "clean-kitchen-counters",
-      "name": "Clean Kitchen Counters",
-      "description": "Wipe down all kitchen surfaces to remove food particles and bacteria",
+      "id": "dust-surfaces-living-room",
+      "name": "Dust Surfaces",
+      "description": "Remove dust from all living room surfaces including tables, shelves, and decorations",
+      "category": "living_room",
+      "base_frequency_days": 7,
+      "importance_level": 4,
+      "health_impact": "Reduces allergens and improves indoor air quality",
+      "scientific_source": "American Academy of Allergy, Asthma & Immunology",
+      "source_url": "https://www.aaaai.org/",
+      "ai_explanation": "Weekly dusting removes allergens that can trigger respiratory issues. Dust contains dust mites, pet dander, and other particles that can cause allergies and asthma symptoms.",
+      "exp_reward": 60,
+      "area_health_impact": 20,
+      "tools_required": ["duster", "microfiber_cloth"],
+      "tools_usage": {
+        "duster": {
+          "durability_loss": 1,
+          "clean_after_uses": 15
+        }
+      },
+      "subtasks": [
+        {
+          "id": "dust-tables",
+          "title": "Dust tables and surfaces",
+          "description": "Remove dust from coffee tables, side tables, and other surfaces",
+          "estimated_minutes": 5,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 20,
+          "tools_needed": ["duster"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "dust-shelves",
+          "title": "Dust shelves and bookcases",
+          "description": "Clean dust from shelves, bookcases, and decorative items",
+          "estimated_minutes": 8,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 25,
+          "tools_needed": ["duster", "microfiber_cloth"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "dust-decorations",
+          "title": "Dust decorations and frames",
+          "description": "Clean picture frames, vases, and decorative items",
+          "estimated_minutes": 5,
+          "order_index": 3,
+          "is_required": false,
+          "exp_reward": 15,
+          "tools_needed": ["microfiber_cloth"],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "vacuum-carpets-floors",
+      "name": "Vacuum Carpets/Floors",
+      "description": "Thoroughly vacuum all carpeted areas and hard floors in the living room",
+      "category": "living_room",
+      "base_frequency_days": 7,
+      "importance_level": 5,
+      "health_impact": "Removes dirt, allergens, and improves air quality",
+      "scientific_source": "EPA Indoor Air Quality Guidelines",
+      "source_url": "https://www.epa.gov/indoor-air-quality-iaq",
+      "ai_explanation": "Weekly vacuuming removes dirt, dust mites, and allergens that accumulate in carpets and on floors. This significantly improves indoor air quality and reduces allergy symptoms.",
+      "exp_reward": 80,
+      "area_health_impact": 30,
+      "tools_required": ["vacuum_cleaner"],
+      "tools_usage": {
+        "vacuum_cleaner": {
+          "durability_loss": 1,
+          "clean_after_uses": 15
+        }
+      },
+      "subtasks": [
+        {
+          "id": "vacuum-carpets",
+          "title": "Vacuum carpets thoroughly",
+          "description": "Vacuum all carpeted areas with multiple passes",
+          "estimated_minutes": 10,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 40,
+          "tools_needed": ["vacuum_cleaner"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "vacuum-hard-floors",
+          "title": "Vacuum hard floors",
+          "description": "Vacuum hardwood, tile, or laminate floors",
+          "estimated_minutes": 8,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 30,
+          "tools_needed": ["vacuum_cleaner"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "vacuum-edges",
+          "title": "Vacuum edges and corners",
+          "description": "Clean along baseboards and in corners",
+          "estimated_minutes": 5,
+          "order_index": 3,
+          "is_required": false,
+          "exp_reward": 10,
+          "tools_needed": ["vacuum_cleaner"],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "clean-windows-living-room",
+      "name": "Clean Windows",
+      "description": "Clean living room windows and glass surfaces for better visibility and appearance",
+      "category": "living_room",
+      "base_frequency_days": 30,
+      "importance_level": 3,
+      "health_impact": "Improves natural light and removes environmental pollutants",
+      "scientific_source": "WHO Indoor Air Quality Guidelines",
+      "source_url": "https://www.who.int/health-topics/air-quality",
+      "ai_explanation": "Monthly window cleaning removes environmental pollutants and improves natural light penetration. Clean windows also enhance the overall appearance of your living space.",
+      "exp_reward": 100,
+      "area_health_impact": 15,
+      "tools_required": ["glass_cleaner", "paper_towel", "window_squeegee"],
+      "tools_usage": {
+        "window_squeegee": {
+          "durability_loss": 1,
+          "clean_after_uses": 25
+        }
+      },
+      "subtasks": [
+        {
+          "id": "spray-cleaner",
+          "title": "Apply glass cleaner",
+          "description": "Spray glass cleaner on window surfaces",
+          "estimated_minutes": 2,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 10,
+          "tools_needed": ["glass_cleaner"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "wipe-windows",
+          "title": "Wipe windows clean",
+          "description": "Use squeegee and paper towels to clean windows",
+          "estimated_minutes": 8,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 40,
+          "tools_needed": ["window_squeegee", "paper_towel"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "clean-frames",
+          "title": "Clean window frames",
+          "description": "Wipe down window frames and sills",
+          "estimated_minutes": 5,
+          "order_index": 3,
+          "is_required": false,
+          "exp_reward": 20,
+          "tools_needed": ["microfiber_cloth"],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "disinfect-remote-controls",
+      "name": "Disinfect Remote Controls",
+      "description": "Clean and disinfect TV and electronic remote controls to prevent germ spread",
+      "category": "living_room",
+      "base_frequency_days": 7,
+      "importance_level": 3,
+      "health_impact": "Prevents spread of germs and bacteria from high-touch surfaces",
+      "scientific_source": "CDC Household Cleaning Guidelines",
+      "source_url": "https://www.cdc.gov/hygiene/cleaning/index.html",
+      "ai_explanation": "Remote controls are high-touch surfaces that can harbor bacteria and viruses. Weekly disinfection prevents the spread of germs, especially important during cold and flu season.",
+      "exp_reward": 40,
+      "area_health_impact": 10,
+      "tools_required": ["disinfectant", "microfiber_cloth"],
+      "tools_usage": {
+        "microfiber_cloth": {
+          "durability_loss": 1,
+          "clean_after_uses": 8
+        }
+      },
+      "subtasks": [
+        {
+          "id": "remove-batteries",
+          "title": "Remove batteries",
+          "description": "Remove batteries from remote controls",
+          "estimated_minutes": 1,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 5,
+          "tools_needed": [],
+          "difficulty": "easy"
+        },
+        {
+          "id": "wipe-remote",
+          "title": "Wipe remote control",
+          "description": "Use disinfectant wipes to clean remote surface",
+          "estimated_minutes": 3,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 20,
+          "tools_needed": ["disinfectant", "microfiber_cloth"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "clean-buttons",
+          "title": "Clean between buttons",
+          "description": "Clean between and around buttons carefully",
+          "estimated_minutes": 2,
+          "order_index": 3,
+          "is_required": false,
+          "exp_reward": 15,
+          "tools_needed": ["microfiber_cloth"],
+          "difficulty": "medium"
+        }
+      ]
+    },
+    {
+      "id": "organize-objects-decorations",
+      "name": "Organize Objects/Decorations",
+      "description": "Organize and arrange decorative items and objects in the living room",
+      "category": "living_room",
+      "base_frequency_days": 7,
+      "importance_level": 2,
+      "health_impact": "Improves mental well-being through organized living space",
+      "scientific_source": "Psychology of Environmental Design",
+      "source_url": "https://www.apa.org/topics/environmental-design",
+      "ai_explanation": "An organized living space reduces stress and improves mental well-being. Regular organization prevents clutter buildup and creates a more pleasant living environment.",
+      "exp_reward": 30,
+      "area_health_impact": 5,
+      "tools_required": [],
+      "tools_usage": {},
+      "subtasks": [
+        {
+          "id": "sort-items",
+          "title": "Sort and categorize items",
+          "description": "Sort decorative items by type and purpose",
+          "estimated_minutes": 5,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 15,
+          "tools_needed": [],
+          "difficulty": "easy"
+        },
+        {
+          "id": "arrange-decorations",
+          "title": "Arrange decorations",
+          "description": "Place items in organized and visually appealing arrangements",
+          "estimated_minutes": 8,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 15,
+          "tools_needed": [],
+          "difficulty": "medium"
+        }
+      ]
+    },
+    {
+      "id": "wash-dishes",
+      "name": "Wash Dishes",
+      "description": "Clean all dishes, utensils, and kitchen items after use",
       "category": "kitchen",
       "base_frequency_days": 1,
-      "importance_level": 4,
-      "health_impact": "Prevents cross-contamination and foodborne illnesses",
+      "importance_level": 5,
+      "health_impact": "Prevents foodborne illness and maintains kitchen hygiene",
+      "scientific_source": "FDA Food Safety Guidelines",
+      "source_url": "https://www.fda.gov/food",
+      "ai_explanation": "Daily dish washing prevents the growth of harmful bacteria that can cause foodborne illness. Clean dishes are essential for food safety and kitchen hygiene.",
+      "exp_reward": 40,
+      "area_health_impact": 10,
+      "tools_required": ["dish_soap", "sponge", "dish_brush"],
+      "tools_usage": {
+        "sponge": {
+          "durability_loss": 2,
+          "clean_after_uses": 5
+        },
+        "dish_brush": {
+          "durability_loss": 1,
+          "clean_after_uses": 12
+        }
+      },
+      "subtasks": [
+        {
+          "id": "scrape-food",
+          "title": "Scrape food residue",
+          "description": "Remove food particles from dishes before washing",
+          "estimated_minutes": 2,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 10,
+          "tools_needed": [],
+          "difficulty": "easy"
+        },
+        {
+          "id": "wash-dishes",
+          "title": "Wash dishes with soap",
+          "description": "Clean dishes with dish soap and warm water",
+          "estimated_minutes": 8,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 20,
+          "tools_needed": ["dish_soap", "sponge"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "rinse-dishes",
+          "title": "Rinse dishes thoroughly",
+          "description": "Rinse all soap residue from dishes",
+          "estimated_minutes": 3,
+          "order_index": 3,
+          "is_required": true,
+          "exp_reward": 10,
+          "tools_needed": [],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "clean-countertops-surfaces",
+      "name": "Clean Countertops and Surfaces",
+      "description": "Wipe down all kitchen countertops and food preparation surfaces",
+      "category": "kitchen",
+      "base_frequency_days": 1,
+      "importance_level": 5,
+      "health_impact": "Prevents cross-contamination and foodborne illness",
       "scientific_source": "CDC Food Safety Guidelines",
       "source_url": "https://www.cdc.gov/foodsafety/index.html",
-      "ai_explanation": "Daily counter cleaning prevents the spread of harmful bacteria like E. coli and Salmonella that can cause food poisoning. The CDC recommends cleaning food contact surfaces after each use.",
+      "ai_explanation": "Daily counter cleaning prevents cross-contamination of harmful bacteria. Food preparation surfaces must be kept clean to ensure food safety and prevent illness.",
       "exp_reward": 50,
       "area_health_impact": 15,
       "tools_required": ["disinfectant", "sponge"],
@@ -26,194 +350,146 @@
         {
           "id": "clear-surfaces",
           "title": "Clear all surfaces",
-          "description": "Remove all items from counters and tables",
+          "description": "Remove all items from countertops",
           "estimated_minutes": 2,
           "order_index": 1,
           "is_required": true,
           "exp_reward": 10,
-          "tools_needed": ["dish_towel"],
+          "tools_needed": [],
           "difficulty": "easy"
         },
         {
           "id": "wipe-counters",
-          "title": "Wipe down counters",
-          "description": "Use disinfectant cleaner on all counter surfaces",
+          "title": "Wipe down countertops",
+          "description": "Clean all counter surfaces with disinfectant",
           "estimated_minutes": 5,
           "order_index": 2,
           "is_required": true,
-          "exp_reward": 20,
+          "exp_reward": 25,
           "tools_needed": ["disinfectant", "sponge"],
           "difficulty": "easy"
         },
         {
           "id": "clean-sink",
-          "title": "Clean sink and faucet",
-          "description": "Remove soap scum and water spots",
+          "title": "Clean sink area",
+          "description": "Clean sink and surrounding area",
           "estimated_minutes": 3,
           "order_index": 3,
           "is_required": true,
           "exp_reward": 15,
-          "tools_needed": ["baking_soda", "vinegar"],
-          "difficulty": "medium"
-        },
-        {
-          "id": "organize-items",
-          "title": "Organize items",
-          "description": "Put away items that don't belong on counters",
-          "estimated_minutes": 2,
-          "order_index": 4,
-          "is_required": false,
-          "exp_reward": 5,
-          "tools_needed": [],
+          "tools_needed": ["sponge"],
           "difficulty": "easy"
         }
       ]
     },
     {
-      "id": "deep-clean-kitchen",
-      "name": "Deep Clean Kitchen",
-      "description": "Complete kitchen deep cleaning routine",
+      "id": "clean-stove",
+      "name": "Clean the Stove",
+      "description": "Clean stovetop, burners, and oven to maintain cooking safety",
       "category": "kitchen",
-      "base_frequency_days": 14,
+      "base_frequency_days": 1,
       "importance_level": 4,
-      "health_impact": "Prevents mold growth and maintains food safety",
-      "scientific_source": "FDA Food Safety Guidelines",
-      "source_url": "https://www.fda.gov/food",
-      "ai_explanation": "Bi-weekly deep cleaning prevents mold growth and cross-contamination. The FDA recommends regular deep cleaning to maintain food safety standards.",
-      "exp_reward": 200,
-      "area_health_impact": 50,
-      "tools_required": ["disinfectant", "sponge", "oven_cleaner"],
+      "health_impact": "Prevents fire hazards and maintains cooking efficiency",
+      "scientific_source": "NFPA Kitchen Safety Guidelines",
+      "source_url": "https://www.nfpa.org/",
+      "ai_explanation": "Daily stove cleaning prevents grease buildup that can cause fires. A clean stove also cooks more efficiently and prevents food contamination.",
+      "exp_reward": 60,
+      "area_health_impact": 20,
+      "tools_required": ["sponge", "disinfectant"],
       "tools_usage": {
         "sponge": {
-          "durability_loss": 5,
+          "durability_loss": 3,
           "clean_after_uses": 3
-        },
-        "oven_cleaner": {
-          "durability_loss": 10,
-          "clean_after_uses": 1
         }
       },
       "subtasks": [
         {
-          "id": "clear-all-surfaces",
-          "title": "Clear all surfaces",
-          "description": "Remove all items from counters, tables, and appliances",
+          "id": "clean-burners",
+          "title": "Clean burner grates",
+          "description": "Remove and clean burner grates and caps",
           "estimated_minutes": 5,
           "order_index": 1,
           "is_required": true,
           "exp_reward": 20,
-          "tools_needed": ["dish_towel"],
+          "tools_needed": ["sponge"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "wipe-stovetop",
+          "title": "Wipe stovetop surface",
+          "description": "Clean the stovetop surface thoroughly",
+          "estimated_minutes": 4,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 25,
+          "tools_needed": ["disinfectant", "sponge"],
           "difficulty": "easy"
         },
         {
-          "id": "clean-refrigerator",
-          "title": "Clean refrigerator",
-          "description": "Remove expired items and wipe down shelves",
-          "estimated_minutes": 10,
-          "order_index": 2,
-          "is_required": true,
-          "exp_reward": 40,
-          "tools_needed": ["disinfectant", "sponge"],
-          "difficulty": "medium"
-        },
-        {
-          "id": "scrub-sink",
-          "title": "Scrub sink and faucet",
-          "description": "Use baking soda and vinegar for deep cleaning",
-          "estimated_minutes": 8,
+          "id": "clean-controls",
+          "title": "Clean control knobs",
+          "description": "Wipe down control knobs and panel",
+          "estimated_minutes": 2,
           "order_index": 3,
-          "is_required": true,
-          "exp_reward": 30,
-          "tools_needed": ["baking_soda", "vinegar", "brush"],
-          "difficulty": "medium"
-        },
-        {
-          "id": "clean-oven",
-          "title": "Clean oven and stovetop",
-          "description": "Remove grease and food residue",
-          "estimated_minutes": 15,
-          "order_index": 4,
-          "is_required": true,
-          "exp_reward": 60,
-          "tools_needed": ["oven_cleaner", "sponge"],
-          "difficulty": "hard"
-        },
-        {
-          "id": "organize-pantry",
-          "title": "Organize pantry",
-          "description": "Check expiration dates and reorganize items",
-          "estimated_minutes": 15,
-          "order_index": 5,
           "is_required": false,
-          "exp_reward": 50,
-          "tools_needed": [],
-          "difficulty": "medium"
+          "exp_reward": 15,
+          "tools_needed": ["microfiber_cloth"],
+          "difficulty": "easy"
         }
       ]
     },
     {
-      "id": "clean-toilet",
-      "name": "Clean Toilet",
-      "description": "Scrub toilet bowl, seat, and surrounding areas",
-      "category": "bathroom",
-      "base_frequency_days": 3,
-      "importance_level": 5,
-      "health_impact": "Prevents spread of harmful bacteria and viruses",
-      "scientific_source": "WHO Hygiene Guidelines",
-      "source_url": "https://www.who.int/health-topics/hygiene",
-      "ai_explanation": "Regular toilet cleaning prevents the spread of harmful bacteria and viruses. The WHO emphasizes proper bathroom hygiene for disease prevention.",
-      "exp_reward": 75,
-      "area_health_impact": 25,
-      "tools_required": ["toilet_cleaner", "toilet_brush"],
+      "id": "empty-trash-bin",
+      "name": "Empty Trash Bin",
+      "description": "Remove and replace trash bags to prevent odors and bacteria growth",
+      "category": "kitchen",
+      "base_frequency_days": 1,
+      "importance_level": 4,
+      "health_impact": "Prevents bacterial growth and unpleasant odors",
+      "scientific_source": "EPA Waste Management Guidelines",
+      "source_url": "https://www.epa.gov/waste",
+      "ai_explanation": "Daily trash removal prevents bacterial growth and unpleasant odors. Full trash bins can attract pests and create unsanitary conditions in the kitchen.",
+      "exp_reward": 30,
+      "area_health_impact": 10,
+      "tools_required": ["trash_bag"],
       "tools_usage": {
-        "toilet_brush": {
-          "durability_loss": 3,
-          "clean_after_uses": 10
+        "trash_bag": {
+          "durability_loss": 100,
+          "clean_after_uses": 0
         }
       },
       "subtasks": [
         {
-          "id": "apply-cleaner",
-          "title": "Apply toilet cleaner",
-          "description": "Apply cleaner to bowl and let sit",
-          "estimated_minutes": 1,
+          "id": "remove-full-bag",
+          "title": "Remove full trash bag",
+          "description": "Tie and remove the full trash bag",
+          "estimated_minutes": 2,
           "order_index": 1,
           "is_required": true,
-          "exp_reward": 5,
-          "tools_needed": ["toilet_cleaner"],
+          "exp_reward": 10,
+          "tools_needed": [],
           "difficulty": "easy"
         },
         {
-          "id": "scrub-bowl",
-          "title": "Scrub toilet bowl",
-          "description": "Use toilet brush to clean inside of bowl",
+          "id": "clean-bin",
+          "title": "Clean trash bin",
+          "description": "Wipe down the inside of the trash bin",
           "estimated_minutes": 3,
           "order_index": 2,
-          "is_required": true,
-          "exp_reward": 20,
-          "tools_needed": ["toilet_brush"],
-          "difficulty": "easy"
-        },
-        {
-          "id": "clean-seat",
-          "title": "Clean toilet seat and lid",
-          "description": "Wipe down with disinfectant",
-          "estimated_minutes": 2,
-          "order_index": 3,
           "is_required": true,
           "exp_reward": 15,
           "tools_needed": ["disinfectant", "paper_towel"],
           "difficulty": "easy"
         },
         {
-          "id": "clean-base",
-          "title": "Clean around toilet base",
-          "description": "Wipe down floor and base area",
-          "estimated_minutes": 2,
-          "order_index": 4,
+          "id": "insert-new-bag",
+          "title": "Insert new trash bag",
+          "description": "Place a new trash bag in the bin",
+          "estimated_minutes": 1,
+          "order_index": 3,
           "is_required": true,
-          "exp_reward": 15,
-          "tools_needed": ["disinfectant", "sponge"],
+          "exp_reward": 5,
+          "tools_needed": ["trash_bag"],
           "difficulty": "easy"
         }
       ]

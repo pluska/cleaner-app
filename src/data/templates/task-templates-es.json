@@ -3,21 +3,345 @@
   "language": "es",
   "templates": [
     {
-      "id": "clean-kitchen-counters",
-      "name": "Limpiar Encimeras de Cocina",
-      "description": "Limpiar todas las superficies de la cocina para eliminar partículas de comida y bacterias",
+      "id": "dust-surfaces-living-room",
+      "name": "Quitar el Polvo de Superficies",
+      "description": "Remover polvo de todas las superficies de la sala incluyendo mesas, estantes y decoraciones",
+      "category": "living_room",
+      "base_frequency_days": 7,
+      "importance_level": 4,
+      "health_impact": "Reduce alérgenos y mejora la calidad del aire interior",
+      "scientific_source": "Academia Americana de Alergia, Asma e Inmunología",
+      "source_url": "https://www.aaaai.org/",
+      "ai_explanation": "El desempolvado semanal remueve alérgenos que pueden desencadenar problemas respiratorios. El polvo contiene ácaros, caspa de mascotas y otras partículas que pueden causar alergias y síntomas de asma.",
+      "exp_reward": 60,
+      "area_health_impact": 20,
+      "tools_required": ["duster", "microfiber_cloth"],
+      "tools_usage": {
+        "duster": {
+          "durability_loss": 1,
+          "clean_after_uses": 15
+        }
+      },
+      "subtasks": [
+        {
+          "id": "dust-tables",
+          "title": "Desempolvar mesas y superficies",
+          "description": "Remover polvo de mesas de centro, mesas laterales y otras superficies",
+          "estimated_minutes": 5,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 20,
+          "tools_needed": ["duster"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "dust-shelves",
+          "title": "Desempolvar estantes y libreros",
+          "description": "Limpiar polvo de estantes, libreros y objetos decorativos",
+          "estimated_minutes": 8,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 25,
+          "tools_needed": ["duster", "microfiber_cloth"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "dust-decorations",
+          "title": "Desempolvar decoraciones y marcos",
+          "description": "Limpiar marcos de fotos, jarrones y objetos decorativos",
+          "estimated_minutes": 5,
+          "order_index": 3,
+          "is_required": false,
+          "exp_reward": 15,
+          "tools_needed": ["microfiber_cloth"],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "vacuum-carpets-floors",
+      "name": "Aspirar Alfombras/Pisos",
+      "description": "Aspirar completamente todas las áreas alfombradas y pisos duros en la sala",
+      "category": "living_room",
+      "base_frequency_days": 7,
+      "importance_level": 5,
+      "health_impact": "Remueve suciedad, alérgenos y mejora la calidad del aire",
+      "scientific_source": "Guías de Calidad del Aire Interior EPA",
+      "source_url": "https://www.epa.gov/indoor-air-quality-iaq",
+      "ai_explanation": "La aspiración semanal remueve suciedad, ácaros del polvo y alérgenos que se acumulan en alfombras y pisos. Esto mejora significativamente la calidad del aire interior y reduce síntomas de alergia.",
+      "exp_reward": 80,
+      "area_health_impact": 30,
+      "tools_required": ["vacuum_cleaner"],
+      "tools_usage": {
+        "vacuum_cleaner": {
+          "durability_loss": 1,
+          "clean_after_uses": 15
+        }
+      },
+      "subtasks": [
+        {
+          "id": "vacuum-carpets",
+          "title": "Aspirar alfombras completamente",
+          "description": "Aspirar todas las áreas alfombradas con múltiples pasadas",
+          "estimated_minutes": 10,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 40,
+          "tools_needed": ["vacuum_cleaner"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "vacuum-hard-floors",
+          "title": "Aspirar pisos duros",
+          "description": "Aspirar pisos de madera, azulejo o laminado",
+          "estimated_minutes": 8,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 30,
+          "tools_needed": ["vacuum_cleaner"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "vacuum-edges",
+          "title": "Aspirar bordes y esquinas",
+          "description": "Limpiar a lo largo de zócalos y en esquinas",
+          "estimated_minutes": 5,
+          "order_index": 3,
+          "is_required": false,
+          "exp_reward": 10,
+          "tools_needed": ["vacuum_cleaner"],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "clean-windows-living-room",
+      "name": "Limpiar Ventanas",
+      "description": "Limpiar ventanas de la sala y superficies de vidrio para mejor visibilidad y apariencia",
+      "category": "living_room",
+      "base_frequency_days": 30,
+      "importance_level": 3,
+      "health_impact": "Mejora la luz natural y remueve contaminantes ambientales",
+      "scientific_source": "Guías de Calidad del Aire Interior OMS",
+      "source_url": "https://www.who.int/health-topics/air-quality",
+      "ai_explanation": "La limpieza mensual de ventanas remueve contaminantes ambientales y mejora la penetración de luz natural. Las ventanas limpias también mejoran la apariencia general de tu espacio de vida.",
+      "exp_reward": 100,
+      "area_health_impact": 15,
+      "tools_required": ["glass_cleaner", "paper_towel", "window_squeegee"],
+      "tools_usage": {
+        "window_squeegee": {
+          "durability_loss": 1,
+          "clean_after_uses": 25
+        }
+      },
+      "subtasks": [
+        {
+          "id": "spray-cleaner",
+          "title": "Aplicar limpiador de vidrios",
+          "description": "Rociar limpiador de vidrios en superficies de ventanas",
+          "estimated_minutes": 2,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 10,
+          "tools_needed": ["glass_cleaner"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "wipe-windows",
+          "title": "Limpiar ventanas",
+          "description": "Usar racleta y toallas de papel para limpiar ventanas",
+          "estimated_minutes": 8,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 40,
+          "tools_needed": ["window_squeegee", "paper_towel"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "clean-frames",
+          "title": "Limpiar marcos de ventanas",
+          "description": "Limpiar marcos de ventanas y alféizares",
+          "estimated_minutes": 5,
+          "order_index": 3,
+          "is_required": false,
+          "exp_reward": 20,
+          "tools_needed": ["microfiber_cloth"],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "disinfect-remote-controls",
+      "name": "Desinfectar Controles Remotos",
+      "description": "Limpiar y desinfectar controles remotos de TV y electrónicos para prevenir propagación de gérmenes",
+      "category": "living_room",
+      "base_frequency_days": 7,
+      "importance_level": 3,
+      "health_impact": "Previene propagación de gérmenes y bacterias de superficies de alto contacto",
+      "scientific_source": "Guías de Limpieza Doméstica CDC",
+      "source_url": "https://www.cdc.gov/hygiene/cleaning/index.html",
+      "ai_explanation": "Los controles remotos son superficies de alto contacto que pueden albergar bacterias y virus. La desinfección semanal previene la propagación de gérmenes, especialmente importante durante la temporada de resfriados y gripe.",
+      "exp_reward": 40,
+      "area_health_impact": 10,
+      "tools_required": ["disinfectant", "microfiber_cloth"],
+      "tools_usage": {
+        "microfiber_cloth": {
+          "durability_loss": 1,
+          "clean_after_uses": 8
+        }
+      },
+      "subtasks": [
+        {
+          "id": "remove-batteries",
+          "title": "Remover baterías",
+          "description": "Remover baterías de controles remotos",
+          "estimated_minutes": 1,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 5,
+          "tools_needed": [],
+          "difficulty": "easy"
+        },
+        {
+          "id": "wipe-remote",
+          "title": "Limpiar control remoto",
+          "description": "Usar toallas desinfectantes para limpiar superficie del control",
+          "estimated_minutes": 3,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 20,
+          "tools_needed": ["disinfectant", "microfiber_cloth"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "clean-buttons",
+          "title": "Limpiar entre botones",
+          "description": "Limpiar entre y alrededor de botones cuidadosamente",
+          "estimated_minutes": 2,
+          "order_index": 3,
+          "is_required": false,
+          "exp_reward": 15,
+          "tools_needed": ["microfiber_cloth"],
+          "difficulty": "medium"
+        }
+      ]
+    },
+    {
+      "id": "organize-objects-decorations",
+      "name": "Organizar Objetos/Decoraciones",
+      "description": "Organizar y arreglar objetos decorativos y elementos en la sala",
+      "category": "living_room",
+      "base_frequency_days": 7,
+      "importance_level": 2,
+      "health_impact": "Mejora el bienestar mental a través de espacio de vida organizado",
+      "scientific_source": "Psicología del Diseño Ambiental",
+      "source_url": "https://www.apa.org/topics/environmental-design",
+      "ai_explanation": "Un espacio de vida organizado reduce el estrés y mejora el bienestar mental. La organización regular previene la acumulación de desorden y crea un ambiente de vida más agradable.",
+      "exp_reward": 30,
+      "area_health_impact": 5,
+      "tools_required": [],
+      "tools_usage": {},
+      "subtasks": [
+        {
+          "id": "sort-items",
+          "title": "Clasificar y categorizar elementos",
+          "description": "Clasificar objetos decorativos por tipo y propósito",
+          "estimated_minutes": 5,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 15,
+          "tools_needed": [],
+          "difficulty": "easy"
+        },
+        {
+          "id": "arrange-decorations",
+          "title": "Arreglar decoraciones",
+          "description": "Colocar elementos en arreglos organizados y visualmente atractivos",
+          "estimated_minutes": 8,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 15,
+          "tools_needed": [],
+          "difficulty": "medium"
+        }
+      ]
+    },
+    {
+      "id": "wash-dishes",
+      "name": "Lavar Platos",
+      "description": "Limpiar todos los platos, utensilios y elementos de cocina después del uso",
       "category": "kitchen",
       "base_frequency_days": 1,
-      "importance_level": 4,
-      "health_impact": "Previene la contaminación cruzada y enfermedades transmitidas por alimentos",
+      "importance_level": 5,
+      "health_impact": "Previene enfermedades transmitidas por alimentos y mantiene higiene de cocina",
+      "scientific_source": "Guías de Seguridad Alimentaria FDA",
+      "source_url": "https://www.fda.gov/food",
+      "ai_explanation": "El lavado diario de platos previene el crecimiento de bacterias dañinas que pueden causar enfermedades transmitidas por alimentos. Los platos limpios son esenciales para la seguridad alimentaria y la higiene de la cocina.",
+      "exp_reward": 40,
+      "area_health_impact": 10,
+      "tools_required": ["dish_soap", "sponge", "dish_brush"],
+      "tools_usage": {
+        "sponge": {
+          "durability_loss": 2,
+          "clean_after_uses": 5
+        },
+        "dish_brush": {
+          "durability_loss": 1,
+          "clean_after_uses": 12
+        }
+      },
+      "subtasks": [
+        {
+          "id": "scrape-food",
+          "title": "Raspar residuos de comida",
+          "description": "Remover partículas de comida de platos antes de lavar",
+          "estimated_minutes": 2,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 10,
+          "tools_needed": [],
+          "difficulty": "easy"
+        },
+        {
+          "id": "wash-dishes",
+          "title": "Lavar platos con jabón",
+          "description": "Limpiar platos con jabón para platos y agua tibia",
+          "estimated_minutes": 8,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 20,
+          "tools_needed": ["dish_soap", "sponge"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "rinse-dishes",
+          "title": "Enjuagar platos completamente",
+          "description": "Enjuagar todo residuo de jabón de platos",
+          "estimated_minutes": 3,
+          "order_index": 3,
+          "is_required": true,
+          "exp_reward": 10,
+          "tools_needed": [],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "clean-countertops-surfaces",
+      "name": "Limpiar Encimeras y Superficies",
+      "description": "Limpiar todas las encimeras de cocina y superficies de preparación de alimentos",
+      "category": "kitchen",
+      "base_frequency_days": 1,
+      "importance_level": 5,
+      "health_impact": "Previene contaminación cruzada y enfermedades transmitidas por alimentos",
       "scientific_source": "Guías de Seguridad Alimentaria CDC",
       "source_url": "https://www.cdc.gov/foodsafety/index.html",
-      "ai_explanation": "La limpieza diaria de encimeras previene la propagación de bacterias dañinas como E. coli y Salmonella que pueden causar intoxicación alimentaria. El CDC recomienda limpiar las superficies de contacto con alimentos después de cada uso.",
+      "ai_explanation": "La limpieza diaria de encimeras previene la contaminación cruzada de bacterias dañinas. Las superficies de preparación de alimentos deben mantenerse limpias para asegurar la seguridad alimentaria y prevenir enfermedades.",
       "exp_reward": 50,
       "area_health_impact": 15,
-      "tools_required": ["desinfectante", "esponja"],
+      "tools_required": ["disinfectant", "sponge"],
       "tools_usage": {
-        "esponja": {
+        "sponge": {
           "durability_loss": 2,
           "clean_after_uses": 5
         }
@@ -26,194 +350,146 @@
         {
           "id": "clear-surfaces",
           "title": "Despejar todas las superficies",
-          "description": "Quitar todos los objetos de encimeras y mesas",
+          "description": "Remover todos los elementos de encimeras",
           "estimated_minutes": 2,
           "order_index": 1,
           "is_required": true,
           "exp_reward": 10,
-          "tools_needed": ["paño_cocina"],
+          "tools_needed": [],
           "difficulty": "easy"
         },
         {
           "id": "wipe-counters",
           "title": "Limpiar encimeras",
-          "description": "Usar desinfectante en todas las superficies de encimeras",
+          "description": "Limpiar todas las superficies de encimeras con desinfectante",
           "estimated_minutes": 5,
           "order_index": 2,
           "is_required": true,
-          "exp_reward": 20,
-          "tools_needed": ["desinfectante", "esponja"],
+          "exp_reward": 25,
+          "tools_needed": ["disinfectant", "sponge"],
           "difficulty": "easy"
         },
         {
           "id": "clean-sink",
-          "title": "Limpiar fregadero y grifo",
-          "description": "Eliminar residuos de jabón y manchas de agua",
+          "title": "Limpiar área del fregadero",
+          "description": "Limpiar fregadero y área circundante",
           "estimated_minutes": 3,
           "order_index": 3,
           "is_required": true,
           "exp_reward": 15,
-          "tools_needed": ["bicarbonato", "vinagre"],
-          "difficulty": "medium"
-        },
-        {
-          "id": "organize-items",
-          "title": "Organizar objetos",
-          "description": "Guardar objetos que no pertenecen en las encimeras",
-          "estimated_minutes": 2,
-          "order_index": 4,
-          "is_required": false,
-          "exp_reward": 5,
-          "tools_needed": [],
+          "tools_needed": ["sponge"],
           "difficulty": "easy"
         }
       ]
     },
     {
-      "id": "deep-clean-kitchen",
-      "name": "Limpieza Profunda de Cocina",
-      "description": "Rutina completa de limpieza profunda de cocina",
+      "id": "clean-stove",
+      "name": "Limpiar la Estufa",
+      "description": "Limpiar la superficie de la estufa, quemadores y horno para mantener seguridad al cocinar",
       "category": "kitchen",
-      "base_frequency_days": 14,
+      "base_frequency_days": 1,
       "importance_level": 4,
-      "health_impact": "Previene el crecimiento de moho y mantiene la seguridad alimentaria",
-      "scientific_source": "Guías de Seguridad Alimentaria FDA",
-      "source_url": "https://www.fda.gov/food",
-      "ai_explanation": "La limpieza profunda quincenal previene el crecimiento de moho y la contaminación cruzada. La FDA recomienda la limpieza profunda regular para mantener los estándares de seguridad alimentaria.",
-      "exp_reward": 200,
-      "area_health_impact": 50,
-      "tools_required": ["desinfectante", "esponja", "limpiador_horno"],
+      "health_impact": "Previene peligros de incendio y mantiene eficiencia de cocción",
+      "scientific_source": "Guías de Seguridad de Cocina NFPA",
+      "source_url": "https://www.nfpa.org/",
+      "ai_explanation": "La limpieza diaria de la estufa previene la acumulación de grasa que puede causar incendios. Una estufa limpia también cocina más eficientemente y previene la contaminación de alimentos.",
+      "exp_reward": 60,
+      "area_health_impact": 20,
+      "tools_required": ["sponge", "disinfectant"],
       "tools_usage": {
-        "esponja": {
-          "durability_loss": 5,
+        "sponge": {
+          "durability_loss": 3,
           "clean_after_uses": 3
-        },
-        "limpiador_horno": {
-          "durability_loss": 10,
-          "clean_after_uses": 1
         }
       },
       "subtasks": [
         {
-          "id": "clear-all-surfaces",
-          "title": "Despejar todas las superficies",
-          "description": "Quitar todos los objetos de encimeras, mesas y electrodomésticos",
+          "id": "clean-burners",
+          "title": "Limpiar rejillas de quemadores",
+          "description": "Remover y limpiar rejillas y tapas de quemadores",
           "estimated_minutes": 5,
           "order_index": 1,
           "is_required": true,
           "exp_reward": 20,
-          "tools_needed": ["paño_cocina"],
+          "tools_needed": ["sponge"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "wipe-stovetop",
+          "title": "Limpiar superficie de estufa",
+          "description": "Limpiar la superficie de la estufa completamente",
+          "estimated_minutes": 4,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 25,
+          "tools_needed": ["disinfectant", "sponge"],
           "difficulty": "easy"
         },
         {
-          "id": "clean-refrigerator",
-          "title": "Limpiar refrigerador",
-          "description": "Quitar productos vencidos y limpiar estantes",
-          "estimated_minutes": 10,
-          "order_index": 2,
-          "is_required": true,
-          "exp_reward": 40,
-          "tools_needed": ["desinfectante", "esponja"],
-          "difficulty": "medium"
-        },
-        {
-          "id": "scrub-sink",
-          "title": "Fregar fregadero y grifo",
-          "description": "Usar bicarbonato y vinagre para limpieza profunda",
-          "estimated_minutes": 8,
+          "id": "clean-controls",
+          "title": "Limpiar perillas de control",
+          "description": "Limpiar perillas de control y panel",
+          "estimated_minutes": 2,
           "order_index": 3,
-          "is_required": true,
-          "exp_reward": 30,
-          "tools_needed": ["bicarbonato", "vinagre", "cepillo"],
-          "difficulty": "medium"
-        },
-        {
-          "id": "clean-oven",
-          "title": "Limpiar horno y estufa",
-          "description": "Eliminar grasa y residuos de comida",
-          "estimated_minutes": 15,
-          "order_index": 4,
-          "is_required": true,
-          "exp_reward": 60,
-          "tools_needed": ["limpiador_horno", "esponja"],
-          "difficulty": "hard"
-        },
-        {
-          "id": "organize-pantry",
-          "title": "Organizar despensa",
-          "description": "Revisar fechas de vencimiento y reorganizar productos",
-          "estimated_minutes": 15,
-          "order_index": 5,
           "is_required": false,
-          "exp_reward": 50,
-          "tools_needed": [],
-          "difficulty": "medium"
+          "exp_reward": 15,
+          "tools_needed": ["microfiber_cloth"],
+          "difficulty": "easy"
         }
       ]
     },
     {
-      "id": "clean-toilet",
-      "name": "Limpiar Inodoro",
-      "description": "Fregar taza, asiento y áreas circundantes del inodoro",
-      "category": "bathroom",
-      "base_frequency_days": 3,
-      "importance_level": 5,
-      "health_impact": "Previene la propagación de bacterias y virus dañinos",
-      "scientific_source": "Guías de Higiene OMS",
-      "source_url": "https://www.who.int/health-topics/hygiene",
-      "ai_explanation": "La limpieza regular del inodoro previene la propagación de bacterias y virus dañinos. La OMS enfatiza la higiene adecuada del baño para la prevención de enfermedades.",
-      "exp_reward": 75,
-      "area_health_impact": 25,
-      "tools_required": ["limpiador_inodoro", "cepillo_inodoro"],
+      "id": "empty-trash-bin",
+      "name": "Vaciar el Basurero",
+      "description": "Remover y reemplazar bolsas de basura para prevenir olores y crecimiento bacteriano",
+      "category": "kitchen",
+      "base_frequency_days": 1,
+      "importance_level": 4,
+      "health_impact": "Previene crecimiento bacteriano y olores desagradables",
+      "scientific_source": "Guías de Manejo de Residuos EPA",
+      "source_url": "https://www.epa.gov/waste",
+      "ai_explanation": "La remoción diaria de basura previene el crecimiento bacteriano y olores desagradables. Los basureros llenos pueden atraer plagas y crear condiciones insalubres en la cocina.",
+      "exp_reward": 30,
+      "area_health_impact": 10,
+      "tools_required": ["trash_bag"],
       "tools_usage": {
-        "cepillo_inodoro": {
-          "durability_loss": 3,
-          "clean_after_uses": 10
+        "trash_bag": {
+          "durability_loss": 100,
+          "clean_after_uses": 0
         }
       },
       "subtasks": [
         {
-          "id": "apply-cleaner",
-          "title": "Aplicar limpiador",
-          "description": "Aplicar limpiador en la taza y dejar reposar",
-          "estimated_minutes": 1,
+          "id": "remove-full-bag",
+          "title": "Remover bolsa llena",
+          "description": "Amarrar y remover la bolsa de basura llena",
+          "estimated_minutes": 2,
           "order_index": 1,
           "is_required": true,
-          "exp_reward": 5,
-          "tools_needed": ["limpiador_inodoro"],
+          "exp_reward": 10,
+          "tools_needed": [],
           "difficulty": "easy"
         },
         {
-          "id": "scrub-bowl",
-          "title": "Fregar taza",
-          "description": "Usar cepillo para limpiar el interior de la taza",
+          "id": "clean-bin",
+          "title": "Limpiar basurero",
+          "description": "Limpiar el interior del basurero",
           "estimated_minutes": 3,
           "order_index": 2,
           "is_required": true,
-          "exp_reward": 20,
-          "tools_needed": ["cepillo_inodoro"],
+          "exp_reward": 15,
+          "tools_needed": ["disinfectant", "paper_towel"],
           "difficulty": "easy"
         },
         {
-          "id": "clean-seat",
-          "title": "Limpiar asiento y tapa",
-          "description": "Limpiar con desinfectante",
-          "estimated_minutes": 2,
+          "id": "insert-new-bag",
+          "title": "Insertar nueva bolsa",
+          "description": "Colocar una nueva bolsa de basura en el contenedor",
+          "estimated_minutes": 1,
           "order_index": 3,
           "is_required": true,
-          "exp_reward": 15,
-          "tools_needed": ["desinfectante", "papel_toalla"],
-          "difficulty": "easy"
-        },
-        {
-          "id": "clean-base",
-          "title": "Limpiar alrededor de la base",
-          "description": "Limpiar piso y área de la base",
-          "estimated_minutes": 2,
-          "order_index": 4,
-          "is_required": true,
-          "exp_reward": 15,
-          "tools_needed": ["desinfectante", "esponja"],
+          "exp_reward": 5,
+          "tools_needed": ["trash_bag"],
           "difficulty": "easy"
         }
       ]

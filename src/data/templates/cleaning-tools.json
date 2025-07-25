@@ -210,6 +210,279 @@
         "durability": 2,
         "versatility": 4
       }
+    },
+    {
+      "id": "dish_soap",
+      "name_en": "Dish Soap",
+      "name_es": "Jabón para Platos",
+      "category": "cleaning_supplies",
+      "durability_max": 100,
+      "durability_loss_per_use": 5,
+      "clean_after_uses": 20,
+      "replace_after_uses": 50,
+      "maintenance_cost": 3,
+      "replacement_cost": 8,
+      "rarity": "common",
+      "description_en": "Liquid dish soap for washing dishes",
+      "description_es": "Jabón líquido para lavar platos",
+      "icon": "🧴",
+      "stats": {
+        "cleaning_power": 4,
+        "durability": 3,
+        "versatility": 3
+      }
+    },
+    {
+      "id": "trash_bag",
+      "name_en": "Trash Bag",
+      "name_es": "Bolsa de Basura",
+      "category": "cleaning_supplies",
+      "durability_max": 1,
+      "durability_loss_per_use": 100,
+      "clean_after_uses": 0,
+      "replace_after_uses": 1,
+      "maintenance_cost": 0,
+      "replacement_cost": 5,
+      "rarity": "common",
+      "description_en": "Disposable trash bag for waste collection",
+      "description_es": "Bolsa desechable para recolección de basura",
+      "icon": "🗑️",
+      "stats": {
+        "cleaning_power": 1,
+        "durability": 1,
+        "versatility": 2
+      }
+    },
+    {
+      "id": "laundry_detergent",
+      "name_en": "Laundry Detergent",
+      "name_es": "Detergente para Ropa",
+      "category": "laundry",
+      "durability_max": 100,
+      "durability_loss_per_use": 10,
+      "clean_after_uses": 10,
+      "replace_after_uses": 20,
+      "maintenance_cost": 5,
+      "replacement_cost": 15,
+      "rarity": "common",
+      "description_en": "Detergent for washing clothes",
+      "description_es": "Detergente para lavar ropa",
+      "icon": "🧴",
+      "stats": {
+        "cleaning_power": 6,
+        "durability": 4,
+        "versatility": 2
+      }
+    },
+    {
+      "id": "laundry_basket",
+      "name_en": "Laundry Basket",
+      "name_es": "Canasta de Ropa",
+      "category": "laundry",
+      "durability_max": 200,
+      "durability_loss_per_use": 1,
+      "clean_after_uses": 50,
+      "replace_after_uses": 100,
+      "maintenance_cost": 8,
+      "replacement_cost": 25,
+      "rarity": "common",
+      "description_en": "Basket for collecting and organizing laundry",
+      "description_es": "Canasta para recolectar y organizar ropa",
+      "icon": "🧺",
+      "stats": {
+        "cleaning_power": 1,
+        "durability": 5,
+        "versatility": 3
+      }
+    },
+    {
+      "id": "lawn_mower",
+      "name_en": "Lawn Mower",
+      "name_es": "Cortadora de Césped",
+      "category": "exterior",
+      "durability_max": 400,
+      "durability_loss_per_use": 3,
+      "clean_after_uses": 10,
+      "replace_after_uses": 80,
+      "maintenance_cost": 20,
+      "replacement_cost": 120,
+      "rarity": "rare",
+      "description_en": "Electric or manual lawn mower for grass cutting",
+      "description_es": "Cortadora de césped eléctrica o manual",
+      "icon": "🌱",
+      "stats": {
+        "cleaning_power": 7,
+        "durability": 6,
+        "versatility": 1
+      }
+    },
+    {
+      "id": "garden_hose",
+      "name_en": "Garden Hose",
+      "name_es": "Manguera de Jardín",
+      "category": "exterior",
+      "durability_max": 300,
+      "durability_loss_per_use": 1,
+      "clean_after_uses": 30,
+      "replace_after_uses": 150,
+      "maintenance_cost": 10,
+      "replacement_cost": 45,
+      "rarity": "uncommon",
+      "description_en": "Hose for outdoor cleaning and watering",
+      "description_es": "Manguera para limpieza exterior y riego",
+      "icon": "🚿",
+      "stats": {
+        "cleaning_power": 3,
+        "durability": 4,
+        "versatility": 4
+      }
+    },
+    {
+      "id": "paper_towel",
+      "name_en": "Paper Towel",
+      "name_es": "Toalla de Papel",
+      "category": "cleaning_supplies",
+      "durability_max": 1,
+      "durability_loss_per_use": 100,
+      "clean_after_uses": 0,
+      "replace_after_uses": 1,
+      "maintenance_cost": 0,
+      "replacement_cost": 3,
+      "rarity": "common",
+      "description_en": "Disposable paper towel for quick cleaning",
+      "description_es": "Toalla de papel desechable para limpieza rápida",
+      "icon": "🧻",
+      "stats": {
+        "cleaning_power": 2,
+        "durability": 1,
+        "versatility": 5
+      }
+    },
+    {
+      "id": "glass_cleaner",
+      "name_en": "Glass Cleaner",
+      "name_es": "Limpiador de Vidrios",
+      "category": "cleaning_supplies",
+      "durability_max": 100,
+      "durability_loss_per_use": 8,
+      "clean_after_uses": 12,
+      "replace_after_uses": 25,
+      "maintenance_cost": 4,
+      "replacement_cost": 12,
+      "rarity": "common",
+      "description_en": "Specialized cleaner for windows and mirrors",
+      "description_es": "Limpiador especializado para ventanas y espejos",
+      "icon": "🪟",
+      "stats": {
+        "cleaning_power": 5,
+        "durability": 3,
+        "versatility": 2
+      }
+    },
+    {
+      "id": "broom",
+      "name_en": "Broom",
+      "name_es": "Escoba",
+      "category": "floor_cleaning",
+      "durability_max": 120,
+      "durability_loss_per_use": 1,
+      "clean_after_uses": 20,
+      "replace_after_uses": 80,
+      "maintenance_cost": 5,
+      "replacement_cost": 20,
+      "rarity": "common",
+      "description_en": "Traditional broom for sweeping",
+      "description_es": "Escoba tradicional para barrer",
+      "icon": "🧹",
+      "stats": {
+        "cleaning_power": 3,
+        "durability": 4,
+        "versatility": 3
+      }
+    },
+    {
+      "id": "bed_sheets",
+      "name_en": "Bed Sheets",
+      "name_es": "Sábanas",
+      "category": "bedroom",
+      "durability_max": 50,
+      "durability_loss_per_use": 2,
+      "clean_after_uses": 25,
+      "replace_after_uses": 30,
+      "maintenance_cost": 8,
+      "replacement_cost": 35,
+      "rarity": "common",
+      "description_en": "Clean bed sheets for bed making",
+      "description_es": "Sábanas limpias para tender la cama",
+      "icon": "🛏️",
+      "stats": {
+        "cleaning_power": 1,
+        "durability": 3,
+        "versatility": 2
+      }
+    },
+    {
+      "id": "pillow",
+      "name_en": "Pillow",
+      "name_es": "Almohada",
+      "category": "bedroom",
+      "durability_max": 60,
+      "durability_loss_per_use": 1,
+      "clean_after_uses": 30,
+      "replace_after_uses": 40,
+      "maintenance_cost": 6,
+      "replacement_cost": 25,
+      "rarity": "common",
+      "description_en": "Clean pillow for bed making",
+      "description_es": "Almohada limpia para tender la cama",
+      "icon": "🛏️",
+      "stats": {
+        "cleaning_power": 1,
+        "durability": 3,
+        "versatility": 1
+      }
+    },
+    {
+      "id": "remote_control",
+      "name_en": "Remote Control",
+      "name_es": "Control Remoto",
+      "category": "living_room",
+      "durability_max": 80,
+      "durability_loss_per_use": 1,
+      "clean_after_uses": 40,
+      "replace_after_uses": 60,
+      "maintenance_cost": 3,
+      "replacement_cost": 20,
+      "rarity": "common",
+      "description_en": "Clean remote control for disinfection",
+      "description_es": "Control remoto limpio para desinfección",
+      "icon": "📺",
+      "stats": {
+        "cleaning_power": 1,
+        "durability": 4,
+        "versatility": 1
+      }
+    },
+    {
+      "id": "curtains",
+      "name_en": "Curtains",
+      "name_es": "Cortinas",
+      "category": "general",
+      "durability_max": 40,
+      "durability_loss_per_use": 2,
+      "clean_after_uses": 20,
+      "replace_after_uses": 25,
+      "maintenance_cost": 10,
+      "replacement_cost": 40,
+      "rarity": "common",
+      "description_en": "Clean curtains for dusting",
+      "description_es": "Cortinas limpias para desempolvar",
+      "icon": "🪟",
+      "stats": {
+        "cleaning_power": 1,
+        "durability": 2,
+        "versatility": 2
+      }
     }
   ],
   "categories": {
@@ -254,6 +527,30 @@
       "name_es": "Herramientas para Desempolvar",
       "description_en": "Tools for dust removal",
       "description_es": "Herramientas para remoción de polvo"
+    },
+    "laundry": {
+      "name_en": "Laundry Tools",
+      "name_es": "Herramientas de Lavandería",
+      "description_en": "Tools for laundry and clothes care",
+      "description_es": "Herramientas para lavandería y cuidado de ropa"
+    },
+    "exterior": {
+      "name_en": "Exterior Tools",
+      "name_es": "Herramientas Exteriores",
+      "description_en": "Tools for outdoor and garden cleaning",
+      "description_es": "Herramientas para limpieza exterior y jardín"
+    },
+    "bedroom": {
+      "name_en": "Bedroom Tools",
+      "name_es": "Herramientas de Dormitorio",
+      "description_en": "Tools for bedroom maintenance",
+      "description_es": "Herramientas para mantenimiento de dormitorio"
+    },
+    "living_room": {
+      "name_en": "Living Room Tools",
+      "name_es": "Herramientas de Sala",
+      "description_en": "Tools for living room cleaning",
+      "description_es": "Herramientas para limpieza de sala"
     }
   },
   "rarity_levels": {

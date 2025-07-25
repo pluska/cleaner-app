@@ -50,6 +50,9 @@
 
 1. **Database Migration**
 
+   - [x] Complete gamified templates with all 45 tasks from old system
+   - [x] Add missing tools to cleaning-tools.json
+   - [x] Remove incompatible old JSON files
    - [ ] Apply `database_migration_v3_gamification.sql` to production
    - [ ] Test all new functions and triggers
    - [ ] Verify RLS policies work correctly
