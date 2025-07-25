@@ -1,0 +1,222 @@
+{
+  "version": "1.0.0",
+  "language": "en",
+  "templates": [
+    {
+      "id": "clean-kitchen-counters",
+      "name": "Clean Kitchen Counters",
+      "description": "Wipe down all kitchen surfaces to remove food particles and bacteria",
+      "category": "kitchen",
+      "base_frequency_days": 1,
+      "importance_level": 4,
+      "health_impact": "Prevents cross-contamination and foodborne illnesses",
+      "scientific_source": "CDC Food Safety Guidelines",
+      "source_url": "https://www.cdc.gov/foodsafety/index.html",
+      "ai_explanation": "Daily counter cleaning prevents the spread of harmful bacteria like E. coli and Salmonella that can cause food poisoning. The CDC recommends cleaning food contact surfaces after each use.",
+      "exp_reward": 50,
+      "area_health_impact": 15,
+      "tools_required": ["disinfectant", "sponge"],
+      "tools_usage": {
+        "sponge": {
+          "durability_loss": 2,
+          "clean_after_uses": 5
+        }
+      },
+      "subtasks": [
+        {
+          "id": "clear-surfaces",
+          "title": "Clear all surfaces",
+          "description": "Remove all items from counters and tables",
+          "estimated_minutes": 2,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 10,
+          "tools_needed": ["dish_towel"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "wipe-counters",
+          "title": "Wipe down counters",
+          "description": "Use disinfectant cleaner on all counter surfaces",
+          "estimated_minutes": 5,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 20,
+          "tools_needed": ["disinfectant", "sponge"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "clean-sink",
+          "title": "Clean sink and faucet",
+          "description": "Remove soap scum and water spots",
+          "estimated_minutes": 3,
+          "order_index": 3,
+          "is_required": true,
+          "exp_reward": 15,
+          "tools_needed": ["baking_soda", "vinegar"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "organize-items",
+          "title": "Organize items",
+          "description": "Put away items that don't belong on counters",
+          "estimated_minutes": 2,
+          "order_index": 4,
+          "is_required": false,
+          "exp_reward": 5,
+          "tools_needed": [],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "deep-clean-kitchen",
+      "name": "Deep Clean Kitchen",
+      "description": "Complete kitchen deep cleaning routine",
+      "category": "kitchen",
+      "base_frequency_days": 14,
+      "importance_level": 4,
+      "health_impact": "Prevents mold growth and maintains food safety",
+      "scientific_source": "FDA Food Safety Guidelines",
+      "source_url": "https://www.fda.gov/food",
+      "ai_explanation": "Bi-weekly deep cleaning prevents mold growth and cross-contamination. The FDA recommends regular deep cleaning to maintain food safety standards.",
+      "exp_reward": 200,
+      "area_health_impact": 50,
+      "tools_required": ["disinfectant", "sponge", "oven_cleaner"],
+      "tools_usage": {
+        "sponge": {
+          "durability_loss": 5,
+          "clean_after_uses": 3
+        },
+        "oven_cleaner": {
+          "durability_loss": 10,
+          "clean_after_uses": 1
+        }
+      },
+      "subtasks": [
+        {
+          "id": "clear-all-surfaces",
+          "title": "Clear all surfaces",
+          "description": "Remove all items from counters, tables, and appliances",
+          "estimated_minutes": 5,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 20,
+          "tools_needed": ["dish_towel"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "clean-refrigerator",
+          "title": "Clean refrigerator",
+          "description": "Remove expired items and wipe down shelves",
+          "estimated_minutes": 10,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 40,
+          "tools_needed": ["disinfectant", "sponge"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "scrub-sink",
+          "title": "Scrub sink and faucet",
+          "description": "Use baking soda and vinegar for deep cleaning",
+          "estimated_minutes": 8,
+          "order_index": 3,
+          "is_required": true,
+          "exp_reward": 30,
+          "tools_needed": ["baking_soda", "vinegar", "brush"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "clean-oven",
+          "title": "Clean oven and stovetop",
+          "description": "Remove grease and food residue",
+          "estimated_minutes": 15,
+          "order_index": 4,
+          "is_required": true,
+          "exp_reward": 60,
+          "tools_needed": ["oven_cleaner", "sponge"],
+          "difficulty": "hard"
+        },
+        {
+          "id": "organize-pantry",
+          "title": "Organize pantry",
+          "description": "Check expiration dates and reorganize items",
+          "estimated_minutes": 15,
+          "order_index": 5,
+          "is_required": false,
+          "exp_reward": 50,
+          "tools_needed": [],
+          "difficulty": "medium"
+        }
+      ]
+    },
+    {
+      "id": "clean-toilet",
+      "name": "Clean Toilet",
+      "description": "Scrub toilet bowl, seat, and surrounding areas",
+      "category": "bathroom",
+      "base_frequency_days": 3,
+      "importance_level": 5,
+      "health_impact": "Prevents spread of harmful bacteria and viruses",
+      "scientific_source": "WHO Hygiene Guidelines",
+      "source_url": "https://www.who.int/health-topics/hygiene",
+      "ai_explanation": "Regular toilet cleaning prevents the spread of harmful bacteria and viruses. The WHO emphasizes proper bathroom hygiene for disease prevention.",
+      "exp_reward": 75,
+      "area_health_impact": 25,
+      "tools_required": ["toilet_cleaner", "toilet_brush"],
+      "tools_usage": {
+        "toilet_brush": {
+          "durability_loss": 3,
+          "clean_after_uses": 10
+        }
+      },
+      "subtasks": [
+        {
+          "id": "apply-cleaner",
+          "title": "Apply toilet cleaner",
+          "description": "Apply cleaner to bowl and let sit",
+          "estimated_minutes": 1,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 5,
+          "tools_needed": ["toilet_cleaner"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "scrub-bowl",
+          "title": "Scrub toilet bowl",
+          "description": "Use toilet brush to clean inside of bowl",
+          "estimated_minutes": 3,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 20,
+          "tools_needed": ["toilet_brush"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "clean-seat",
+          "title": "Clean toilet seat and lid",
+          "description": "Wipe down with disinfectant",
+          "estimated_minutes": 2,
+          "order_index": 3,
+          "is_required": true,
+          "exp_reward": 15,
+          "tools_needed": ["disinfectant", "paper_towel"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "clean-base",
+          "title": "Clean around toilet base",
+          "description": "Wipe down floor and base area",
+          "estimated_minutes": 2,
+          "order_index": 4,
+          "is_required": true,
+          "exp_reward": 15,
+          "tools_needed": ["disinfectant", "sponge"],
+          "difficulty": "easy"
+        }
+      ]
+    }
+  ]
+}

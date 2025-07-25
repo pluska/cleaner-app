@@ -1,0 +1,291 @@
+{
+  "version": "1.0.0",
+  "tools": [
+    {
+      "id": "sponge",
+      "name_en": "Sponge",
+      "name_es": "Esponja",
+      "category": "cleaning_supplies",
+      "durability_max": 100,
+      "durability_loss_per_use": 2,
+      "clean_after_uses": 5,
+      "replace_after_uses": 20,
+      "maintenance_cost": 5,
+      "replacement_cost": 15,
+      "rarity": "common",
+      "description_en": "Basic cleaning sponge for general surfaces",
+      "description_es": "Esponja básica de limpieza para superficies generales",
+      "icon": "🧽",
+      "stats": {
+        "cleaning_power": 3,
+        "durability": 2,
+        "versatility": 4
+      }
+    },
+    {
+      "id": "toilet_brush",
+      "name_en": "Toilet Brush",
+      "name_es": "Cepillo de Inodoro",
+      "category": "bathroom",
+      "durability_max": 150,
+      "durability_loss_per_use": 3,
+      "clean_after_uses": 10,
+      "replace_after_uses": 50,
+      "maintenance_cost": 8,
+      "replacement_cost": 25,
+      "rarity": "common",
+      "description_en": "Specialized brush for toilet cleaning",
+      "description_es": "Cepillo especializado para limpieza de inodoro",
+      "icon": "🧹",
+      "stats": {
+        "cleaning_power": 4,
+        "durability": 3,
+        "versatility": 1
+      }
+    },
+    {
+      "id": "mop",
+      "name_en": "Mop",
+      "name_es": "Trapeador",
+      "category": "floor_cleaning",
+      "durability_max": 200,
+      "durability_loss_per_use": 4,
+      "clean_after_uses": 3,
+      "replace_after_uses": 30,
+      "maintenance_cost": 12,
+      "replacement_cost": 40,
+      "rarity": "common",
+      "description_en": "Floor cleaning mop for large areas",
+      "description_es": "Trapeador para limpieza de pisos en áreas grandes",
+      "icon": "🧹",
+      "stats": {
+        "cleaning_power": 5,
+        "durability": 4,
+        "versatility": 2
+      }
+    },
+    {
+      "id": "vacuum_cleaner",
+      "name_en": "Vacuum Cleaner",
+      "name_es": "Aspiradora",
+      "category": "floor_cleaning",
+      "durability_max": 500,
+      "durability_loss_per_use": 1,
+      "clean_after_uses": 15,
+      "replace_after_uses": 200,
+      "maintenance_cost": 25,
+      "replacement_cost": 150,
+      "rarity": "rare",
+      "description_en": "Powerful vacuum cleaner for deep cleaning",
+      "description_es": "Aspiradora potente para limpieza profunda",
+      "icon": "🧹",
+      "stats": {
+        "cleaning_power": 8,
+        "durability": 7,
+        "versatility": 6
+      }
+    },
+    {
+      "id": "steam_cleaner",
+      "name_en": "Steam Cleaner",
+      "name_es": "Limpiador de Vapor",
+      "category": "deep_cleaning",
+      "durability_max": 300,
+      "durability_loss_per_use": 2,
+      "clean_after_uses": 8,
+      "replace_after_uses": 100,
+      "maintenance_cost": 35,
+      "replacement_cost": 200,
+      "rarity": "epic",
+      "description_en": "Advanced steam cleaner for sanitization",
+      "description_es": "Limpiador de vapor avanzado para sanitización",
+      "icon": "💨",
+      "stats": {
+        "cleaning_power": 9,
+        "durability": 6,
+        "versatility": 5
+      }
+    },
+    {
+      "id": "microfiber_cloth",
+      "name_en": "Microfiber Cloth",
+      "name_es": "Paño de Microfibra",
+      "category": "cleaning_supplies",
+      "durability_max": 80,
+      "durability_loss_per_use": 1,
+      "clean_after_uses": 8,
+      "replace_after_uses": 25,
+      "maintenance_cost": 3,
+      "replacement_cost": 12,
+      "rarity": "common",
+      "description_en": "Soft microfiber cloth for delicate surfaces",
+      "description_es": "Paño suave de microfibra para superficies delicadas",
+      "icon": "🧺",
+      "stats": {
+        "cleaning_power": 2,
+        "durability": 3,
+        "versatility": 5
+      }
+    },
+    {
+      "id": "broom",
+      "name_en": "Broom",
+      "name_es": "Escoba",
+      "category": "floor_cleaning",
+      "durability_max": 120,
+      "durability_loss_per_use": 1,
+      "clean_after_uses": 20,
+      "replace_after_uses": 80,
+      "maintenance_cost": 5,
+      "replacement_cost": 20,
+      "rarity": "common",
+      "description_en": "Traditional broom for sweeping",
+      "description_es": "Escoba tradicional para barrer",
+      "icon": "🧹",
+      "stats": {
+        "cleaning_power": 3,
+        "durability": 4,
+        "versatility": 3
+      }
+    },
+    {
+      "id": "dish_brush",
+      "name_en": "Dish Brush",
+      "name_es": "Cepillo de Platos",
+      "category": "kitchen",
+      "durability_max": 100,
+      "durability_loss_per_use": 2,
+      "clean_after_uses": 12,
+      "replace_after_uses": 40,
+      "maintenance_cost": 4,
+      "replacement_cost": 18,
+      "rarity": "common",
+      "description_en": "Brush for washing dishes and kitchen items",
+      "description_es": "Cepillo para lavar platos y artículos de cocina",
+      "icon": "🧽",
+      "stats": {
+        "cleaning_power": 4,
+        "durability": 3,
+        "versatility": 3
+      }
+    },
+    {
+      "id": "window_squeegee",
+      "name_en": "Window Squeegee",
+      "name_es": "Racleta de Ventana",
+      "category": "window_cleaning",
+      "durability_max": 150,
+      "durability_loss_per_use": 1,
+      "clean_after_uses": 25,
+      "replace_after_uses": 100,
+      "maintenance_cost": 8,
+      "replacement_cost": 30,
+      "rarity": "uncommon",
+      "description_en": "Professional window cleaning tool",
+      "description_es": "Herramienta profesional para limpieza de ventanas",
+      "icon": "🪟",
+      "stats": {
+        "cleaning_power": 6,
+        "durability": 5,
+        "versatility": 2
+      }
+    },
+    {
+      "id": "duster",
+      "name_en": "Feather Duster",
+      "name_es": "Plumero",
+      "category": "dusting",
+      "durability_max": 60,
+      "durability_loss_per_use": 1,
+      "clean_after_uses": 15,
+      "replace_after_uses": 30,
+      "maintenance_cost": 6,
+      "replacement_cost": 15,
+      "rarity": "common",
+      "description_en": "Feather duster for removing dust",
+      "description_es": "Plumero para remover polvo",
+      "icon": "🪶",
+      "stats": {
+        "cleaning_power": 2,
+        "durability": 2,
+        "versatility": 4
+      }
+    }
+  ],
+  "categories": {
+    "cleaning_supplies": {
+      "name_en": "Cleaning Supplies",
+      "name_es": "Suministros de Limpieza",
+      "description_en": "Basic cleaning tools and supplies",
+      "description_es": "Herramientas y suministros básicos de limpieza"
+    },
+    "bathroom": {
+      "name_en": "Bathroom Tools",
+      "name_es": "Herramientas de Baño",
+      "description_en": "Specialized tools for bathroom cleaning",
+      "description_es": "Herramientas especializadas para limpieza de baño"
+    },
+    "floor_cleaning": {
+      "name_en": "Floor Cleaning",
+      "name_es": "Limpieza de Pisos",
+      "description_en": "Tools for floor and carpet cleaning",
+      "description_es": "Herramientas para limpieza de pisos y alfombras"
+    },
+    "deep_cleaning": {
+      "name_en": "Deep Cleaning",
+      "name_es": "Limpieza Profunda",
+      "description_en": "Advanced cleaning equipment",
+      "description_es": "Equipos avanzados de limpieza"
+    },
+    "kitchen": {
+      "name_en": "Kitchen Tools",
+      "name_es": "Herramientas de Cocina",
+      "description_en": "Specialized kitchen cleaning tools",
+      "description_es": "Herramientas especializadas para limpieza de cocina"
+    },
+    "window_cleaning": {
+      "name_en": "Window Cleaning",
+      "name_es": "Limpieza de Ventanas",
+      "description_en": "Tools for window and glass cleaning",
+      "description_es": "Herramientas para limpieza de ventanas y vidrios"
+    },
+    "dusting": {
+      "name_en": "Dusting Tools",
+      "name_es": "Herramientas para Desempolvar",
+      "description_en": "Tools for dust removal",
+      "description_es": "Herramientas para remoción de polvo"
+    }
+  },
+  "rarity_levels": {
+    "common": {
+      "name_en": "Common",
+      "name_es": "Común",
+      "color": "#6B7280",
+      "drop_rate": 0.6
+    },
+    "uncommon": {
+      "name_en": "Uncommon",
+      "name_es": "Poco Común",
+      "color": "#10B981",
+      "drop_rate": 0.25
+    },
+    "rare": {
+      "name_en": "Rare",
+      "name_es": "Raro",
+      "color": "#3B82F6",
+      "drop_rate": 0.1
+    },
+    "epic": {
+      "name_en": "Epic",
+      "name_es": "Épico",
+      "color": "#8B5CF6",
+      "drop_rate": 0.04
+    },
+    "legendary": {
+      "name_en": "Legendary",
+      "name_es": "Legendario",
+      "color": "#F59E0B",
+      "drop_rate": 0.01
+    }
+  }
+}

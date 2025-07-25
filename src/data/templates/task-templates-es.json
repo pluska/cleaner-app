@@ -1,0 +1,222 @@
+{
+  "version": "1.0.0",
+  "language": "es",
+  "templates": [
+    {
+      "id": "clean-kitchen-counters",
+      "name": "Limpiar Encimeras de Cocina",
+      "description": "Limpiar todas las superficies de la cocina para eliminar partículas de comida y bacterias",
+      "category": "kitchen",
+      "base_frequency_days": 1,
+      "importance_level": 4,
+      "health_impact": "Previene la contaminación cruzada y enfermedades transmitidas por alimentos",
+      "scientific_source": "Guías de Seguridad Alimentaria CDC",
+      "source_url": "https://www.cdc.gov/foodsafety/index.html",
+      "ai_explanation": "La limpieza diaria de encimeras previene la propagación de bacterias dañinas como E. coli y Salmonella que pueden causar intoxicación alimentaria. El CDC recomienda limpiar las superficies de contacto con alimentos después de cada uso.",
+      "exp_reward": 50,
+      "area_health_impact": 15,
+      "tools_required": ["desinfectante", "esponja"],
+      "tools_usage": {
+        "esponja": {
+          "durability_loss": 2,
+          "clean_after_uses": 5
+        }
+      },
+      "subtasks": [
+        {
+          "id": "clear-surfaces",
+          "title": "Despejar todas las superficies",
+          "description": "Quitar todos los objetos de encimeras y mesas",
+          "estimated_minutes": 2,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 10,
+          "tools_needed": ["paño_cocina"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "wipe-counters",
+          "title": "Limpiar encimeras",
+          "description": "Usar desinfectante en todas las superficies de encimeras",
+          "estimated_minutes": 5,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 20,
+          "tools_needed": ["desinfectante", "esponja"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "clean-sink",
+          "title": "Limpiar fregadero y grifo",
+          "description": "Eliminar residuos de jabón y manchas de agua",
+          "estimated_minutes": 3,
+          "order_index": 3,
+          "is_required": true,
+          "exp_reward": 15,
+          "tools_needed": ["bicarbonato", "vinagre"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "organize-items",
+          "title": "Organizar objetos",
+          "description": "Guardar objetos que no pertenecen en las encimeras",
+          "estimated_minutes": 2,
+          "order_index": 4,
+          "is_required": false,
+          "exp_reward": 5,
+          "tools_needed": [],
+          "difficulty": "easy"
+        }
+      ]
+    },
+    {
+      "id": "deep-clean-kitchen",
+      "name": "Limpieza Profunda de Cocina",
+      "description": "Rutina completa de limpieza profunda de cocina",
+      "category": "kitchen",
+      "base_frequency_days": 14,
+      "importance_level": 4,
+      "health_impact": "Previene el crecimiento de moho y mantiene la seguridad alimentaria",
+      "scientific_source": "Guías de Seguridad Alimentaria FDA",
+      "source_url": "https://www.fda.gov/food",
+      "ai_explanation": "La limpieza profunda quincenal previene el crecimiento de moho y la contaminación cruzada. La FDA recomienda la limpieza profunda regular para mantener los estándares de seguridad alimentaria.",
+      "exp_reward": 200,
+      "area_health_impact": 50,
+      "tools_required": ["desinfectante", "esponja", "limpiador_horno"],
+      "tools_usage": {
+        "esponja": {
+          "durability_loss": 5,
+          "clean_after_uses": 3
+        },
+        "limpiador_horno": {
+          "durability_loss": 10,
+          "clean_after_uses": 1
+        }
+      },
+      "subtasks": [
+        {
+          "id": "clear-all-surfaces",
+          "title": "Despejar todas las superficies",
+          "description": "Quitar todos los objetos de encimeras, mesas y electrodomésticos",
+          "estimated_minutes": 5,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 20,
+          "tools_needed": ["paño_cocina"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "clean-refrigerator",
+          "title": "Limpiar refrigerador",
+          "description": "Quitar productos vencidos y limpiar estantes",
+          "estimated_minutes": 10,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 40,
+          "tools_needed": ["desinfectante", "esponja"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "scrub-sink",
+          "title": "Fregar fregadero y grifo",
+          "description": "Usar bicarbonato y vinagre para limpieza profunda",
+          "estimated_minutes": 8,
+          "order_index": 3,
+          "is_required": true,
+          "exp_reward": 30,
+          "tools_needed": ["bicarbonato", "vinagre", "cepillo"],
+          "difficulty": "medium"
+        },
+        {
+          "id": "clean-oven",
+          "title": "Limpiar horno y estufa",
+          "description": "Eliminar grasa y residuos de comida",
+          "estimated_minutes": 15,
+          "order_index": 4,
+          "is_required": true,
+          "exp_reward": 60,
+          "tools_needed": ["limpiador_horno", "esponja"],
+          "difficulty": "hard"
+        },
+        {
+          "id": "organize-pantry",
+          "title": "Organizar despensa",
+          "description": "Revisar fechas de vencimiento y reorganizar productos",
+          "estimated_minutes": 15,
+          "order_index": 5,
+          "is_required": false,
+          "exp_reward": 50,
+          "tools_needed": [],
+          "difficulty": "medium"
+        }
+      ]
+    },
+    {
+      "id": "clean-toilet",
+      "name": "Limpiar Inodoro",
+      "description": "Fregar taza, asiento y áreas circundantes del inodoro",
+      "category": "bathroom",
+      "base_frequency_days": 3,
+      "importance_level": 5,
+      "health_impact": "Previene la propagación de bacterias y virus dañinos",
+      "scientific_source": "Guías de Higiene OMS",
+      "source_url": "https://www.who.int/health-topics/hygiene",
+      "ai_explanation": "La limpieza regular del inodoro previene la propagación de bacterias y virus dañinos. La OMS enfatiza la higiene adecuada del baño para la prevención de enfermedades.",
+      "exp_reward": 75,
+      "area_health_impact": 25,
+      "tools_required": ["limpiador_inodoro", "cepillo_inodoro"],
+      "tools_usage": {
+        "cepillo_inodoro": {
+          "durability_loss": 3,
+          "clean_after_uses": 10
+        }
+      },
+      "subtasks": [
+        {
+          "id": "apply-cleaner",
+          "title": "Aplicar limpiador",
+          "description": "Aplicar limpiador en la taza y dejar reposar",
+          "estimated_minutes": 1,
+          "order_index": 1,
+          "is_required": true,
+          "exp_reward": 5,
+          "tools_needed": ["limpiador_inodoro"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "scrub-bowl",
+          "title": "Fregar taza",
+          "description": "Usar cepillo para limpiar el interior de la taza",
+          "estimated_minutes": 3,
+          "order_index": 2,
+          "is_required": true,
+          "exp_reward": 20,
+          "tools_needed": ["cepillo_inodoro"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "clean-seat",
+          "title": "Limpiar asiento y tapa",
+          "description": "Limpiar con desinfectante",
+          "estimated_minutes": 2,
+          "order_index": 3,
+          "is_required": true,
+          "exp_reward": 15,
+          "tools_needed": ["desinfectante", "papel_toalla"],
+          "difficulty": "easy"
+        },
+        {
+          "id": "clean-base",
+          "title": "Limpiar alrededor de la base",
+          "description": "Limpiar piso y área de la base",
+          "estimated_minutes": 2,
+          "order_index": 4,
+          "is_required": true,
+          "exp_reward": 15,
+          "tools_needed": ["desinfectante", "esponja"],
+          "difficulty": "easy"
+        }
+      ]
+    }
+  ]
+}

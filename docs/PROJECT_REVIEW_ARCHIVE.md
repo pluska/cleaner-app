@@ -391,7 +391,7 @@ interface TaskExplanation {
 >
 > _Source:_ [American Academy of Allergy, Asthma & Immunology](https://www.aaaai.org/)"
 
-### **📊 New Database Schema**
+### **📊 New Database Schema (Gamified)**
 
 #### **Current Schema (Problematic):**
 
@@ -406,41 +406,58 @@ CREATE TABLE task_instances (
 );
 ```
 
-#### **Proposed Schema (Optimized):**
+#### **New Gamified Schema (Optimized):**
 
 ```sql
--- Task templates (AI-generated)
-CREATE TABLE task_templates (
-  id SERIAL PRIMARY KEY,
-  name TEXT,
-  description TEXT,
-  category TEXT,
-  base_frequency_days INTEGER,
-  importance_level INTEGER,
-  health_impact TEXT,
-  scientific_source TEXT,
-  source_url TEXT,
-  ai_explanation TEXT
-);
-
--- User's selected tasks
-CREATE TABLE user_tasks (
-  id SERIAL PRIMARY KEY,
+-- User profiles with gamification
+CREATE TABLE user_profiles (
+  id UUID PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id),
-  template_id INTEGER REFERENCES task_templates(id),
-  custom_frequency_days INTEGER,
-  is_active BOOLEAN DEFAULT true,
-  created_at TIMESTAMP DEFAULT NOW()
+  level INTEGER DEFAULT 1,
+  experience_points INTEGER DEFAULT 0,
+  coins INTEGER DEFAULT 100,
+  gems INTEGER DEFAULT 10,
+  streak_days INTEGER DEFAULT 0
 );
 
--- Task instances (created on-demand)
+-- Cleaning tools inventory
+CREATE TABLE user_tools (
+  id UUID PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id),
+  tool_id TEXT NOT NULL,
+  current_durability INTEGER,
+  max_durability INTEGER,
+  uses_count INTEGER DEFAULT 0
+);
+
+-- Home areas with health tracking
+CREATE TABLE home_areas (
+  id UUID PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id),
+  area_name TEXT NOT NULL,
+  current_health INTEGER DEFAULT 100,
+  max_health INTEGER DEFAULT 100
+);
+
+-- Task templates (language-specific)
+CREATE TABLE task_templates (
+  id UUID PRIMARY KEY,
+  template_id TEXT NOT NULL, -- References JSON files
+  name TEXT NOT NULL,
+  exp_reward INTEGER DEFAULT 0,
+  area_health_impact INTEGER DEFAULT 0,
+  language TEXT NOT NULL CHECK (language IN ('en', 'es'))
+);
+
+-- Task instances with gamification
 CREATE TABLE task_instances (
-  id SERIAL PRIMARY KEY,
-  user_task_id INTEGER REFERENCES user_tasks(id),
+  id UUID PRIMARY KEY,
+  user_task_id UUID REFERENCES user_tasks(id),
   due_date DATE,
   completed BOOLEAN DEFAULT false,
-  completed_at TIMESTAMP,
-  created_at TIMESTAMP DEFAULT NOW()
+  exp_earned INTEGER DEFAULT 0,
+  area_health_restored INTEGER DEFAULT 0,
+  tools_used JSONB DEFAULT '[]'
 );
 ```
 
@@ -667,3 +684,132 @@ POST /api/tasks/[id]/modify-all
 - [ ] **Weather-based task recommendations** (e.g., don't clean windows when raining)
 - [ ] **Energy level optimization** (suggest easier tasks on busy days)
 - [ ] **Social calendar integration** (avoid cleaning when guests are coming)
+
+---
+
+## 🎮 **GAMIFICATION SYSTEM IMPLEMENTATION**
+
+### **🏆 Gamification Features**
+
+#### **A. User Progression System**
+
+- [x] ✅ **Experience Points (EXP)**: Earned by completing tasks and subtasks
+- [x] ✅ **Level System**: Automatic level calculation based on EXP
+- [x] ✅ **Streak Tracking**: Daily task completion streaks
+- [x] ✅ **Achievement System**: Unlock achievements for milestones
+- [x] ✅ **Virtual Currency**: Coins and gems for rewards
+- [x] ✅ **Statistics Tracking**: Detailed user performance metrics
+
+#### **B. Cleaning Tools System**
+
+- [x] ✅ **Tool Inventory**: User-owned cleaning tools with durability
+- [x] ✅ **Tool Maintenance**: Clean and maintain tools to extend lifespan
+- [x] ✅ **Tool Rarity**: Common, Uncommon, Rare, Epic, Legendary tools
+- [x] ✅ **Tool Stats**: Cleaning power, durability, versatility ratings
+- [x] ✅ **Tool Usage Tracking**: Monitor tool wear and performance
+- [x] ✅ **Tool Replacement**: Automatic suggestions when tools need replacement
+
+#### **C. Area Health System**
+
+- [x] ✅ **Health Tracking**: Each home area has health points (0-100)
+- [x] ✅ **Health Decay**: Areas lose health over time if not cleaned
+- [x] ✅ **Health Restoration**: Tasks restore area health
+- [x] ✅ **Area Types**: Kitchen, bathroom, bedroom, living room, etc.
+- [x] ✅ **Area Features**: Carpet, hardwood, tile, special features
+- [x] ✅ **Visual Health Indicators**: Color-coded health status
+
+### **📁 JSON Template System**
+
+#### **A. Task Templates**
+
+- [x] ✅ **`task-templates-en.json`**: English task templates with gamification
+- [x] ✅ **`task-templates-es.json`**: Spanish task templates with gamification
+- [x] ✅ **EXP Rewards**: Each task and subtask has EXP value
+- [x] ✅ **Area Health Impact**: Tasks restore specific area health
+- [x] ✅ **Tool Requirements**: Tasks specify required tools
+- [x] ✅ **Tool Usage**: Track tool wear during task completion
+
+#### **B. Cleaning Tools**
+
+- [x] ✅ **`cleaning-tools.json`**: Complete tool definitions
+- [x] ✅ **Tool Categories**: Cleaning supplies, bathroom, floor cleaning, etc.
+- [x] ✅ **Rarity System**: Common to Legendary with drop rates
+- [x] ✅ **Tool Stats**: Cleaning power, durability, versatility
+- [x] ✅ **Maintenance Schedules**: When to clean/replace tools
+
+### **🎯 Gamification Mechanics**
+
+#### **A. Experience System**
+
+```typescript
+// Level calculation: level = floor(sqrt(exp / 100)) + 1
+// EXP needed for next level: (level * level) * 100
+// Example: Level 1 → 2: 400 EXP, Level 2 → 3: 900 EXP
+```
+
+#### **B. Tool Durability**
+
+```typescript
+// Tools lose durability per use
+// Maintenance extends tool life
+// Replacement when durability reaches 0
+// Different tools have different wear rates
+```
+
+#### **C. Area Health**
+
+```typescript
+// Areas start at 100% health
+// Health decays over time (1-2% per day)
+// Tasks restore health based on importance
+// Visual indicators: Green (80-100%), Yellow (40-79%), Red (0-39%)
+```
+
+### **🚀 Implementation Priority**
+
+#### **Phase 1.5: Gamification Foundation** 🎮
+
+- [x] ✅ **Create gamified database schema** with user profiles, tools, areas
+- [x] ✅ **Design JSON template system** for tasks and tools
+- [x] ✅ **Implement EXP and level system** functions
+- [x] ✅ **Create tool durability tracking** system
+- [x] ✅ **Add area health management** functions
+- [ ] **Build user profile components** with level, EXP, stats
+- [ ] **Create tool inventory management** UI
+- [ ] **Implement area health visualization** components
+
+#### **Phase 2: Gamification UI** 🎨
+
+- [ ] **User profile dashboard** with level progress
+- [ ] **Tool inventory interface** with durability bars
+- [ ] **Area health map** showing home status
+- [ ] **Achievement system** with unlock notifications
+- [ ] **Statistics dashboard** with detailed metrics
+- [ ] **Reward system** with coins and gems
+
+#### **Phase 3: Advanced Gamification** 🏆
+
+- [ ] **Daily challenges** with bonus rewards
+- [ ] **Weekly goals** and milestone tracking
+- [ ] **Tool upgrade system** with better equipment
+- [ ] **Area specialization** bonuses
+- [ ] **Social features** with leaderboards
+- [ ] **Seasonal events** and special rewards
+
+### **💡 Benefits of Gamification**
+
+1. **🎯 Increased Engagement**: Users motivated by progression and rewards
+2. **🔄 Consistent Habits**: Streak system encourages daily cleaning
+3. **🛠️ Tool Awareness**: Users learn about proper tool maintenance
+4. **🏠 Home Care**: Area health system promotes comprehensive cleaning
+5. **📈 Long-term Retention**: Level progression keeps users engaged
+6. **🎮 Fun Experience**: Cleaning becomes enjoyable rather than chore
+
+### **📊 Gamification Metrics**
+
+- **User Retention**: Track daily/weekly active users
+- **Task Completion**: Monitor completion rates with gamification
+- **Tool Usage**: Analyze which tools are most effective
+- **Area Health**: Track overall home cleanliness improvement
+- **Level Progression**: Monitor user advancement through levels
+- **Achievement Unlocks**: Track milestone completions
