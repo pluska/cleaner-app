@@ -16,6 +16,9 @@ const fetch = require("node-fetch");
 const BASE_URL = "http://localhost:3000/api";
 const TEST_USER_EMAIL = "test@cleanerplanner.com";
 
+// Note: This script requires authentication to work properly
+// You need to be logged in to test the gamification features
+
 class GamificationTester {
   constructor() {
     this.testResults = [];

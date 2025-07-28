@@ -5,7 +5,8 @@ import { cookies } from "next/headers";
 // GET /api/user/areas - Get user home areas
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
     // Get current user
     const {
@@ -44,7 +45,8 @@ export async function GET(request: NextRequest) {
 // POST /api/user/areas - Add new home area
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
     // Get current user
     const {

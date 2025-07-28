@@ -5,7 +5,8 @@ import { cookies } from "next/headers";
 // GET /api/user/tools - Get user tools
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
     // Get current user
     const {
@@ -45,7 +46,8 @@ export async function GET(request: NextRequest) {
 // POST /api/user/tools - Add new tool to user inventory
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
     // Get current user
     const {
