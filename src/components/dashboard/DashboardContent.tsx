@@ -8,6 +8,7 @@ import { Loading } from "@/components/ui/Loading";
 import { Task, ComingSoonTask, TaskInstance, UserProfile } from "@/types";
 import { formatDateToYYYYMMDD } from "@/libs/date-utils";
 import { UserProfile as UserProfileComponent } from "./UserProfile";
+import { GamificationTester } from "./GamificationTester";
 
 interface DashboardContentProps {
   initialTodayTasks: Task[];
@@ -135,6 +136,9 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
         selectedDate={selectedDate}
         isLoadingTasks={isLoadingTasks}
       />
+
+      {/* Gamification Tester - Only in development */}
+      {process.env.NODE_ENV === "development" && <GamificationTester />}
     </div>
   );
 };

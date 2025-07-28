@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/Badge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 import { RescheduleModal } from "./RescheduleModal";
+import { useNotificationManager } from "@/components/ui/Notification";
 import {
   getOverdueStyle,
   getDaysOfWeek,
@@ -76,6 +77,7 @@ export function TaskItem({
   });
   const [togglingTasks, setTogglingTasks] = useState<Set<string>>(new Set());
   const { language } = useLanguage();
+  const { showRewards } = useNotificationManager();
 
   const daysOfWeek = getDaysOfWeek(language);
 
@@ -96,8 +98,7 @@ export function TaskItem({
 
         // Show rewards notification
         if (rewards) {
-          // You can implement a toast notification here
-          console.log("Task completed! Rewards:", rewards);
+          showRewards(rewards);
         }
       } else {
         // Fallback to old toggle endpoint
