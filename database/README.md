@@ -1,16 +1,17 @@
 # Database Scripts
 
-This folder contains all SQL scripts for the Cleaner Planner database.
+This folder contains the essential SQL scripts for the Cleaner Planner database.
 
-## 📁 Files Overview
+## 📁 **Essential Files for Deployment**
 
-### **Core Migration Scripts**
+### **`database_migration_v3_gamification.sql`** ⭐ **MAIN MIGRATION**
 
-#### `database_migration_v2.sql` ⭐ **MAIN MIGRATION**
-
-- **Purpose**: Complete database schema with subtasks and calendar system
+- **Purpose**: Complete database schema with gamification, tools, and area health system
 - **Type**: Destructive migration (drops everything and recreates)
 - **Features**:
+  - Gamification system (levels, XP, coins, gems)
+  - Cleaning tools inventory with durability
+  - Home areas with health tracking
   - Task templates with AI integration
   - Subtasks system with metadata
   - Calendar system with task modifications
@@ -18,51 +19,40 @@ This folder contains all SQL scripts for the Cleaner Planner database.
   - Performance indexes
   - Audit trail for modifications
 
-#### `database_schema.sql` 📋 **LEGACY**
-
-- **Purpose**: Original database schema (deprecated)
-- **Status**: Replaced by `database_migration_v2.sql`
-- **Keep for**: Reference only
-
-### **Migration Support Scripts**
-
-#### `migrate_existing_data.sql` 🔄
-
-- **Purpose**: Migrate data from old schema to new schema
-- **Usage**: Only needed if migrating from old system
-- **Status**: Not needed for fresh installations
-
-#### `verify_migration.sql` ✅
+### **`verify_migration.sql`** ✅ **VERIFICATION**
 
 - **Purpose**: Verify that migration was successful
-- **Usage**: Run after applying `database_migration_v2.sql`
+- **Usage**: Run after applying `database_migration_v3_gamification.sql`
 - **Output**: Shows ✅ for successful migration, ❌ for issues
 
-### **Utility Scripts**
+### **`DATABASE_SETUP.md`** 📋 **SETUP GUIDE**
 
-#### `view_task_data.sql` 👀
+- **Purpose**: Step-by-step setup instructions for new installations
+- **Usage**: Follow for fresh Supabase project setup
 
-- **Purpose**: Sample queries to view task data
-- **Usage**: For debugging and data inspection
-- **Status**: Reference queries
-
-## 🚀 **Quick Start**
+## 🚀 **Quick Deployment**
 
 ### **Fresh Installation:**
 
-1. Run `database_migration_v2.sql` in Supabase SQL Editor
-2. Run `verify_migration.sql` to confirm success
-
-### **Migration from Old System:**
-
-1. Run `database_migration_v2.sql` in Supabase SQL Editor
-2. Run `migrate_existing_data.sql` to transfer data
+1. Create a new Supabase project
+2. Run `database_migration_v3_gamification.sql` in Supabase SQL Editor
 3. Run `verify_migration.sql` to confirm success
+4. Follow `DATABASE_SETUP.md` for additional configuration
+
+### **Production Deployment:**
+
+1. **Backup existing data** (if any)
+2. Run `database_migration_v3_gamification.sql` in Supabase SQL Editor
+3. Run `verify_migration.sql` to confirm success
+4. Update application environment variables
 
 ## 📊 **Schema Overview**
 
 ### **Core Tables:**
 
+- `user_profiles` - User gamification data (level, XP, coins, gems)
+- `user_tools` - Cleaning tools inventory with durability
+- `home_areas` - Home areas with health tracking
 - `task_templates` - AI-generated or predefined task templates
 - `task_subtasks` - Detailed steps for each task with metadata
 - `user_tasks` - User's personalized tasks from templates
@@ -71,6 +61,8 @@ This folder contains all SQL scripts for the Cleaner Planner database.
 - `task_instance_overrides` - Single instance modifications
 - `task_modification_history` - Audit trail of changes
 - `home_assessments` - Data for AI personalization
+- `user_achievements` - Achievement tracking
+- `user_statistics` - Daily statistics tracking
 
 ### **Views:**
 
@@ -80,12 +72,35 @@ This folder contains all SQL scripts for the Cleaner Planner database.
 
 ### **Functions:**
 
+- `award_experience()` - Award XP and level up users
 - `generate_next_task_instance()` - Auto-generate next instance on completion
 - `create_task_override()` - Create single instance modifications
 - `modify_future_pattern()` - Change future task patterns
 - `get_calendar_tasks_with_overrides()` - Calendar data with modifications
 
 ## 🔧 **Features**
+
+### **Gamification:**
+
+- ✅ Level system with XP progression
+- ✅ Coins and gems economy
+- ✅ Achievement system
+- ✅ Streak tracking
+- ✅ Statistics tracking
+
+### **Tools System:**
+
+- ✅ Cleaning tools inventory
+- ✅ Durability tracking
+- ✅ Usage statistics
+- ✅ Maintenance scheduling
+
+### **Area Health:**
+
+- ✅ Home area tracking
+- ✅ Health degradation
+- ✅ Size and surface type tracking
+- ✅ Special features support
 
 ### **Task Management:**
 
@@ -119,5 +134,12 @@ This folder contains all SQL scripts for the Cleaner Planner database.
 
 ## 🔄 **Version History**
 
-- **v1**: Original schema (`database_schema.sql`)
-- **v2**: Complete rewrite with subtasks and calendar system (`database_migration_v2.sql`)
+- **v1**: Original schema (deleted)
+- **v2**: Complete rewrite with subtasks and calendar system (deleted)
+- **v3**: **CURRENT** - Gamification, tools, and area health system
+
+## ⚠️ **Important**
+
+- This is the **ONLY** migration script needed for deployment
+- All previous versions have been removed to avoid confusion
+- The migration includes all features: gamification, tools, area health, and task management
