@@ -3,6 +3,7 @@ import { UserTool } from "@/types";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { createClient } from "@/libs/supabase";
 import { Wrench, Zap, AlertTriangle, CheckCircle } from "lucide-react";
 
 interface ToolInventoryProps {
@@ -17,7 +18,20 @@ export function ToolInventory({ tools, onToolUpdate }: ToolInventoryProps) {
   const fetchTools = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/user/tools");
+      const supabase = createClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        console.error("No session token available");
+        return;
+      }
+
+      const response = await fetch("/api/user/tools", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
       if (response.ok) {
         const { tools: fetchedTools } = await response.json();
         onToolUpdate?.(fetchedTools);
@@ -47,22 +61,54 @@ export function ToolInventory({ tools, onToolUpdate }: ToolInventoryProps) {
 
   const addToolToInventory = async (toolId: string, toolName: string) => {
     try {
+      console.log("Adding tool:", { toolId, toolName });
+
+      // Get the current session token
+      const supabase = createClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
+        console.error("No session token available");
+        alert("Authentication error: Please log in again");
+        return;
+      }
+
       const response = await fetch("/api/user/tools", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({ tool_id: toolId, tool_name: toolName }),
       });
 
+      console.log("Response status:", response.status);
+      console.log(
+        "Response headers:",
+        Object.fromEntries(response.headers.entries())
+      );
+
       if (response.ok) {
+        const data = await response.json();
+        console.log("Tool added successfully:", data);
         fetchTools(); // Refresh tools
       } else {
         const error = await response.json();
         console.error("Error adding tool:", error);
+        console.error("Response status:", response.status);
+
+        // Show user-friendly error message
+        alert(`Error adding tool: ${error.error || "Unknown error"}`);
       }
     } catch (error) {
       console.error("Error adding tool:", error);
+      alert(
+        `Network error: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   };
 

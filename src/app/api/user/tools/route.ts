@@ -1,24 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@supabase/supabase-js";
 
 // GET /api/user/tools - Get user tools
 export async function GET(request: NextRequest) {
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    // Use direct client for now to avoid cookie issues
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
-    // Get current user
+    // Get authorization header
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { error: "No authorization token" },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+
+    // Set the session with the token
     const {
       data: { user },
       error: authError,
-    } = await supabase.auth.getUser();
+    } = await supabase.auth.getUser(token);
+
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get user tools
-    const { data: tools, error } = await supabase
+    // Get user tools using service role client
+    const serviceRoleClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    const { data: tools, error } = await serviceRoleClient
       .from("user_tools")
       .select("*")
       .eq("user_id", user.id)
@@ -46,14 +65,29 @@ export async function GET(request: NextRequest) {
 // POST /api/user/tools - Add new tool to user inventory
 export async function POST(request: NextRequest) {
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    // Use direct client for now to avoid cookie issues
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
-    // Get current user
+    // Get authorization header
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { error: "No authorization token" },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+
+    // Set the session with the token
     const {
       data: { user },
       error: authError,
-    } = await supabase.auth.getUser();
+    } = await supabase.auth.getUser(token);
+
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -71,10 +105,61 @@ export async function POST(request: NextRequest) {
 
     // Get tool definition from cleaning-tools.json
     const toolsData = await import("@/data/templates/cleaning-tools.json");
-    const toolDefinition = toolsData.tools.find((t: any) => t.id === tool_id);
+    const toolDefinition = toolsData.default.tools.find(
+      (t: any) => t.id === tool_id
+    );
 
     if (!toolDefinition) {
       return NextResponse.json({ error: "Invalid tool ID" }, { status: 400 });
+    }
+
+    // Check if user has a profile, create one if not
+    const serviceRoleClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    // Check if profile exists using service role client
+    const { data: profile, error: profileError } = await serviceRoleClient
+      .from("user_profiles")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .single();
+
+    if (profileError && profileError.code === "PGRST116") {
+      // Profile doesn't exist, create one
+      const { error: createProfileError } = await serviceRoleClient
+        .from("user_profiles")
+        .insert({
+          user_id: user.id,
+          username: user.email?.split("@")[0] || "User",
+          display_name:
+            user.user_metadata?.full_name ||
+            user.email?.split("@")[0] ||
+            "User",
+          level: 1,
+          experience_points: 0,
+          total_tasks_completed: 0,
+          total_subtasks_completed: 0,
+          streak_days: 0,
+          longest_streak: 0,
+          coins: 100,
+          gems: 10,
+        });
+
+      if (createProfileError) {
+        console.error("Error creating profile:", createProfileError);
+        return NextResponse.json(
+          { error: "Failed to create user profile" },
+          { status: 500 }
+        );
+      }
+    } else if (profileError) {
+      console.error("Error checking profile:", profileError);
+      return NextResponse.json(
+        { error: "Failed to check user profile" },
+        { status: 500 }
+      );
     }
 
     // Check if user already has this tool
@@ -93,8 +178,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Add tool to user inventory
-    const { data: tool, error } = await supabase
+    // Add tool to user inventory using service role client
+    const { data: tool, error } = await serviceRoleClient
       .from("user_tools")
       .insert([
         {

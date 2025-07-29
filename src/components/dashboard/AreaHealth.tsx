@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Home, Heart, Droplets, Calendar } from "lucide-react";
+import { createClient } from "@/libs/supabase";
 
 interface AreaHealthProps {
   areas?: HomeArea[];
@@ -16,7 +17,20 @@ export function AreaHealth({ areas, onAreaUpdate }: AreaHealthProps) {
   const fetchAreas = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/user/areas");
+      const supabase = createClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        console.error("No session token available");
+        return;
+      }
+
+      const response = await fetch("/api/user/areas", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
       if (response.ok) {
         const { areas: fetchedAreas } = await response.json();
         onAreaUpdate?.(fetchedAreas);

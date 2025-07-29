@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { createClient } from "@/libs/supabase";
-import { Bug, User, Shield, AlertTriangle, CheckCircle } from "lucide-react";
+import { Bug, User, AlertTriangle, CheckCircle } from "lucide-react";
 
 export function AuthDebugger() {
   const [isVisible, setIsVisible] = useState(false);
@@ -36,7 +36,16 @@ export function AuthDebugger() {
 
     for (const endpoint of endpoints) {
       try {
-        const response = await fetch(endpoint.url);
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        const headers: Record<string, string> = {};
+        if (session?.access_token) {
+          headers.Authorization = `Bearer ${session.access_token}`;
+        }
+
+        const response = await fetch(endpoint.url, { headers });
         const data = await response.json();
         results.push({
           name: endpoint.name,
@@ -72,129 +81,89 @@ export function AuthDebugger() {
         <Button
           onClick={() => setIsVisible(true)}
           variant="outline"
-          className="flex items-center space-x-2"
+          size="sm"
+          className="bg-white/80 backdrop-blur-sm"
         >
-          <Bug className="w-4 h-4" />
-          <span>Debug Auth</span>
+          <Bug className="w-4 h-4 mr-2" />
+          Debug Auth
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="fixed bottom-4 left-4 z-50">
-      <Card className="p-4 w-96 shadow-lg max-h-96 overflow-y-auto">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Auth Debugger</h3>
-          <Button
-            onClick={() => setIsVisible(false)}
-            variant="outline"
-            size="sm"
-          >
-            ×
-          </Button>
-        </div>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+      <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold">Authentication Debugger</h2>
+            <Button onClick={() => setIsVisible(false)} variant="outline">
+              Close
+            </Button>
+          </div>
 
-        <div className="space-y-4">
           {/* Auth Status */}
-          <div>
-            <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-              <User className="w-4 h-4 mr-1" />
-              Authentication Status
-            </h4>
-            <div className="space-y-2">
-              {authStatus ? (
-                <>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">User:</span>
-                    <Badge
-                      variant={authStatus.user ? "success" : "error"}
-                      size="sm"
-                    >
-                      {authStatus.user ? "Authenticated" : "Not Authenticated"}
-                    </Badge>
-                  </div>
-                  {authStatus.user && (
-                    <div className="text-xs text-gray-600">
-                      <div>ID: {authStatus.user.id}</div>
-                      <div>Email: {authStatus.user.email}</div>
-                    </div>
-                  )}
-                  {authStatus.error && (
-                    <div className="text-xs text-red-600">
-                      Error: {authStatus.error.message}
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="text-sm text-gray-500">Loading...</div>
-              )}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-3 flex items-center">
+              <User className="w-5 h-5 mr-2" />
+              Auth Status
+            </h3>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <pre className="text-sm overflow-x-auto">
+                {JSON.stringify(authStatus, null, 2)}
+              </pre>
             </div>
           </div>
 
           {/* API Tests */}
-          <div>
-            <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-              <Shield className="w-4 h-4 mr-1" />
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-3 flex items-center">
+              <AlertTriangle className="w-5 h-5 mr-2" />
               API Endpoint Tests
-            </h4>
+            </h3>
             <div className="space-y-2">
-              {apiTests.length > 0 ? (
-                apiTests.map((test, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between"
-                  >
-                    <span className="text-sm">{test.name}:</span>
-                    <div className="flex items-center space-x-2">
-                      <Badge
-                        variant={test.success ? "success" : "error"}
-                        size="sm"
-                      >
-                        {test.status}
-                      </Badge>
+              {apiTests.map((test, index) => (
+                <div
+                  key={index}
+                  className={`p-3 rounded-lg border ${
+                    test.success
+                      ? "bg-green-50 border-green-200"
+                      : "bg-red-50 border-red-200"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">{test.name}</span>
+                    <Badge
+                      variant={test.success ? "primary" : "error"}
+                      className="flex items-center"
+                    >
                       {test.success ? (
-                        <CheckCircle className="w-3 h-3 text-green-500" />
+                        <CheckCircle className="w-3 h-3 mr-1" />
                       ) : (
-                        <AlertTriangle className="w-3 h-3 text-red-500" />
+                        <AlertTriangle className="w-3 h-3 mr-1" />
                       )}
-                    </div>
+                      {test.status}
+                    </Badge>
                   </div>
-                ))
-              ) : (
-                <div className="text-sm text-gray-500">No tests run yet</div>
-              )}
+                  {test.error && (
+                    <p className="text-sm text-red-600 mt-1">{test.error}</p>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="pt-2 border-t">
-            <div className="flex space-x-2">
-              <Button
-                onClick={checkAuthStatus}
-                size="sm"
-                variant="outline"
-                className="flex-1"
-              >
-                Refresh Auth
-              </Button>
-              <Button
-                onClick={testAPIEndpoints}
-                size="sm"
-                variant="outline"
-                className="flex-1"
-              >
-                Test APIs
-              </Button>
-            </div>
-          </div>
-
-          {/* Debug Info */}
-          <div className="pt-2 border-t">
-            <div className="text-xs text-gray-500">
-              <div>Environment: {process.env.NODE_ENV}</div>
-              <div>Base URL: {window.location.origin}</div>
-            </div>
+          {/* Refresh Button */}
+          <div className="flex justify-center">
+            <Button
+              onClick={() => {
+                checkAuthStatus();
+                testAPIEndpoints();
+              }}
+              variant="outline"
+            >
+              Refresh Debug Info
+            </Button>
           </div>
         </div>
       </Card>

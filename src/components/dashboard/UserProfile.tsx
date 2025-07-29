@@ -3,6 +3,7 @@ import { UserProfile as UserProfileType } from "@/types";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Star, Coins, Gem, TrendingUp, Trophy } from "lucide-react";
+import { createClient } from "@/libs/supabase";
 
 interface UserProfileProps {
   profile?: UserProfileType;
@@ -15,7 +16,20 @@ export function UserProfile({ profile, onProfileUpdate }: UserProfileProps) {
   const fetchProfile = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/user/profile");
+      const supabase = createClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        console.error("No session token available");
+        return;
+      }
+
+      const response = await fetch("/api/user/profile", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
       if (response.ok) {
         const { profile: fetchedProfile } = await response.json();
         onProfileUpdate?.(fetchedProfile);

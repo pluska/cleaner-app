@@ -1,24 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@supabase/supabase-js";
 
 // GET /api/user/profile - Get user profile
 export async function GET(request: NextRequest) {
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    // Use direct client for consistent authentication
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
-    // Get current user
+    // Get authorization header
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { error: "No authorization token" },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+
+    // Set the session with the token
     const {
       data: { user },
       error: authError,
-    } = await supabase.auth.getUser();
+    } = await supabase.auth.getUser(token);
+
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get user profile
-    const { data: profile, error } = await supabase
+    // Get user profile using service role client to bypass RLS
+    const serviceRoleClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    const { data: profile, error } = await serviceRoleClient
       .from("user_profiles")
       .select("*")
       .eq("user_id", user.id)
@@ -27,7 +46,7 @@ export async function GET(request: NextRequest) {
     if (error) {
       // If profile doesn't exist, create one
       if (error.code === "PGRST116") {
-        const { data: newProfile, error: createError } = await supabase
+        const { data: newProfile, error: createError } = await serviceRoleClient
           .from("user_profiles")
           .insert([
             {
@@ -81,14 +100,29 @@ export async function GET(request: NextRequest) {
 // PUT /api/user/profile - Update user profile
 export async function PUT(request: NextRequest) {
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    // Use direct client for consistent authentication
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
-    // Get current user
+    // Get authorization header
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { error: "No authorization token" },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+
+    // Set the session with the token
     const {
       data: { user },
       error: authError,
-    } = await supabase.auth.getUser();
+    } = await supabase.auth.getUser(token);
+
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -114,13 +148,18 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Update profile
+    // Update profile using service role client to bypass RLS
+    const serviceRoleClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
     const updateData: any = {};
     if (username !== undefined) updateData.username = username;
     if (display_name !== undefined) updateData.display_name = display_name;
     if (avatar_url !== undefined) updateData.avatar_url = avatar_url;
 
-    const { data: profile, error } = await supabase
+    const { data: profile, error } = await serviceRoleClient
       .from("user_profiles")
       .update(updateData)
       .eq("user_id", user.id)

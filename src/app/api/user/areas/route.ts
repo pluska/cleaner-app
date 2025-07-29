@@ -1,24 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { createClient } from "@supabase/supabase-js";
 
 // GET /api/user/areas - Get user home areas
 export async function GET(request: NextRequest) {
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    // Use direct client for consistent authentication
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
-    // Get current user
+    // Get authorization header
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { error: "No authorization token" },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+
+    // Set the session with the token
     const {
       data: { user },
       error: authError,
-    } = await supabase.auth.getUser();
+    } = await supabase.auth.getUser(token);
+
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get user home areas
-    const { data: areas, error } = await supabase
+    // Get user home areas using service role client to bypass RLS
+    const serviceRoleClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    const { data: areas, error } = await serviceRoleClient
       .from("home_areas")
       .select("*")
       .eq("user_id", user.id)
@@ -45,14 +64,29 @@ export async function GET(request: NextRequest) {
 // POST /api/user/areas - Add new home area
 export async function POST(request: NextRequest) {
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    // Use direct client for consistent authentication
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
-    // Get current user
+    // Get authorization header
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { error: "No authorization token" },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+
+    // Set the session with the token
     const {
       data: { user },
       error: authError,
-    } = await supabase.auth.getUser();
+    } = await supabase.auth.getUser(token);
+
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -76,36 +110,62 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const validAreaTypes = [
-      "kitchen",
-      "bathroom",
-      "bedroom",
-      "living_room",
-      "dining_room",
-      "office",
-      "laundry_room",
-      "garage",
-      "basement",
-      "attic",
-      "hallway",
-      "entryway",
-    ];
+    // Create service role client to bypass RLS
+    const serviceRoleClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
 
-    if (!validAreaTypes.includes(area_type)) {
-      return NextResponse.json({ error: "Invalid area type" }, { status: 400 });
+    // Check if user has a profile, create one if not
+    const { data: profile, error: profileError } = await serviceRoleClient
+      .from("user_profiles")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .single();
+
+    if (profileError && profileError.code === "PGRST116") {
+      // Profile doesn't exist, create one
+      const { error: createProfileError } = await serviceRoleClient
+        .from("user_profiles")
+        .insert({
+          user_id: user.id,
+          username: user.email?.split("@")[0] || "User",
+          display_name:
+            user.user_metadata?.full_name ||
+            user.email?.split("@")[0] ||
+            "User",
+          level: 1,
+          experience_points: 0,
+          total_tasks_completed: 0,
+          total_subtasks_completed: 0,
+          streak_days: 0,
+          longest_streak: 0,
+          coins: 100,
+          gems: 10,
+        });
+
+      if (createProfileError) {
+        console.error("Error creating profile:", createProfileError);
+        return NextResponse.json(
+          { error: "Failed to create user profile" },
+          { status: 500 }
+        );
+      }
+    } else if (profileError) {
+      console.error("Error checking profile:", profileError);
+      return NextResponse.json(
+        { error: "Failed to check user profile" },
+        { status: 500 }
+      );
     }
 
-    const validSizes = ["small", "medium", "large"];
-    if (!validSizes.includes(size)) {
-      return NextResponse.json({ error: "Invalid size" }, { status: 400 });
-    }
-
-    // Check if area already exists for this user
+    // Check if area already exists
     const { data: existingArea } = await supabase
       .from("home_areas")
       .select("id")
       .eq("user_id", user.id)
       .eq("area_name", area_name)
+      .eq("is_active", true)
       .single();
 
     if (existingArea) {
@@ -115,21 +175,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Add home area
-    const { data: area, error } = await supabase
+    // Calculate initial health based on area type and size
+    let maxHealth = 100;
+    if (area_type === "kitchen") maxHealth = 120;
+    if (area_type === "bathroom") maxHealth = 80;
+    if (size === "large") maxHealth += 20;
+    if (size === "small") maxHealth -= 20;
+
+    // Add area to user's home using service role client
+    const { data: area, error } = await serviceRoleClient
       .from("home_areas")
       .insert([
         {
           user_id: user.id,
           area_name: area_name,
           area_type: area_type,
-          current_health: 100,
-          max_health: 100,
-          size: size,
-          has_carpet: has_carpet,
-          has_hardwood: has_hardwood,
-          has_tile: has_tile,
-          special_features: special_features,
+          current_health: maxHealth,
+          max_health: maxHealth,
+          is_active: true,
         },
       ])
       .select()
