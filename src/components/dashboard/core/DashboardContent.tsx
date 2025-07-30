@@ -9,6 +9,7 @@ import { Task } from "@/types";
 import { formatDateToYYYYMMDD } from "@/libs/date-utils";
 import { GamificationTester } from "../gamification/GamificationTester";
 import { AuthDebugger } from "../AuthDebugger";
+import { AITaskCreation } from "../ai/AITaskCreation";
 
 interface DashboardContentProps {
   initialTodayTasks: Task[];
@@ -27,6 +28,7 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
   const [todayTasks, setTodayTasks] = useState(initialTodayTasks);
   const [comingSoonTasks] = useState(initialComingSoonTasks);
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
+  const [showAITaskCreation, setShowAITaskCreation] = useState(false);
 
   const handleDateChange = useCallback(async (date: string) => {
     setSelectedDate(date);
@@ -98,21 +100,38 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
     <div className="max-w-7xl mx-auto bg-bg min-h-screen p-4 sm:p-8">
       <DashboardHeader />
 
-      <WeeklyView selectedDate={selectedDate} onDateChange={handleDateChange} />
-
-      <DashboardDragDropProvider
-        todayTasks={todayTasks}
-        comingSoonTasks={comingSoonTasks}
-        userId={userId}
-        selectedDate={selectedDate}
-        isLoadingTasks={isLoadingTasks}
-      />
-
-      {/* Development Tools - Only in development */}
-      {process.env.NODE_ENV === "development" && (
+      {showAITaskCreation ? (
+        <AITaskCreation
+          onComplete={() => {
+            setShowAITaskCreation(false);
+            // Refresh tasks after AI creation
+            handleDateChange(selectedDate);
+          }}
+          onCancel={() => setShowAITaskCreation(false)}
+        />
+      ) : (
         <>
-          <GamificationTester />
-          <AuthDebugger />
+          <WeeklyView
+            selectedDate={selectedDate}
+            onDateChange={handleDateChange}
+          />
+
+          <DashboardDragDropProvider
+            todayTasks={todayTasks}
+            comingSoonTasks={comingSoonTasks}
+            userId={userId}
+            selectedDate={selectedDate}
+            isLoadingTasks={isLoadingTasks}
+            onShowAITaskCreation={() => setShowAITaskCreation(true)}
+          />
+
+          {/* Development Tools - Only in development */}
+          {process.env.NODE_ENV === "development" && (
+            <>
+              <GamificationTester />
+              <AuthDebugger />
+            </>
+          )}
         </>
       )}
     </div>

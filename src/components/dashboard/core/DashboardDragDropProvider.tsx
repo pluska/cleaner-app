@@ -24,6 +24,7 @@ interface DashboardDragDropProviderProps {
   userId: string;
   selectedDate: string;
   isLoadingTasks: boolean;
+  onShowAITaskCreation?: () => void;
 }
 
 export const DashboardDragDropProvider: React.FC<
@@ -34,6 +35,7 @@ export const DashboardDragDropProvider: React.FC<
   userId,
   selectedDate,
   isLoadingTasks,
+  onShowAITaskCreation,
 }) => {
   const [todayTasks, setTodayTasks] = useState(initialTodayTasks);
   const [comingSoonTasks, setComingSoonTasks] = useState(
@@ -171,6 +173,7 @@ export const DashboardDragDropProvider: React.FC<
           selectedDate={selectedDate}
           isLoading={isLoadingTasks}
           onTaskMoved={handleTodayTasksUpdate}
+          onShowAITaskCreation={onShowAITaskCreation}
         />
 
         {isToday && (

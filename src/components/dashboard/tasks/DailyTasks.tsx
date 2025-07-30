@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Sparkles } from "lucide-react";
 import { Task, LegacyTaskFormData } from "@/types";
 import { createTask } from "@/libs/api";
 import { Button } from "@/components/ui/forms/Button";
@@ -26,12 +26,14 @@ interface DailyTasksProps {
   selectedDate: string;
   isLoading?: boolean;
   onTaskMoved?: () => void;
+  onShowAITaskCreation?: () => void;
 }
 
 export function DailyTasks({
   tasks: initialTasks,
   selectedDate,
   isLoading = false,
+  onShowAITaskCreation,
 }: DailyTasksProps) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
 
@@ -302,18 +304,34 @@ export function DailyTasks({
             </h2>
           )}
           {!isPastDate(selectedDate) && (
-            <Button
-              onClick={() => {
-                setShowAddForm(!showAddForm);
-              }}
-              size="sm"
-              className="w-full sm:w-auto"
-            >
-              <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
-              <span className="font-medium text-sm sm:text-base">
-                {t("Add Task", language)}
-              </span>
-            </Button>
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+              <Button
+                onClick={() => {
+                  setShowAddForm(!showAddForm);
+                }}
+                size="sm"
+                variant="outline"
+                className="w-full sm:w-auto"
+              >
+                <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="font-medium text-sm sm:text-base">
+                  {t("Add Task", language)}
+                </span>
+              </Button>
+
+              {onShowAITaskCreation && (
+                <Button
+                  onClick={onShowAITaskCreation}
+                  size="sm"
+                  className="w-full sm:w-auto"
+                >
+                  <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <span className="font-medium text-sm sm:text-base">
+                    {language === "es" ? "AI Asistente" : "AI Assistant"}
+                  </span>
+                </Button>
+              )}
+            </div>
           )}
         </div>
       </div>
