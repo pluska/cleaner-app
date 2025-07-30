@@ -5,15 +5,14 @@ import { DashboardHeader } from "./DashboardHeader";
 import { DashboardDragDropProvider } from "./DashboardDragDropProvider";
 import { WeeklyView } from "../schedule/WeeklyView";
 import { Loading } from "@/components/ui/feedback/Loading";
-import { Task, ComingSoonTask, TaskInstance, UserProfile } from "@/types";
+import { Task } from "@/types";
 import { formatDateToYYYYMMDD } from "@/libs/date-utils";
-import { UserProfile as UserProfileComponent } from "../gamification/UserProfile";
 import { GamificationTester } from "../gamification/GamificationTester";
 import { AuthDebugger } from "../AuthDebugger";
 
 interface DashboardContentProps {
   initialTodayTasks: Task[];
-  initialComingSoonTasks: any[]; // Using any for backward compatibility
+  initialComingSoonTasks: Task[];
   userId: string;
 }
 
@@ -28,9 +27,6 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
   const [todayTasks, setTodayTasks] = useState(initialTodayTasks);
   const [comingSoonTasks] = useState(initialComingSoonTasks);
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
-  const [userProfile, setUserProfile] = useState<UserProfile | undefined>(
-    undefined
-  );
 
   const handleDateChange = useCallback(async (date: string) => {
     setSelectedDate(date);
@@ -80,7 +76,6 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
     }
   }, []);
 
-  // Initialize tasks for the current date on component mount
   useEffect(() => {
     const today = formatDateToYYYYMMDD(new Date());
     if (selectedDate === today) {
@@ -89,23 +84,6 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
       handleDateChange(selectedDate);
     }
   }, [initialTodayTasks, selectedDate, handleDateChange]);
-
-  // Fetch user profile
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await fetch("/api/user/profile");
-        if (response.ok) {
-          const { profile } = await response.json();
-          setUserProfile(profile);
-        }
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      }
-    };
-
-    fetchProfile();
-  }, []);
 
   if (isLoadingTasks) {
     return (
@@ -119,14 +97,6 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
   return (
     <div className="max-w-7xl mx-auto bg-bg min-h-screen p-4 sm:p-8">
       <DashboardHeader />
-
-      {/* User Profile Section */}
-      <div className="mb-8">
-        <UserProfileComponent
-          profile={userProfile}
-          onProfileUpdate={setUserProfile}
-        />
-      </div>
 
       <WeeklyView selectedDate={selectedDate} onDateChange={handleDateChange} />
 
