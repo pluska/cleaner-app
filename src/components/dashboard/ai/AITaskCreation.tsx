@@ -43,7 +43,10 @@ export function AITaskCreation({ onComplete, onCancel }: AITaskCreationProps) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(homeAssessment),
+        body: JSON.stringify({
+          ...homeAssessment,
+          language: language,
+        }),
       });
 
       if (!response.ok) {
