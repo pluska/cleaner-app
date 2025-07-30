@@ -7,7 +7,7 @@ import { createClient } from "@/libs/supabase";
 import { Wrench, Zap, AlertTriangle, CheckCircle } from "lucide-react";
 
 interface ToolInventoryProps {
-  tools?: UserTool[];
+  tools: UserTool[];
   onToolUpdate?: (tools: UserTool[]) => void;
 }
 
@@ -32,6 +32,7 @@ export function ToolInventory({ tools, onToolUpdate }: ToolInventoryProps) {
           Authorization: `Bearer ${session.access_token}`,
         },
       });
+
       if (response.ok) {
         const { tools: fetchedTools } = await response.json();
         onToolUpdate?.(fetchedTools);
@@ -53,11 +54,9 @@ export function ToolInventory({ tools, onToolUpdate }: ToolInventoryProps) {
   };
 
   useEffect(() => {
-    if (!tools) {
-      fetchTools();
-    }
+    fetchTools();
     fetchAvailableTools();
-  }, [tools]);
+  }, []);
 
   const addToolToInventory = async (toolId: string, toolName: string) => {
     try {

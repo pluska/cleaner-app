@@ -41,7 +41,6 @@ export async function GET(request: NextRequest) {
       .from("user_tools")
       .select("*")
       .eq("user_id", user.id)
-      .eq("is_active", true)
       .order("acquired_at", { ascending: false });
 
     if (error) {
@@ -168,7 +167,6 @@ export async function POST(request: NextRequest) {
       .select("id")
       .eq("user_id", user.id)
       .eq("tool_id", tool_id)
-      .eq("is_active", true)
       .single();
 
     if (existingTool) {
@@ -189,7 +187,6 @@ export async function POST(request: NextRequest) {
           current_durability: toolDefinition.durability_max,
           max_durability: toolDefinition.durability_max,
           uses_count: 0,
-          is_active: true,
         },
       ])
       .select()

@@ -10,8 +10,11 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Trophy, Star, Target, TrendingUp } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { t } from "@/libs/translations";
 
 export default function ProfilePage() {
+  const { language } = useLanguage();
   const [profile, setProfile] = useState<UserProfileType | undefined>(
     undefined
   );
@@ -23,11 +26,35 @@ export default function ProfilePage() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        // Fetch profile, tools, and areas in parallel
+        // Get session token
+        const { createClient } = await import("@/libs/supabase");
+        const supabase = createClient();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!session?.access_token) {
+          console.error("No session token available");
+          return;
+        }
+
+        // Fetch profile, tools, and areas in parallel with auth headers
         const [profileRes, toolsRes, areasRes] = await Promise.all([
-          fetch("/api/user/profile"),
-          fetch("/api/user/tools"),
-          fetch("/api/user/areas"),
+          fetch("/api/user/profile", {
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+            },
+          }),
+          fetch("/api/user/tools", {
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+            },
+          }),
+          fetch("/api/user/areas", {
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+            },
+          }),
         ]);
 
         if (profileRes.ok) {
@@ -73,9 +100,11 @@ export default function ProfilePage() {
     <div className="max-w-7xl mx-auto bg-bg min-h-screen p-4 sm:p-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Profile</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          {t("Your Profile", language)}
+        </h1>
         <p className="text-gray-600">
-          Track your cleaning progress and achievements
+          {t("Track your cleaning progress and achievements", language)}
         </p>
       </div>
 
@@ -89,27 +118,27 @@ export default function ProfilePage() {
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="tools" className="flex items-center space-x-2">
             <Trophy className="w-4 h-4" />
-            <span>Tools</span>
+            <span>{t("Tools", language)}</span>
           </TabsTrigger>
           <TabsTrigger value="areas" className="flex items-center space-x-2">
             <Target className="w-4 h-4" />
-            <span>Areas</span>
+            <span>{t("Areas", language)}</span>
           </TabsTrigger>
           <TabsTrigger
             value="achievements"
             className="flex items-center space-x-2"
           >
             <Star className="w-4 h-4" />
-            <span>Achievements</span>
+            <span>{t("Achievements", language)}</span>
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="tools" className="space-y-6">
-          <ToolInventory tools={tools} onToolUpdate={setTools} />
+          <ToolInventory onToolUpdate={setTools} tools={tools} />
         </TabsContent>
 
         <TabsContent value="areas" className="space-y-6">
-          <AreaHealth areas={areas} onAreaUpdate={setAreas} />
+          <AreaHealth onAreaUpdate={setAreas} areas={areas} />
         </TabsContent>
 
         <TabsContent value="achievements" className="space-y-6">
@@ -117,15 +146,15 @@ export default function ProfilePage() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">
-                  Achievements
+                  {t("Achievements", language)}
                 </h2>
                 <p className="text-gray-600">
-                  Unlock achievements by completing tasks
+                  {t("Unlock achievements by completing tasks", language)}
                 </p>
               </div>
               <Badge variant="primary" className="flex items-center space-x-1">
                 <TrendingUp className="w-4 h-4" />
-                <span>Coming Soon</span>
+                <span>{t("Coming Soon", language)}</span>
               </Badge>
             </div>
 
@@ -134,8 +163,8 @@ export default function ProfilePage() {
               {[
                 {
                   id: "first_task",
-                  title: "First Steps",
-                  description: "Complete your first cleaning task",
+                  title: t("First Steps", language),
+                  description: t("Complete your first cleaning task", language),
                   icon: "🎯",
                   unlocked: (profile?.total_tasks_completed || 0) > 0,
                   progress: profile?.total_tasks_completed || 0,
@@ -143,8 +172,8 @@ export default function ProfilePage() {
                 },
                 {
                   id: "level_5",
-                  title: "Rising Star",
-                  description: "Reach level 5",
+                  title: t("Rising Star", language),
+                  description: t("Reach level 5", language),
                   icon: "⭐",
                   unlocked: (profile?.level || 0) >= 5,
                   progress: profile?.level || 0,
@@ -152,8 +181,8 @@ export default function ProfilePage() {
                 },
                 {
                   id: "streak_7",
-                  title: "Week Warrior",
-                  description: "Maintain a 7-day streak",
+                  title: t("Week Warrior", language),
+                  description: t("Maintain a 7-day streak", language),
                   icon: "🔥",
                   unlocked: (profile?.streak_days || 0) >= 7,
                   progress: profile?.streak_days || 0,
@@ -161,8 +190,8 @@ export default function ProfilePage() {
                 },
                 {
                   id: "tool_master",
-                  title: "Tool Master",
-                  description: "Collect 5 different tools",
+                  title: t("Tool Master", language),
+                  description: t("Collect 5 different tools", language),
                   icon: "🔧",
                   unlocked: (tools?.length || 0) >= 5,
                   progress: tools?.length || 0,
@@ -170,8 +199,8 @@ export default function ProfilePage() {
                 },
                 {
                   id: "area_explorer",
-                  title: "Area Explorer",
-                  description: "Configure 3 home areas",
+                  title: t("Area Explorer", language),
+                  description: t("Configure 3 home areas", language),
                   icon: "🏠",
                   unlocked: (areas?.length || 0) >= 3,
                   progress: areas?.length || 0,
@@ -179,8 +208,8 @@ export default function ProfilePage() {
                 },
                 {
                   id: "coin_collector",
-                  title: "Coin Collector",
-                  description: "Earn 100 coins",
+                  title: t("Coin Collector", language),
+                  description: t("Earn 100 coins", language),
                   icon: "🪙",
                   unlocked: (profile?.coins || 0) >= 100,
                   progress: profile?.coins || 0,
@@ -207,14 +236,14 @@ export default function ProfilePage() {
                     </div>
                     {achievement.unlocked && (
                       <Badge variant="success" className="text-xs">
-                        Unlocked
+                        {t("Unlocked", language)}
                       </Badge>
                     )}
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs text-gray-600">
-                      <span>Progress</span>
+                      <span>{t("Progress", language)}</span>
                       <span>
                         {achievement.progress} / {achievement.target}
                       </span>

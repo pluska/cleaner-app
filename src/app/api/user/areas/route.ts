@@ -165,7 +165,6 @@ export async function POST(request: NextRequest) {
       .select("id")
       .eq("user_id", user.id)
       .eq("area_name", area_name)
-      .eq("is_active", true)
       .single();
 
     if (existingArea) {
@@ -192,7 +191,11 @@ export async function POST(request: NextRequest) {
           area_type: area_type,
           current_health: maxHealth,
           max_health: maxHealth,
-          is_active: true,
+          size: size,
+          has_carpet: has_carpet,
+          has_hardwood: has_hardwood,
+          has_tile: has_tile,
+          special_features: special_features,
         },
       ])
       .select()
