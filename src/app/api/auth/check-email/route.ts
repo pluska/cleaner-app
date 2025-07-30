@@ -24,10 +24,10 @@ export async function POST(request: NextRequest) {
     // Now we can use admin functions
     const {
       data: { users },
-      error,
+      error: listError,
     } = await supabaseAdmin.auth.admin.listUsers();
 
-    if (error) {
+    if (listError) {
       return NextResponse.json(
         { error: "Failed to check email" },
         { status: 500 }
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       exists: userExists,
       message: userExists ? "Email already registered" : "Email available",
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

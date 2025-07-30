@@ -6,9 +6,14 @@ import { UserProfile } from "@/components/dashboard/gamification/UserProfile";
 import { ToolInventory } from "@/components/dashboard/gamification/ToolInventory";
 import { AreaHealth } from "@/components/dashboard/gamification/AreaHealth";
 import { Card } from "@/components/ui/layout/Card";
-import { Button } from "@/components/ui/forms/Button";
+// import { Button } from "@/components/ui/forms/Button";
 import { Badge } from "@/components/ui/data-display/Badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/data-display/Tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/data-display/Tabs";
 import { Trophy, Star, Target, TrendingUp } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";

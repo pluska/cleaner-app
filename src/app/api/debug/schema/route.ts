@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const serviceRoleClient = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -19,7 +19,10 @@ export async function GET(request: NextRequest) {
       "task_instances",
     ];
 
-    const schemaInfo: any = {};
+    const schemaInfo: Record<
+      string,
+      { exists: boolean; error?: string; count?: number }
+    > = {};
 
     for (const table of tables) {
       try {
@@ -33,7 +36,7 @@ export async function GET(request: NextRequest) {
         } else {
           schemaInfo[table] = { exists: true, count: data?.length || 0 };
         }
-      } catch (err) {
+      } catch {
         schemaInfo[table] = { exists: false, error: "Table not found" };
       }
     }

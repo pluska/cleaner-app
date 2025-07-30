@@ -2,24 +2,17 @@
 
 import { useState } from "react";
 import { Card } from "@/components/ui/layout/Card";
-import { Badge } from "@/components/ui/data-display/Badge";
-import { Button } from "@/components/ui/forms/Button";
-import { Tabs } from "@/components/ui/data-display/Tabs";
 import {
   BookOpen,
   Trophy,
   Heart,
   Wrench,
   Calendar,
-  BarChart3,
   Sparkles,
   Target,
   Lightbulb,
   AlertTriangle,
   CheckCircle,
-  ArrowRight,
-  ChevronDown,
-  ChevronRight,
   Home,
   Zap,
   Star,
@@ -28,7 +21,6 @@ import {
   Settings,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { t } from "@/libs/translations";
 
 interface GuideSection {
   id: string;
@@ -42,16 +34,16 @@ export function UserGuide() {
   const [activeTab, setActiveTab] = useState("getting-started");
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
 
-  const toggleSection = (sectionId: string) => {
-    setExpandedSections((prev) =>
-      prev.includes(sectionId)
-        ? prev.filter((id) => id !== sectionId)
-        : [...prev, sectionId]
-    );
-  };
+  // const toggleSection = (sectionId: string) => {
+  //   setExpandedSections((prev) =>
+  //     prev.includes(sectionId)
+  //       ? prev.filter((id) => id !== sectionId)
+  //       : [...prev, sectionId]
+  //   );
+  // };
 
-  const isExpanded = (sectionId: string) =>
-    expandedSections.includes(sectionId);
+  // const isExpanded = (sectionId: string) =>
+  //   expandedSections.includes(sectionId);
 
   const guideSections: GuideSection[] = [
     {
