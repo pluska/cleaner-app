@@ -1,5 +1,5 @@
 import { createServerSupabaseClient } from "@/libs/supabase-server";
-import { AllTasksView } from "@/components/dashboard/AllTasksView";
+import { AllTasksView } from "@/components/dashboard/tasks/AllTasksView";
 
 export default async function AllTasksPage() {
   const supabase = await createServerSupabaseClient();

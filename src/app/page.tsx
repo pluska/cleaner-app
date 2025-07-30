@@ -3,9 +3,9 @@
 import { Sparkles, CheckCircle, Calendar, Target } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
-import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
-import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { LanguageSwitcher } from "@/components/ui/layout/LanguageSwitcher";
+import { Card } from "@/components/ui/layout/Card";
+import { Button } from "@/components/ui/forms/Button";
 import { useRouter } from "next/navigation";
 
 export default function Home() {

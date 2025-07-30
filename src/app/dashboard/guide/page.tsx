@@ -1,7 +1,7 @@
 "use client";
 
-import { UserGuide } from "@/components/dashboard/UserGuide";
-import { GuideHeader } from "@/components/dashboard/GuideHeader";
+import { UserGuide } from "@/components/dashboard/guide/UserGuide";
+import { GuideHeader } from "@/components/dashboard/guide/GuideHeader";
 
 export default function GuidePage() {
   return (

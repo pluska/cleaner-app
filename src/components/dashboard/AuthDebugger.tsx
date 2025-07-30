@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
+import { Card } from "@/components/ui/layout/Card";
+import { Button } from "@/components/ui/forms/Button";
+import { Badge } from "@/components/ui/data-display/Badge";
 import { createClient } from "@/libs/supabase";
 import { Bug, User, AlertTriangle, CheckCircle } from "lucide-react";
 

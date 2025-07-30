@@ -3,13 +3,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { DashboardHeader } from "./DashboardHeader";
 import { DashboardDragDropProvider } from "./DashboardDragDropProvider";
-import { WeeklyView } from "./WeeklyView";
-import { Loading } from "@/components/ui/Loading";
+import { WeeklyView } from "../schedule/WeeklyView";
+import { Loading } from "@/components/ui/feedback/Loading";
 import { Task, ComingSoonTask, TaskInstance, UserProfile } from "@/types";
 import { formatDateToYYYYMMDD } from "@/libs/date-utils";
-import { UserProfile as UserProfileComponent } from "./UserProfile";
-import { GamificationTester } from "./GamificationTester";
-import { AuthDebugger } from "./AuthDebugger";
+import { UserProfile as UserProfileComponent } from "../gamification/UserProfile";
+import { GamificationTester } from "../gamification/GamificationTester";
+import { AuthDebugger } from "../AuthDebugger";
 
 interface DashboardContentProps {
   initialTodayTasks: Task[];

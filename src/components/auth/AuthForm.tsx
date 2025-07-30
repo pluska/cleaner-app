@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { createClient } from "@/libs/supabase";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { SuccessMessage } from "@/components/ui/SuccessMessage";
-import { ErrorMessage } from "@/components/ui/ErrorMessage";
+import { Button } from "@/components/ui/forms/Button";
+import { Input } from "@/components/ui/forms/Input";
+import { LoadingSpinner } from "@/components/ui/feedback/LoadingSpinner";
+import { SuccessMessage } from "@/components/ui/feedback/SuccessMessage";
+import { ErrorMessage } from "@/components/ui/feedback/ErrorMessage";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 

@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { UserProfile as UserProfileType, UserTool, HomeArea } from "@/types";
-import { UserProfile } from "@/components/dashboard/UserProfile";
-import { ToolInventory } from "@/components/dashboard/ToolInventory";
-import { AreaHealth } from "@/components/dashboard/AreaHealth";
-import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { UserProfile } from "@/components/dashboard/gamification/UserProfile";
+import { ToolInventory } from "@/components/dashboard/gamification/ToolInventory";
+import { AreaHealth } from "@/components/dashboard/gamification/AreaHealth";
+import { Card } from "@/components/ui/layout/Card";
+import { Button } from "@/components/ui/forms/Button";
+import { Badge } from "@/components/ui/data-display/Badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/data-display/Tabs";
 import { Trophy, Star, Target, TrendingUp } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";

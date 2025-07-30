@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
-import { useNotificationManager } from "@/components/ui/Notification";
+import { Card } from "@/components/ui/layout/Card";
+import { Button } from "@/components/ui/forms/Button";
+import { Badge } from "@/components/ui/data-display/Badge";
+import { useNotificationManager } from "@/components/ui/feedback/Notification";
 import { Star, Coins, Gem, Heart, Zap, Trophy } from "lucide-react";
 
 export function GamificationTester() {

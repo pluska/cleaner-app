@@ -12,7 +12,7 @@ import {
 } from "date-fns";
 import { ChevronLeft, ChevronRight, Calendar, Filter } from "lucide-react";
 import { Task, TimeView } from "@/types";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/forms/Button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 

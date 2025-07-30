@@ -19,7 +19,7 @@ import { useRouter } from "next/navigation";
 import { User as UserType } from "@/types";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
-import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { LanguageSwitcher } from "@/components/ui/layout/LanguageSwitcher";
 
 interface DashboardNavProps {
   user: UserType;

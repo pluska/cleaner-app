@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { UserProfile as UserProfileType } from "@/types";
-import { Card } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
+import { Card } from "@/components/ui/layout/Card";
+import { Badge } from "@/components/ui/data-display/Badge";
 import { Star, Coins, Gem, TrendingUp, Trophy } from "lucide-react";
 import { createClient } from "@/libs/supabase";
 

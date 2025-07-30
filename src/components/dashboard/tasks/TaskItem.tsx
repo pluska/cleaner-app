@@ -13,14 +13,14 @@ import {
 } from "lucide-react";
 import { Task, LegacyTaskFormData } from "@/types";
 import { updateTask, deleteTask, toggleTask } from "@/libs/api";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/forms/Button";
+import { Input } from "@/components/ui/forms/Input";
+import { LoadingSpinner } from "@/components/ui/feedback/LoadingSpinner";
+import { Badge } from "@/components/ui/data-display/Badge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
-import { RescheduleModal } from "./RescheduleModal";
-import { useNotificationManager } from "@/components/ui/Notification";
+import { RescheduleModal } from "../schedule/RescheduleModal";
+import { useNotificationManager } from "@/components/ui/feedback/Notification";
 import {
   getOverdueStyle,
   getDaysOfWeek,

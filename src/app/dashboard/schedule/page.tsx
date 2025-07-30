@@ -1,6 +1,6 @@
 import { createServerSupabaseClient } from "@/libs/supabase-server";
-import { ScheduleView } from "@/components/dashboard/ScheduleView";
-import { ScheduleHeader } from "@/components/dashboard/ScheduleHeader";
+import { ScheduleView } from "@/components/dashboard/schedule/ScheduleView";
+import { ScheduleHeader } from "@/components/dashboard/schedule/ScheduleHeader";
 
 export default async function SchedulePage() {
   const supabase = await createServerSupabaseClient();

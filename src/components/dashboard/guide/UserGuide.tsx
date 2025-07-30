@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
-import { Tabs } from "@/components/ui/Tabs";
+import { Card } from "@/components/ui/layout/Card";
+import { Badge } from "@/components/ui/data-display/Badge";
+import { Button } from "@/components/ui/forms/Button";
+import { Tabs } from "@/components/ui/data-display/Tabs";
 import {
   BookOpen,
   Trophy,

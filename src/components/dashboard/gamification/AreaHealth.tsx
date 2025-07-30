@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { HomeArea } from "@/types";
-import { Card } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Select } from "@/components/ui/Select";
+import { Card } from "@/components/ui/layout/Card";
+import { Badge } from "@/components/ui/data-display/Badge";
+import { Button } from "@/components/ui/forms/Button";
+import { Input } from "@/components/ui/forms/Input";
+import { Select } from "@/components/ui/forms/Select";
 import { Home, Heart, Droplets, Calendar, Plus, X } from "lucide-react";
 import { createClient } from "@/libs/supabase";
 import { useLanguage } from "@/contexts/LanguageContext";

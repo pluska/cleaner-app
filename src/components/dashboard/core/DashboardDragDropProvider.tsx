@@ -11,9 +11,9 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { Task } from "@/types";
-import { ComingSoonTasks } from "./ComingSoonTasks";
-import { DailyTasks } from "./DailyTasks";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { ComingSoonTasks } from "../tasks/ComingSoonTasks";
+import { DailyTasks } from "../tasks/DailyTasks";
+import { LoadingSpinner } from "@/components/ui/feedback/LoadingSpinner";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 import { formatDateToYYYYMMDD } from "@/libs/date-utils";

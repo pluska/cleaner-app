@@ -1,5 +1,5 @@
 import { createServerSupabaseClient } from "@/libs/supabase-server";
-import { DashboardContent } from "@/components/dashboard/DashboardContent";
+import { DashboardContent } from "@/components/dashboard/core/DashboardContent";
 import { getTodayDate } from "@/libs/date-utils";
 
 export default async function DashboardPage() {

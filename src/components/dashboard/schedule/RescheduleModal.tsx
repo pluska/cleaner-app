@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import { X, Calendar } from "lucide-react";
-import { Button } from "../ui/Button";
-import { Input } from "../ui/Input";
+import { Button } from "../../ui/forms/Button";
+import { Input } from "../../ui/forms/Input";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 

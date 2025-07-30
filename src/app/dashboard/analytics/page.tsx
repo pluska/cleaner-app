@@ -1,6 +1,6 @@
 import { createServerSupabaseClient } from "@/libs/supabase-server";
-import { AnalyticsView } from "@/components/dashboard/AnalyticsView";
-import { AnalyticsHeader } from "@/components/dashboard/AnalyticsHeader";
+import { AnalyticsView } from "@/components/dashboard/analytics/AnalyticsView";
+import { AnalyticsHeader } from "@/components/dashboard/analytics/AnalyticsHeader";
 
 export default async function AnalyticsPage() {
   const supabase = await createServerSupabaseClient();

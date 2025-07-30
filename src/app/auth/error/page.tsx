@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Sparkles, AlertCircle, ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/forms/Button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 import { Suspense } from "react";
