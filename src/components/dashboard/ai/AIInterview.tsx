@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/layout/Card";
 import { Button } from "@/components/ui/forms/Button";
 import { Input } from "@/components/ui/forms/Input";
@@ -22,6 +22,7 @@ import {
   AIInterviewQuestion,
   AIInterviewResponse,
   HomeAssessment,
+  HomeAssessmentInput,
   Room,
   HomeType,
   Lifestyle,
@@ -31,14 +32,16 @@ import {
 } from "@/types";
 
 interface AIInterviewProps {
-  onComplete: (assessment: HomeAssessment) => void;
+  onComplete: (assessment: HomeAssessmentInput) => void;
   onCancel: () => void;
+  isExternalLoading?: boolean;
 }
 
 const INTERVIEW_QUESTIONS: AIInterviewQuestion[] = [
   {
     id: "home_type",
     question: "What type of home do you live in?",
+    question_es: "¿Qué tipo de vivienda tienes?",
     type: "select",
     options: ["apartment", "house", "studio"],
     required: true,
@@ -47,6 +50,7 @@ const INTERVIEW_QUESTIONS: AIInterviewQuestion[] = [
   {
     id: "lifestyle",
     question: "How would you describe your lifestyle?",
+    question_es: "¿Cómo describirías tu estilo de vida?",
     type: "select",
     options: ["busy", "moderate", "relaxed"],
     required: true,
@@ -55,6 +59,7 @@ const INTERVIEW_QUESTIONS: AIInterviewQuestion[] = [
   {
     id: "cleaning_preferences",
     question: "What's your preferred cleaning intensity?",
+    question_es: "¿Cuál es tu intensidad de limpieza preferida?",
     type: "select",
     options: ["minimal", "standard", "thorough"],
     required: true,
@@ -63,6 +68,7 @@ const INTERVIEW_QUESTIONS: AIInterviewQuestion[] = [
   {
     id: "pets",
     question: "Do you have pets?",
+    question_es: "¿Tienes mascotas?",
     type: "boolean",
     required: true,
     order: 4,
@@ -70,6 +76,7 @@ const INTERVIEW_QUESTIONS: AIInterviewQuestion[] = [
   {
     id: "children",
     question: "Do you have children?",
+    question_es: "¿Tienes niños?",
     type: "boolean",
     required: true,
     order: 5,
@@ -77,6 +84,7 @@ const INTERVIEW_QUESTIONS: AIInterviewQuestion[] = [
   {
     id: "allergies",
     question: "Do you or anyone in your household have allergies?",
+    question_es: "¿Tú o alguien en tu hogar tiene alergias?",
     type: "boolean",
     required: true,
     order: 6,
@@ -84,6 +92,7 @@ const INTERVIEW_QUESTIONS: AIInterviewQuestion[] = [
   {
     id: "rooms",
     question: "What rooms do you have in your home?",
+    question_es: "¿Qué habitaciones tienes en tu hogar?",
     type: "multiselect",
     options: [
       "kitchen",
@@ -104,16 +113,90 @@ const INTERVIEW_QUESTIONS: AIInterviewQuestion[] = [
   },
 ];
 
-export function AIInterview({ onComplete, onCancel }: AIInterviewProps) {
+export function AIInterview({
+  onComplete,
+  onCancel,
+  isExternalLoading = false,
+}: AIInterviewProps) {
   const { language } = useLanguage();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [responses, setResponses] = useState<Record<string, any>>({});
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isLoadingExisting, setIsLoadingExisting] = useState(true);
   const [completedQuestions, setCompletedQuestions] = useState<Set<number>>(
     new Set()
   );
 
   const currentQuestion = INTERVIEW_QUESTIONS[currentQuestionIndex];
+
+  // Use external loading state if provided, otherwise use internal state
+  const isLoading = isExternalLoading;
+
+  console.log(
+    "AIInterview - isExternalLoading:",
+    isExternalLoading,
+    "isGenerating:",
+    isGenerating,
+    "isLoading:",
+    isLoading
+  );
+
+  // Log when component renders
+
+  // Use effect to detect changes in loading state
+
+  // Load existing assessment on component mount
+  useEffect(() => {
+    const loadExistingAssessment = async () => {
+      try {
+        const response = await fetch("/api/user/home-assessment");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch assessment");
+        }
+
+        const data = await response.json();
+
+        if (data.assessment) {
+          console.log(
+            "AIInterview - Found existing assessment:",
+            data.assessment
+          );
+
+          // Convert assessment to responses format
+          const existingResponses: Record<string, any> = {
+            home_type: data.assessment.home_type,
+            lifestyle: data.assessment.lifestyle,
+            cleaning_preferences: data.assessment.cleaning_preferences,
+            pets: data.assessment.pets,
+            children: data.assessment.children,
+            allergies: data.assessment.allergies,
+            rooms: data.assessment.rooms.map((room: any) => room.name),
+          };
+
+          setResponses(existingResponses);
+
+          // Mark all questions as completed
+          const allCompleted = new Set(
+            INTERVIEW_QUESTIONS.map((_, index) => index)
+          );
+          setCompletedQuestions(allCompleted);
+
+          console.log(
+            "AIInterview - Loaded existing responses:",
+            existingResponses
+          );
+        } else {
+        }
+      } catch (error) {
+        console.error("Error loading existing assessment:", error);
+      } finally {
+        setIsLoadingExisting(false);
+      }
+    };
+
+    loadExistingAssessment();
+  }, []);
 
   const handleResponse = (value: any) => {
     setResponses((prev) => ({
@@ -138,14 +221,9 @@ export function AIInterview({ onComplete, onCancel }: AIInterviewProps) {
   };
 
   const handleGenerateTasks = async () => {
-    setIsGenerating(true);
-
     try {
       // Convert responses to HomeAssessment format
-      const assessment: HomeAssessment = {
-        id: "", // Will be set by the API
-        created_at: new Date().toISOString(),
-        user_id: "", // Will be set by the API
+      const assessment: HomeAssessmentInput = {
         home_type: responses.home_type as HomeType,
         lifestyle: responses.lifestyle as Lifestyle,
         cleaning_preferences:
@@ -164,11 +242,9 @@ export function AIInterview({ onComplete, onCancel }: AIInterviewProps) {
         })),
       };
 
-      onComplete(assessment);
+      onComplete(assessment as HomeAssessmentInput);
     } catch (error) {
       console.error("Error generating tasks:", error);
-    } finally {
-      setIsGenerating(false);
     }
   };
 
@@ -314,7 +390,7 @@ export function AIInterview({ onComplete, onCancel }: AIInterviewProps) {
     return icons[currentQuestion.id] || <Home className="w-5 h-5" />;
   };
 
-  if (isGenerating) {
+  if (isLoading) {
     return (
       <Card className="p-8 text-center">
         <div className="flex flex-col items-center space-y-4">
@@ -328,6 +404,31 @@ export function AIInterview({ onComplete, onCancel }: AIInterviewProps) {
             {language === "es"
               ? "Nuestro AI está analizando tu hogar y creando un plan de limpieza personalizado."
               : "Our AI is analyzing your home and creating a personalized cleaning plan."}
+          </p>
+          <div className="text-sm text-gray-500">
+            {language === "es"
+              ? "Esto puede tomar unos segundos..."
+              : "This may take a few seconds..."}
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
+  if (isLoadingExisting) {
+    return (
+      <Card className="p-8 text-center">
+        <div className="flex flex-col items-center space-y-4">
+          <LoadingSpinner size="lg" />
+          <h3 className="text-xl font-semibold text-gray-900">
+            {language === "es"
+              ? "Cargando evaluación existente..."
+              : "Loading existing assessment..."}
+          </h3>
+          <p className="text-gray-600">
+            {language === "es"
+              ? "Buscando tu evaluación anterior del hogar..."
+              : "Looking for your previous home assessment..."}
           </p>
         </div>
       </Card>
@@ -354,6 +455,20 @@ export function AIInterview({ onComplete, onCancel }: AIInterviewProps) {
         </div>
       </div>
 
+      {/* Existing Data Indicator */}
+      {Object.keys(responses).length > 0 && (
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+            <span className="text-sm text-blue-800">
+              {language === "es"
+                ? "Datos cargados de tu evaluación anterior"
+                : "Data loaded from your previous assessment"}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Question */}
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-4">
@@ -362,7 +477,11 @@ export function AIInterview({ onComplete, onCancel }: AIInterviewProps) {
             {getQuestionLabel(currentQuestion.id)}
           </h2>
         </div>
-        <p className="text-gray-600 mb-4">{currentQuestion.question}</p>
+        <p className="text-gray-600 mb-4">
+          {language === "es" && currentQuestion.question_es
+            ? currentQuestion.question_es
+            : currentQuestion.question}
+        </p>
         {renderQuestion()}
       </div>
 
@@ -383,14 +502,20 @@ export function AIInterview({ onComplete, onCancel }: AIInterviewProps) {
 
           <Button
             onClick={handleNext}
-            disabled={!responses[currentQuestion.id]}
+            disabled={responses[currentQuestion.id] === undefined}
             className="flex items-center space-x-2"
           >
             {currentQuestionIndex === INTERVIEW_QUESTIONS.length - 1 ? (
               <>
                 <CheckCircle className="w-4 h-4" />
                 <span>
-                  {language === "es" ? "Generar Tareas" : "Generate Tasks"}
+                  {Object.keys(responses).length > 0
+                    ? language === "es"
+                      ? "Actualizar Tareas"
+                      : "Update Tasks"
+                    : language === "es"
+                    ? "Generar Tareas"
+                    : "Generate Tasks"}
                 </span>
               </>
             ) : (

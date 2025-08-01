@@ -22,24 +22,75 @@ export async function PATCH(
     tomorrow.setDate(tomorrow.getDate() + 1);
     const tomorrowDate = tomorrow.toISOString().split("T")[0];
 
-    // Update the task's due date to tomorrow
-    const { data: task, error } = await supabase
-      .from("tasks")
-      .update({ due_date: tomorrowDate })
+    // First, check if this is a task instance
+    const { data: taskInstance, error: instanceError } = await supabase
+      .from("task_instances")
+      .select(
+        `
+        *,
+        user_tasks!inner(
+          user_id
+        )
+      `
+      )
       .eq("id", taskId)
-      .eq("user_id", user.id)
-      .select()
+      .eq("user_tasks.user_id", user.id)
       .single();
 
-    if (error) {
-      console.error("Error updating task:", error);
-      return NextResponse.json(
-        { error: "Failed to update task" },
-        { status: 500 }
-      );
+    if (taskInstance) {
+      // Update the task instance's due date to tomorrow
+      const { data: updatedInstance, error: updateError } = await supabase
+        .from("task_instances")
+        .update({ due_date: tomorrowDate })
+        .eq("id", taskId)
+        .select()
+        .single();
+
+      if (updateError) {
+        console.error("Error updating task instance:", updateError);
+        return NextResponse.json(
+          { error: "Failed to update task instance" },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json({ task: updatedInstance });
     }
 
-    return NextResponse.json({ task });
+    // If not a task instance, check if it's a user task and create an instance
+    const { data: userTask, error: userTaskError } = await supabase
+      .from("user_tasks")
+      .select("*")
+      .eq("id", taskId)
+      .eq("user_id", user.id)
+      .single();
+
+    if (userTask) {
+      // Create a new task instance for tomorrow
+      const { data: newInstance, error: createError } = await supabase
+        .from("task_instances")
+        .insert({
+          user_task_id: taskId,
+          due_date: tomorrowDate,
+          completed: false,
+          tools_used: [],
+        })
+        .select()
+        .single();
+
+      if (createError) {
+        console.error("Error creating task instance:", createError);
+        return NextResponse.json(
+          { error: "Failed to create task instance" },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json({ task: newInstance });
+    }
+
+    // If neither found, return error
+    return NextResponse.json({ error: "Task not found" }, { status: 404 });
   } catch (error) {
     console.error("Error in move-to-tomorrow:", error);
     return NextResponse.json(

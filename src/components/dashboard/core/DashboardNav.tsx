@@ -5,15 +5,11 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
   Sparkles,
-  Calendar,
-  BarChart3,
   LogOut,
   User,
   List,
   BrushCleaning,
-  Trophy,
   BookOpen,
-  Star,
   Coins,
   Gem,
 } from "lucide-react";

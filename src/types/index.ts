@@ -64,52 +64,56 @@ export interface HomeArea extends BaseEntity {
 // =====================================================
 
 // Task Template (now with gamification data)
-export interface TaskTemplate extends BaseEntity {
-  template_id: string; // References JSON files
+export interface TaskTemplate {
+  id: string;
+  template_id: string;
   name: string;
-  description?: string;
-  category: TaskCategory;
+  description: string;
+  category: string;
   base_frequency_days: number;
-  importance_level: number; // 1-5 scale
-  health_impact?: string;
-  scientific_source?: string;
-  source_url?: string;
+  importance_level: number;
+  health_impact: string;
+  scientific_source: string;
+  source_url: string;
   ai_explanation?: string;
   exp_reward: number;
   area_health_impact: number;
-  tools_required: string[]; // Tool IDs from cleaning-tools.json
+  tools_required: string[];
   tools_usage: Record<
     string,
-    {
-      durability_loss: number;
-      clean_after_uses: number;
-    }
+    { durability_loss: number; clean_after_uses: number }
   >;
-  language: "en" | "es";
+  room_specific?: string;
+  language: string;
   is_ai_generated: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 // Task Subtask (enhanced with gamification)
-export interface TaskSubtask extends BaseEntity {
+export interface TaskSubtask {
+  id: string;
   template_id: string;
   title: string;
-  description?: string;
+  description: string;
   estimated_minutes: number;
   order_index: number;
   is_required: boolean;
   exp_reward: number;
   tools_needed: string[];
-  difficulty: "easy" | "medium" | "hard";
+  difficulty: string;
+  created_at: string;
+  updated_at: string;
 }
 
 // User Task (personalized from template)
-export interface UserTask extends BaseEntity {
+export interface UserTask {
+  id: string;
   user_id: string;
   template_id: string;
-  custom_frequency_days?: number;
-  custom_name?: string;
-  custom_description?: string;
   is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 // Task Instance (enhanced with gamification tracking)
@@ -366,6 +370,12 @@ export interface HomeAssessmentFormData {
   cleaning_preferences: CleaningPreference;
 }
 
+// Type for AI assessment without server-generated fields
+export type HomeAssessmentInput = Omit<
+  HomeAssessment,
+  "id" | "created_at" | "user_id"
+>;
+
 // =====================================================
 // API RESPONSE TYPES
 // =====================================================
@@ -472,11 +482,20 @@ export interface AIRecommendation {
   area_health_impact: number;
   tools_required: string[];
   subtasks?: SubtaskFormData[];
+  source: "gemini" | "fallback";
+  difficulty?: "easy" | "medium" | "hard";
+  estimated_total_minutes?: number;
+  tools_usage?: Record<
+    string,
+    { durability_loss: number; clean_after_uses: number }
+  >;
+  room_specific?: string;
 }
 
 export interface AIInterviewQuestion {
   id: string;
   question: string;
+  question_es?: string;
   type: "text" | "select" | "multiselect" | "boolean";
   options?: string[];
   required: boolean;

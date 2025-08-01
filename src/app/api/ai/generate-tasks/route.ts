@@ -34,15 +34,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Store the home assessment
+    // Store the home assessment (upsert to handle existing assessments)
     const { data: storedAssessment, error: assessmentError } = await supabase
       .from("home_assessments")
-      .insert([
+      .upsert(
+        [
+          {
+            ...assessment,
+            user_id: user.id,
+            language,
+          },
+        ],
         {
-          ...assessment,
-          user_id: user.id,
-        },
-      ])
+          onConflict: "user_id",
+          ignoreDuplicates: false,
+        }
+      )
       .select()
       .single();
 
@@ -60,9 +67,26 @@ export async function POST(request: NextRequest) {
       language as "en" | "es"
     );
 
+    // Determine the source of recommendations
+    const source =
+      recommendations.length > 0 ? recommendations[0].source : "unknown";
+    const sourceCount = recommendations.filter(
+      (r) => r.source === "gemini"
+    ).length;
+    const fallbackCount = recommendations.filter(
+      (r) => r.source === "fallback"
+    ).length;
+
     return NextResponse.json({
       assessment: storedAssessment,
       recommendations,
+      metadata: {
+        total_tasks: recommendations.length,
+        source: source,
+        gemini_tasks: sourceCount,
+        fallback_tasks: fallbackCount,
+        generated_at: new Date().toISOString(),
+      },
     });
   } catch (error) {
     console.error("AI Task Generation Error:", error);

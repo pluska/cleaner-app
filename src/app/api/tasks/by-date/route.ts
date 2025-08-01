@@ -22,28 +22,55 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get tasks that are due on the specified date
-    const { data: tasks } = await supabase
-      .from("tasks")
-      .select("*")
-      .eq("user_id", user.id)
-      .eq("due_date", date)
-      .order("priority", { ascending: false });
-
-    // Get task instances for the specified date
-    const { data: taskInstances } = await supabase
+    // Get task instances for the specified date with template information
+    const { data: taskInstances, error: taskInstancesError } = await supabase
       .from("task_instances")
       .select(
         `
         *,
-        tasks (*)
+        user_tasks!inner(
+          *,
+          task_templates(*)
+        )
       `
       )
-      .eq("user_id", user.id)
+      .eq("user_tasks.user_id", user.id)
       .eq("due_date", date)
       .order("created_at", { ascending: true });
 
-    return NextResponse.json({ tasks, taskInstances });
+    if (taskInstancesError) {
+      console.error("Error fetching task instances:", taskInstancesError);
+      return NextResponse.json(
+        { error: "Failed to fetch tasks" },
+        { status: 500 }
+      );
+    }
+
+    // Get user tasks that don't have instances yet (for display purposes)
+    const { data: userTasks, error: userTasksError } = await supabase
+      .from("user_tasks")
+      .select(
+        `
+        *,
+        task_templates(*)
+      `
+      )
+      .eq("user_id", user.id)
+      .eq("is_active", true);
+
+    if (userTasksError) {
+      console.error("Error fetching user tasks:", userTasksError);
+      return NextResponse.json(
+        { error: "Failed to fetch tasks" },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      taskInstances,
+      userTasks,
+      date,
+    });
   } catch (error) {
     console.error("Error fetching tasks by date:", error);
     return NextResponse.json(

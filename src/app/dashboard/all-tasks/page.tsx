@@ -11,30 +11,41 @@ export default async function AllTasksPage() {
     return null;
   }
 
-  // Get all base tasks
-  const { data: baseTasks } = await supabase
-    .from("tasks")
-    .select("*")
+  // Get all user tasks with template information
+  const { data: userTasks, error: userTasksError } = await supabase
+    .from("user_tasks")
+    .select(
+      `
+      *,
+      task_templates(*)
+    `
+    )
     .eq("user_id", user.id)
+    .eq("is_active", true)
     .order("created_at", { ascending: false });
 
+  if (userTasksError) {
+    console.error("Error fetching user tasks:", userTasksError);
+  }
+
   // Get all task instances
-  const { data: taskInstances } = await supabase
+  const { data: taskInstances, error: taskInstancesError } = await supabase
     .from("task_instances")
     .select(
       `
       *,
-      tasks (*)
+      user_tasks!inner(
+        *,
+        task_templates(*)
+      )
     `
     )
-    .eq("user_id", user.id)
+    .eq("user_tasks.user_id", user.id)
     .order("due_date", { ascending: true });
 
-  // Get generation state for recurring tasks
-  const { data: generationState } = await supabase
-    .from("task_generation_state")
-    .select("*")
-    .in("task_id", baseTasks?.map((t) => t.id) || []);
+  if (taskInstancesError) {
+    console.error("Error fetching task instances:", taskInstancesError);
+  }
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -47,9 +58,8 @@ export default async function AllTasksPage() {
       </div>
 
       <AllTasksView
-        baseTasks={baseTasks || []}
+        userTasks={userTasks || []}
         taskInstances={taskInstances || []}
-        generationState={generationState || []}
         userId={user.id}
       />
     </div>
