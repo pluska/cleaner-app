@@ -55,6 +55,7 @@ export function AITaskCreation({ onComplete, onCancel }: AITaskCreationProps) {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           ...homeAssessment,
           language: language,
@@ -109,6 +110,7 @@ export function AITaskCreation({ onComplete, onCancel }: AITaskCreationProps) {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           tasks: selectedTasks,
         }),

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { SessionProvider } from "@/contexts/LanguageContext";
+import { SessionExpiredNotification } from "@/components/ui/feedback/SessionExpiredNotification";
 import { ErrorBoundary } from "@/components/ui/data-display/ErrorBoundary";
 
 const geistSans = Geist({
@@ -33,7 +35,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-bg text-text`}
       >
         <LanguageProvider>
-          <ErrorBoundary>{children}</ErrorBoundary>
+          <SessionProvider>
+            <ErrorBoundary>
+              <SessionExpiredNotification />
+              {children}
+            </ErrorBoundary>
+          </SessionProvider>
         </LanguageProvider>
       </body>
     </html>

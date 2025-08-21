@@ -96,6 +96,15 @@ export const DashboardDragDropProvider: React.FC<
       try {
         const res = await fetch(`/api/tasks/${taskId}/move`, {
           method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            fromArea: "coming-soon", // Assuming 'coming-soon' is the source area
+            toArea: "today", // Assuming 'today' is the destination area
+            date: selectedDate,
+          }),
         });
         if (res.ok) {
           const { task } = await res.json();
@@ -124,6 +133,14 @@ export const DashboardDragDropProvider: React.FC<
       try {
         const res = await fetch(`/api/tasks/${taskId}/move-to-tomorrow`, {
           method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            fromArea: "today", // Assuming 'today' is the source area
+            date: selectedDate,
+          }),
         });
         if (res.ok) {
           const { task } = await res.json();

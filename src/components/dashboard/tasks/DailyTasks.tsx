@@ -91,6 +91,7 @@ export function DailyTasks({
       const res = await fetch(`/api/tasks/${taskId}/reschedule`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ due_date: newDate }),
       });
       if (res.ok) {

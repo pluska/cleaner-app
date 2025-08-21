@@ -12,7 +12,7 @@ import {
   Heart,
 } from "lucide-react";
 import { Task, LegacyTaskFormData } from "@/types";
-import { updateTask, deleteTask, toggleTask } from "@/libs/api";
+import { updateTask, deleteTask, toggleTaskCompletion } from "@/libs/api";
 import { Button } from "@/components/ui/forms/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { LoadingSpinner } from "@/components/ui/feedback/LoadingSpinner";
@@ -86,10 +86,12 @@ export function TaskItem({
     try {
       // Use the new gamified completion endpoint
       const response = await fetch(`/api/tasks/${taskId}/complete`, {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
+        body: JSON.stringify({ completed: !task.completed }),
       });
 
       if (response.ok) {
@@ -102,7 +104,7 @@ export function TaskItem({
         }
       } else {
         // Fallback to old toggle endpoint
-        const { task: updatedTask } = await toggleTask(taskId);
+        const { task: updatedTask } = await toggleTaskCompletion(taskId);
         onTaskUpdated(updatedTask);
       }
     } catch (error) {

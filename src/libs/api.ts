@@ -1,6 +1,17 @@
 import { Task, TaskFormData, LegacyTaskFormData } from "@/types";
 
-// API utility functions for secure server-side operations
+// Helper function to handle 401 responses
+function handleUnauthorizedResponse(response: Response) {
+  if (response.status === 401) {
+    // Dispatch a custom event that the session context can listen to
+    window.dispatchEvent(new CustomEvent("session-expired"));
+
+    // Return a special response object that indicates unauthorized
+    // instead of throwing an error immediately
+    return { unauthorized: true, response };
+  }
+  return { unauthorized: false, response };
+}
 
 export async function fetchTasks(filters?: {
   category?: string;
@@ -15,7 +26,15 @@ export async function fetchTasks(filters?: {
     params.append("completed", filters.completed.toString());
   if (filters?.dueDate) params.append("dueDate", filters.dueDate);
 
-  const response = await fetch(`/api/tasks?${params.toString()}`);
+  const response = await fetch(`/api/tasks?${params.toString()}`, {
+    credentials: "include",
+  });
+
+  const { unauthorized } = handleUnauthorizedResponse(response);
+  if (unauthorized) {
+    // Return empty data instead of throwing error
+    return { tasks: [], instances: [] };
+  }
 
   if (!response.ok) {
     const error = await response.json();
@@ -33,8 +52,14 @@ export async function createTask(
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(taskData),
   });
+
+  const { unauthorized } = handleUnauthorizedResponse(response);
+  if (unauthorized) {
+    throw new Error("Your session has expired. Please log in again.");
+  }
 
   if (!response.ok) {
     const error = await response.json();
@@ -46,15 +71,21 @@ export async function createTask(
 
 export async function updateTask(
   taskId: string,
-  taskData: Partial<TaskFormData | LegacyTaskFormData>
+  updates: Partial<TaskFormData>
 ): Promise<{ task: Task }> {
   const response = await fetch(`/api/tasks/${taskId}`, {
-    method: "PUT",
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(taskData),
+    credentials: "include",
+    body: JSON.stringify(updates),
   });
+
+  const { unauthorized } = handleUnauthorizedResponse(response);
+  if (unauthorized) {
+    throw new Error("Your session has expired. Please log in again.");
+  }
 
   if (!response.ok) {
     const error = await response.json();
@@ -64,36 +95,53 @@ export async function updateTask(
   return response.json();
 }
 
-export async function deleteTask(
-  taskId: string
-): Promise<{ success: boolean }> {
+export async function deleteTask(taskId: string): Promise<void> {
   const response = await fetch(`/api/tasks/${taskId}`, {
     method: "DELETE",
+    credentials: "include",
   });
+
+  const { unauthorized } = handleUnauthorizedResponse(response);
+  if (unauthorized) {
+    throw new Error("Your session has expired. Please log in again.");
+  }
 
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.error || "Failed to delete task");
   }
-
-  return response.json();
 }
 
-export async function toggleTask(taskId: string): Promise<{ task: Task }> {
+export async function toggleTaskCompletion(
+  taskId: string
+): Promise<{ task: Task }> {
   const response = await fetch(`/api/tasks/${taskId}/toggle`, {
     method: "PATCH",
+    credentials: "include",
   });
+
+  const { unauthorized } = handleUnauthorizedResponse(response);
+  if (unauthorized) {
+    throw new Error("Your session has expired. Please log in again.");
+  }
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.error || "Failed to toggle task");
+    throw new Error(error.error || "Failed to toggle task completion");
   }
 
   return response.json();
 }
 
 export async function getTask(taskId: string): Promise<{ task: Task }> {
-  const response = await fetch(`/api/tasks/${taskId}`);
+  const response = await fetch(`/api/tasks/${taskId}`, {
+    credentials: "include",
+  });
+
+  const { unauthorized } = handleUnauthorizedResponse(response);
+  if (unauthorized) {
+    throw new Error("Your session has expired. Please log in again.");
+  }
 
   if (!response.ok) {
     const error = await response.json();

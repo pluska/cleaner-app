@@ -18,7 +18,10 @@ export const ComingSoonTasksWrapper: React.FC<ComingSoonTasksWrapperProps> = ({
     setLoading(true);
     const today = new Date().toISOString().split("T")[0];
     const res = await fetch(
-      `/api/tasks?user_id=${userId}&coming_soon=1&today=${today}`
+      `/api/tasks?user_id=${userId}&coming_soon=1&today=${today}`,
+      {
+        credentials: "include",
+      }
     );
     if (res.ok) {
       const data = await res.json();

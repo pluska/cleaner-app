@@ -36,7 +36,9 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
 
     // Fetch tasks for the selected date
     try {
-      const res = await fetch(`/api/tasks/by-date?date=${date}`);
+      const res = await fetch(`/api/tasks/by-date?date=${date}`, {
+        credentials: "include", // This ensures cookies are sent with the request
+      });
       if (res.ok) {
         const { tasks, taskInstances } = await res.json();
 
