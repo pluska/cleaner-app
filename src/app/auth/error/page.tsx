@@ -16,6 +16,8 @@ function AuthErrorContent() {
 
   const getErrorMessage = () => {
     switch (error) {
+      case "link_expired":
+        return t("Your password reset link has expired", language);
       case "access_denied":
         if (errorDescription?.includes("expired")) {
           return "The email confirmation link has expired. Please try signing up again.";
@@ -50,10 +52,24 @@ function AuthErrorContent() {
 
             <p className="text-gray-600 mb-6">{getErrorMessage()}</p>
 
+            {error === "link_expired" && (
+              <p className="text-sm text-gray-500 mb-6">
+                {t("Please request a new password reset link", language)}
+              </p>
+            )}
+
             <div className="space-y-3">
-              <Link href="/auth/login">
-                <Button className="w-full">{t("Try Again", language)}</Button>
-              </Link>
+              {error === "link_expired" ? (
+                <Link href="/auth/forgot-password">
+                  <Button className="w-full">
+                    {t("Request New Reset Link", language)}
+                  </Button>
+                </Link>
+              ) : (
+                <Link href="/auth/login">
+                  <Button className="w-full">{t("Try Again", language)}</Button>
+                </Link>
+              )}
 
               <Link href="/">
                 <Button variant="outline" className="w-full font-medium">

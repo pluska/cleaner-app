@@ -35,12 +35,36 @@ export const translations = {
     "Redirecting to dashboard...": "Redirecting to dashboard...",
     "Authentication Error": "Authentication Error",
     "Try Again": "Try Again",
+    "Try again": "Try again",
+    "Back to Sign In": "Back to Sign In",
     "Back to Home": "Back to Home",
     "This email is already registered. Please sign in instead.":
       "This email is already registered. Please sign in instead.",
     "Account created successfully! Please check your email.":
       "Account created successfully! Please check your email.",
     "Successfully signed in!": "Successfully signed in!",
+    "Forgot Password?": "Forgot Password?",
+    "Reset Password": "Reset Password",
+    "Send Reset Link": "Send Reset Link",
+    "Password Reset": "Password Reset",
+    "Enter your email to receive a password reset link":
+      "Enter your email to receive a password reset link",
+    "Reset link sent! Check your email.": "Reset link sent! Check your email.",
+    "Enter your new password": "Enter your new password",
+    "New Password": "New Password",
+    "Confirm New Password": "Confirm New Password",
+    "Password updated successfully!": "Password updated successfully!",
+    "Passwords do not match": "Passwords do not match",
+    "Password must be at least 6 characters":
+      "Password must be at least 6 characters",
+    "Didn't receive the email?": "Didn't receive the email?",
+    "Request new reset link": "Request new reset link",
+    "Link Expired": "Link Expired",
+    "Your password reset link has expired":
+      "Your password reset link has expired",
+    "Please request a new password reset link":
+      "Please request a new password reset link",
+    "Request New Reset Link": "Request New Reset Link",
 
     // Dashboard
     "Welcome back": "Welcome back",
@@ -258,12 +282,36 @@ export const translations = {
     "Redirecting to dashboard...": "Redirigiendo al panel...",
     "Authentication Error": "Error de Autenticación",
     "Try Again": "Intentar de Nuevo",
+    "Try again": "Intentar de nuevo",
+    "Back to Sign In": "Volver a Iniciar Sesión",
     "Back to Home": "Volver al Inicio",
     "This email is already registered. Please sign in instead.":
       "Este correo ya está registrado. Por favor inicia sesión.",
     "Account created successfully! Please check your email.":
       "Cuenta creada exitosamente. Por favor revisa tu correo.",
     "Successfully signed in!": "¡Sesión iniciada exitosamente!",
+    "Forgot Password?": "¿Olvidaste tu contraseña?",
+    "Reset Password": "Restablecer Contraseña",
+    "Send Reset Link": "Enviar Enlace de Restablecimiento",
+    "Password Reset": "Restablecimiento de Contraseña",
+    "Enter your email to receive a password reset link":
+      "Ingresa tu correo para recibir un enlace de restablecimiento de contraseña",
+    "Reset link sent! Check your email.": "¡Enlace enviado! Revisa tu correo.",
+    "Enter your new password": "Ingresa tu nueva contraseña",
+    "New Password": "Nueva Contraseña",
+    "Confirm New Password": "Confirmar Nueva Contraseña",
+    "Password updated successfully!": "¡Contraseña actualizada exitosamente!",
+    "Passwords do not match": "Las contraseñas no coinciden",
+    "Password must be at least 6 characters":
+      "La contraseña debe tener al menos 6 caracteres",
+    "Didn't receive the email?": "¿No recibiste el correo?",
+    "Request new reset link": "Solicitar nuevo enlace de restablecimiento",
+    "Link Expired": "Enlace Expirado",
+    "Your password reset link has expired":
+      "Tu enlace de restablecimiento de contraseña ha expirado",
+    "Please request a new password reset link":
+      "Por favor solicita un nuevo enlace de restablecimiento",
+    "Request New Reset Link": "Solicitar Nuevo Enlace de Restablecimiento",
 
     // Dashboard
     "Welcome back": "Bienvenido de vuelta",

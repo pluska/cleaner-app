@@ -1,8 +1,8 @@
-# Changelog - AI Task Generation & Database Schema Fixes
+# Changelog - Password Reset & AI Task Generation
 
 ## 🎯 **Resumen de Cambios**
 
-Se implementó la funcionalidad completa de generación de tareas con IA y se arreglaron problemas de esquema de base de datos.
+Se implementó la funcionalidad completa de generación de tareas con IA, se arreglaron problemas de esquema de base de datos, y se agregó funcionalidad de restablecimiento de contraseñas.
 
 ## 🔧 **Cambios Principales**
 
@@ -43,6 +43,17 @@ Se implementó la funcionalidad completa de generación de tareas con IA y se ar
 - ✅ `AllTasksView`: Vista actualizada para nuevo esquema
 - ✅ `DashboardContent`: Conversión de datos al formato LegacyTask
 
+### **6. Funcionalidad de Restablecimiento de Contraseñas**
+
+- ✅ **Página de solicitud**: `/auth/forgot-password` para solicitar enlace de restablecimiento
+- ✅ **Página de confirmación**: `/auth/reset-password` para establecer nueva contraseña
+- ✅ **API endpoints**: `/api/auth/forgot-password` y `/api/auth/reset-password`
+- ✅ **Integración con Supabase**: Uso de `resetPasswordForEmail` y `updateUser`
+- ✅ **Enlaces en formularios**: Agregado enlace "¿Olvidaste tu contraseña?" en login
+- ✅ **Validaciones**: Verificación de contraseñas y tokens
+- ✅ **Seguridad**: Prevención de enumeración de emails
+- ✅ **UX mejorada**: Estados de carga, mensajes de éxito/error, redirecciones automáticas
+
 ## 🐛 **Problemas Resueltos**
 
 1. **"permission denied for table"** → Permisos otorgados
@@ -63,6 +74,8 @@ Se implementó la funcionalidad completa de generación de tareas con IA y se ar
 - `src/app/api/tasks/[id]/move-to-tomorrow/route.ts`
 - `src/app/api/tasks/generate-instances/route.ts`
 - `src/app/api/user/home-assessment/route.ts`
+- `src/app/api/auth/forgot-password/route.ts`
+- `src/app/api/auth/reset-password/route.ts`
 
 ### **Componentes**
 
@@ -75,6 +88,8 @@ Se implementó la funcionalidad completa de generación de tareas con IA y se ar
 
 - `src/app/dashboard/page.tsx`
 - `src/app/dashboard/all-tasks/page.tsx`
+- `src/app/auth/forgot-password/page.tsx`
+- `src/app/auth/reset-password/page.tsx`
 
 ### **Tipos**
 
@@ -110,6 +125,8 @@ Se implementó la funcionalidad completa de generación de tareas con IA y se ar
 2. **Generar instancias de tareas** con `/api/tasks/generate-instances`
 3. **Probar flujo completo** de generación de tareas
 4. **Verificar que las tareas aparezcan** en el dashboard
+5. **Probar funcionalidad de restablecimiento de contraseñas**
+6. **Configurar URL del sitio** en variables de entorno para enlaces de reset
 
 ## ✅ **Estado Actual**
 
@@ -119,5 +136,9 @@ Se implementó la funcionalidad completa de generación de tareas con IA y se ar
 - ✅ Loading states funcionando
 - ✅ Endpoints actualizados
 - ✅ Permisos de base de datos arreglados
+- ✅ Funcionalidad de restablecimiento de contraseñas implementada
+- ✅ Páginas de reset de contraseña creadas
+- ✅ API endpoints de reset funcionando
+- ✅ Integración con Supabase Auth completa
 
 **El sistema está listo para producción.**

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/libs/supabase";
 import { Button } from "@/components/ui/forms/Button";
 import { Input } from "@/components/ui/forms/Input";
@@ -169,6 +170,18 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
           required
         />
       </div>
+      
+      {mode === "login" && (
+        <div className="text-right">
+          <Link
+            href="/auth/forgot-password"
+            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+          >
+            {t("Forgot Password?", language)}
+          </Link>
+        </div>
+      )}
+      
       {error && <ErrorMessage message={error} />}
 
       {success && (
