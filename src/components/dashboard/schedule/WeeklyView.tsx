@@ -119,10 +119,10 @@ export const WeeklyView: React.FC<WeeklyViewProps> = ({
           onClick={goToPreviousWeek}
           className="p-2 hover:bg-base rounded-md transition-colors"
         >
-          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 text-text" />
+          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 text-dark" />
         </button>
 
-        <div className="text-sm sm:text-base lg:text-lg font-semibold text-text text-center px-2">
+        <div className="text-sm sm:text-base lg:text-lg font-semibold text-dark text-center px-2">
           {currentWeekStart.toLocaleDateString(
             language === "es" ? "es-ES" : "en-US",
             { month: "long", year: "numeric" }
@@ -133,7 +133,7 @@ export const WeeklyView: React.FC<WeeklyViewProps> = ({
           onClick={goToNextWeek}
           className="p-2 hover:bg-base rounded-md transition-colors"
         >
-          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-text" />
+          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 text-dark" />
         </button>
       </div>
 

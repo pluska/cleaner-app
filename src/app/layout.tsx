@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-bg text-text`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base text-dark`}
       >
         <LanguageProvider>
           <SessionProvider>

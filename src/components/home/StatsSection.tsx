@@ -25,19 +25,19 @@ export function StatsSection() {
         <div className="text-3xl font-bold text-primary mb-2">
           {animatedStats.users.toLocaleString()}+
         </div>
-        <p className="text-text/70 font-medium">
+        <p className="text-dark/70 font-medium">
           {language === "es" ? "Usuarios Activos" : "Active Users"}
         </p>
       </Card>
 
       <Card className="text-center p-6 hover:scale-105 transition-transform duration-300">
-        <div className="bg-accent/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <CheckCircle className="h-8 w-8 text-accent" />
+        <div className="bg-secondary/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <CheckCircle className="h-8 w-8 text-secondary" />
         </div>
-        <div className="text-3xl font-bold text-accent mb-2">
+        <div className="text-3xl font-bold text-secondary mb-2">
           {animatedStats.tasks.toLocaleString()}+
         </div>
-        <p className="text-text/70 font-medium">
+        <p className="text-dark/70 font-medium">
           {language === "es" ? "Tareas Completadas" : "Tasks Completed"}
         </p>
       </Card>
@@ -46,22 +46,22 @@ export function StatsSection() {
         <div className="bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Award className="h-8 w-8 text-primary" />
         </div>
-        <div className="text-2xl font-bold text-accent mb-2">
+        <div className="text-2xl font-bold text-secondary mb-2">
           {animatedStats.achievements.toLocaleString()}+
         </div>
-        <p className="text-text/70 font-medium">
+        <p className="text-dark/70 font-medium">
           {language === "es" ? "Logros Desbloqueados" : "Achievements Unlocked"}
         </p>
       </Card>
 
       <Card className="text-center p-6 hover:scale-105 transition-transform duration-300">
-        <div className="bg-accent/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <TrendingUp className="h-8 w-8 text-accent" />
+        <div className="bg-secondary/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <TrendingUp className="h-8 w-8 text-secondary" />
         </div>
-        <div className="text-3xl font-bold text-accent mb-2">
+        <div className="text-3xl font-bold text-secondary mb-2">
           {animatedStats.levels}
         </div>
-        <p className="text-text/70 font-medium">
+        <p className="text-dark/70 font-medium">
           {language === "es" ? "Niveles Máximos" : "Max Levels"}
         </p>
       </Card>

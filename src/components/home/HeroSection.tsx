@@ -15,10 +15,10 @@ export function HeroSection({ onGetStarted, onSignIn }: HeroSectionProps) {
 
   return (
     <div className="text-left">
-      <h1 className="text-5xl md:text-6xl font-bold text-text mb-6 leading-tight">
+      <h1 className="text-5xl md:text-6xl font-bold text-dark mb-6 leading-tight">
         {t("Level Up Your Cleaning", language)}
       </h1>
-      <p className="text-xl text-text/70 mb-8 max-w-lg leading-relaxed">
+      <p className="text-xl text-dark/70 mb-8 max-w-lg leading-relaxed">
         {t(
           "Turn chores into challenges. Build your schedule, track progress, and keep your home sparkling.",
           language

@@ -206,7 +206,7 @@ export const DashboardDragDropProvider: React.FC<
           <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-lg p-6 flex items-center space-x-3">
               <LoadingSpinner size="md" />
-              <span className="text-text font-medium">
+              <span className="text-dark font-medium">
                 {t("Moving task...", language)}
               </span>
             </div>

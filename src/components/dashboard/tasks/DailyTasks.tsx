@@ -168,7 +168,7 @@ export function DailyTasks({
               category: e.target.value as Task["category"],
             })
           }
-          className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+          className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-dark bg-base shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
           {getTaskCategories(language).map((category) => (
             <option key={category.value} value={category.value}>
@@ -184,7 +184,7 @@ export function DailyTasks({
               priority: e.target.value as Task["priority"],
             })
           }
-          className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+          className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-dark bg-base shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
           {getTaskPriorities(language).map((priority) => (
             <option key={priority.value} value={priority.value}>
@@ -200,7 +200,7 @@ export function DailyTasks({
               frequency: e.target.value as Task["frequency"],
             })
           }
-          className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+          className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-dark bg-base shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
           {getTaskFrequencies(language).map((frequency) => (
             <option key={frequency.value} value={frequency.value}>
@@ -223,7 +223,7 @@ export function DailyTasks({
                   : undefined,
               })
             }
-            className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+            className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-dark bg-base shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
           >
             <option value="">{t("Select day of week", language)}</option>
             {daysOfWeek.map((day) => (
@@ -254,7 +254,7 @@ export function DailyTasks({
           }
           className="h-4 w-4 text-primary focus:ring-primary border-base rounded"
         />
-        <label htmlFor="is_recurring" className="text-sm font-medium text-text">
+        <label htmlFor="is_recurring" className="text-sm font-medium text-dark">
           {t("Make this a recurring task", language)}
         </label>
       </div>
@@ -287,18 +287,18 @@ export function DailyTasks({
 
   return (
     <div
-      className={`bg-bg rounded-xl shadow-lg border border-base mb-8 sm:mb-12 ${
+      className={`bg-base rounded-xl shadow-lg border border-base mb-8 sm:mb-12 ${
         isPastDate(selectedDate) ? "opacity-90" : ""
       }`}
     >
       <div className="p-4 sm:p-6 lg:p-8 border-b border-base">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
           {selectedDate === formatDateToYYYYMMDD(new Date()) ? (
-            <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-text">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-dark">
               {t("Today's Tasks", language)}
             </h2>
           ) : (
-            <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-text">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-dark">
               {language === "es"
                 ? `Tareas del ${formatSelectedDate(selectedDate)}`
                 : `${formatSelectedDate(selectedDate)} ${t("tasks", language)}`}
@@ -349,7 +349,7 @@ export function DailyTasks({
         ) : (
           <div className="divide-y divide-base">
             {tasks.length === 0 ? (
-              <div className="p-6 sm:p-8 lg:p-12 text-center text-text/70">
+              <div className="p-6 sm:p-8 lg:p-12 text-center text-dark/70">
                 <p className="text-sm sm:text-base lg:text-lg mb-2">
                   {selectedDate === formatDateToYYYYMMDD(new Date())
                     ? t(

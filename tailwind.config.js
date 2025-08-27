@@ -3,22 +3,20 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        base: "#F9FAFB",
-        primary: "#4CAF91",
-        accent: "#FFD265",
-        dark: "#1F2937",
-        text: "#111827",
-        bg: "#F9FAFB",
+        base: "#FFFFFF",
+        primary: "#3B82F6",
+        secondary: "#10B981",
+        dark: "#111827",
       },
     },
   },
   safelist: [
     {
       pattern:
-        /(bg|text|border|hover:bg|hover:text|focus:bg|focus:text|focus:ring|ring)-(primary|accent|text|base)/,
+        /(bg|text|border|hover:bg|hover:text|focus:bg|focus:text|focus:ring|ring)-(primary|secondary|dark|base)/,
     },
     {
-      pattern: /(text|bg|ring)-(accent|accent\/\d+)/,
+      pattern: /(text|bg|ring)-(secondary|secondary\/\d+)/,
     },
   ],
 };

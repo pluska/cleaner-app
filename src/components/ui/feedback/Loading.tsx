@@ -20,7 +20,7 @@ export function Loading({ size = "md", text, className = "" }: LoadingProps) {
       <div
         className={`${sizeClasses[size]} animate-spin rounded-full border-4 border-base border-t-primary`}
       />
-      {text && <p className="text-base text-text/70 font-medium">{text}</p>}
+      {text && <p className="text-base text-dark/70 font-medium">{text}</p>}
     </div>
   );
 }

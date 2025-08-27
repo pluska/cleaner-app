@@ -18,12 +18,12 @@ export const ComingSoonTasks: React.FC<ComingSoonTasksProps> = ({ tasks }) => {
 
   return (
     <div className="mt-12">
-      <h2 className="text-2xl text-text font-semibold mb-6">
+      <h2 className="text-2xl text-dark font-semibold mb-6">
         {t("Coming Soon", language)}
       </h2>
       <DroppableArea id="coming-soon-tasks" className="min-h-[200px]">
         {tasks.length === 0 ? (
-          <div className="text-text/70 text-center p-12 bg-base rounded-lg">
+          <div className="text-dark/70 text-center p-12 bg-base rounded-lg">
             <p className="text-lg">
               {t("No coming soon tasks. Add one!", language)}
             </p>
@@ -32,11 +32,11 @@ export const ComingSoonTasks: React.FC<ComingSoonTasksProps> = ({ tasks }) => {
           <ul className="space-y-4">
             {tasks.map((task) => (
               <DraggableTask key={task.id} task={task}>
-                <li className="p-6 bg-bg border border-base rounded-lg hover:shadow-lg transition-shadow">
-                  <span className="font-medium text-text text-lg">
+                <li className="p-6 bg-base border border-base rounded-lg hover:shadow-lg transition-shadow">
+                  <span className="font-medium text-dark text-lg">
                     {task.title}
                   </span>
-                  <span className="text-sm text-text/70 ml-3">
+                  <span className="text-sm text-dark/70 ml-3">
                     ({task.due_date})
                   </span>
                 </li>

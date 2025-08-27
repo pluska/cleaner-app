@@ -55,13 +55,13 @@ export function InteractiveTaskCard({
               )}
             </button>
             <div>
-              <h4 className="font-semibold text-text">{title}</h4>
-              <p className="text-sm text-text/60">{description}</p>
+              <h4 className="font-semibold text-dark">{title}</h4>
+              <p className="text-sm text-dark/60">{description}</p>
             </div>
           </div>
           <div className="text-right">
-            <div className="bg-accent/10 px-3 py-1 rounded-full">
-              <span className="text-sm font-medium text-accent">
+            <div className="bg-secondary/10 px-3 py-1 rounded-full">
+              <span className="text-sm font-medium text-secondary">
                 +{totalXpReward} XP
               </span>
             </div>
@@ -81,7 +81,7 @@ export function InteractiveTaskCard({
               >
                 <span
                   className={`${
-                    isSubtaskCompleted ? "text-green-600" : "text-text/70"
+                    isSubtaskCompleted ? "text-green-600" : "text-dark/70"
                   }`}
                 >
                   {subtask.title}
@@ -101,16 +101,16 @@ export function InteractiveTaskCard({
           })}
         </div>
 
-        <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl p-3">
+        <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl p-3">
           <div className="flex items-center justify-between text-sm mb-2">
-            <span className="text-text/70">Progress</span>
-            <span className="text-text font-medium">
+            <span className="text-dark/70">Progress</span>
+            <span className="text-dark font-medium">
               {completedSubtasks.size}/{subtasks.length} completed
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
-              className="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-500"
+              className="bg-gradient-to-r from-primary to-secondary h-2 rounded-full transition-all duration-500"
               style={{
                 width: `${(completedSubtasks.size / subtasks.length) * 100}%`,
               }}

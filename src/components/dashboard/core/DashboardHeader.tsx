@@ -22,10 +22,10 @@ export function DashboardHeader() {
 
   return (
     <div className="mb-12 pb-8 border-b border-base">
-      <h1 className="text-3xl sm:text-4xl font-bold text-text mb-4">
+      <h1 className="text-3xl sm:text-4xl font-bold text-dark mb-4">
         {t("Today", language)}
       </h1>
-      <p className="text-lg sm:text-xl text-text/70 font-medium">
+      <p className="text-lg sm:text-xl text-dark/70 font-medium">
         {formatDate(new Date())}
       </p>
     </div>

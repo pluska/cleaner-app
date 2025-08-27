@@ -77,7 +77,7 @@ export function UserProfile({ profile, onProfileUpdate }: UserProfileProps) {
   const expProgress = ((profile.experience_points % 100) / 100) * 100;
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5">
+    <Card className="p-6 bg-gradient-to-br from-primary/5 to-secondary/5">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">
@@ -103,7 +103,7 @@ export function UserProfile({ profile, onProfileUpdate }: UserProfileProps) {
         </div>
         <div className="w-full bg-gray-200 rounded-full h-3">
           <div
-            className="bg-gradient-to-r from-primary to-accent h-3 rounded-full transition-all duration-300"
+            className="bg-gradient-to-r from-primary to-secondary h-3 rounded-full transition-all duration-300"
             style={{ width: `${expProgress}%` }}
           />
         </div>

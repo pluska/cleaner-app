@@ -222,7 +222,7 @@ export function TaskItem({
               category: e.target.value as Task["category"],
             })
           }
-          className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+          className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-dark bg-base shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
           {getTaskCategories(language).map((category) => (
             <option key={category.value} value={category.value}>
@@ -238,7 +238,7 @@ export function TaskItem({
               priority: e.target.value as Task["priority"],
             })
           }
-          className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+          className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-dark bg-base shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
           {getTaskPriorities(language).map((priority) => (
             <option key={priority.value} value={priority.value}>
@@ -254,7 +254,7 @@ export function TaskItem({
               frequency: e.target.value as Task["frequency"],
             })
           }
-          className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+          className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-dark bg-base shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
         >
           {getTaskFrequencies(language).map((frequency) => (
             <option key={frequency.value} value={frequency.value}>
@@ -277,7 +277,7 @@ export function TaskItem({
                   : undefined,
               })
             }
-            className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-text bg-bg shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+            className="h-10 rounded-lg border-2 border-base px-3 py-2 text-sm font-medium text-dark bg-base shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
           >
             <option value="">{t("Select day of week", language)}</option>
             {daysOfWeek.map((day) => (
@@ -308,7 +308,7 @@ export function TaskItem({
           }
           className="h-4 w-4 text-primary focus:ring-primary border-base rounded"
         />
-        <label htmlFor="is_recurring" className="text-sm font-medium text-text">
+        <label htmlFor="is_recurring" className="text-sm font-medium text-dark">
           {t("Make this a recurring task", language)}
         </label>
       </div>
@@ -352,7 +352,7 @@ export function TaskItem({
               <button
                 onClick={() => handleToggleTask(task.id)}
                 disabled={togglingTasks.has(task.id) || isPastDate}
-                className="text-text/40 hover:text-text/60 hover:bg-text/5 focus:text-text/60 focus:bg-text/5 focus:outline-none focus:ring-2 focus:ring-text/20 transition-all duration-200 p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer group"
+                className="text-dark/40 hover:text-dark/60 hover:bg-text/5 focus:text-dark/60 focus:bg-text/5 focus:outline-none focus:ring-2 focus:ring-text/20 transition-all duration-200 p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer group"
                 title={
                   task.completed
                     ? language === "es"
@@ -382,7 +382,7 @@ export function TaskItem({
                 {task.description && (
                   <p
                     className={`text-sm mb-3 transition-all duration-200 rounded px-1 ${
-                      task.completed ? "text-text/40" : "text-text/70"
+                      task.completed ? "text-dark/40" : "text-dark/70"
                     }`}
                   >
                     {task.description}
@@ -461,7 +461,7 @@ export function TaskItem({
             <div className="flex items-center justify-end space-x-2 sm:space-x-3">
               <button
                 onClick={() => openRescheduleModal(task)}
-                className="text-text/40 hover:text-[#FFD265] hover:bg-[#FFD265]/10 focus:text-[#FFD265] focus:bg-[#FFD265]/10 focus:outline-none focus:ring-2 focus:ring-[#FFD265]/20 transition-all duration-200 p-2 rounded-lg cursor-pointer group bg-base"
+                className="text-dark/40 hover:text-[#FFD265] hover:bg-[#FFD265]/10 focus:text-[#FFD265] focus:bg-[#FFD265]/10 focus:outline-none focus:ring-2 focus:ring-[#FFD265]/20 transition-all duration-200 p-2 rounded-lg cursor-pointer group bg-base"
                 title={
                   language === "es" ? "Reprogramar tarea" : "Reschedule task"
                 }
@@ -470,14 +470,14 @@ export function TaskItem({
               </button>
               <button
                 onClick={() => startEditing(task)}
-                className="text-text/40 hover:text-blue-600 hover:bg-blue-600/10 focus:text-blue-600 focus:bg-blue-600/10 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-all duration-200 p-2 rounded-lg cursor-pointer group bg-base"
+                className="text-dark/40 hover:text-blue-600 hover:bg-blue-600/10 focus:text-blue-600 focus:bg-blue-600/10 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-all duration-200 p-2 rounded-lg cursor-pointer group bg-base"
                 title={language === "es" ? "Editar tarea" : "Edit task"}
               >
                 <Edit className="h-5 w-5 group-hover:scale-110 transition-transform duration-200" />
               </button>
               <button
                 onClick={() => openDeleteConfirmModal(task)}
-                className="text-text/40 hover:text-red-600 hover:bg-red-600/10 focus:text-red-600 focus:bg-red-600/10 focus:outline-none focus:ring-2 focus:ring-red-600/20 transition-all duration-200 p-2 rounded-lg cursor-pointer group bg-base"
+                className="text-dark/40 hover:text-red-600 hover:bg-red-600/10 focus:text-red-600 focus:bg-red-600/10 focus:outline-none focus:ring-2 focus:ring-red-600/20 transition-all duration-200 p-2 rounded-lg cursor-pointer group bg-base"
                 title={language === "es" ? "Eliminar tarea" : "Delete task"}
               >
                 <Trash2 className="h-5 w-5 group-hover:scale-110 transition-transform duration-200" />

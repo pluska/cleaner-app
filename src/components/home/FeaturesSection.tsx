@@ -14,10 +14,10 @@ export function FeaturesSection() {
         <div className="bg-primary/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
           <CheckCircle className="h-8 w-8 text-primary" />
         </div>
-        <h3 className="text-xl font-semibold text-text mb-2">
+        <h3 className="text-xl font-semibold text-dark mb-2">
           {t("Smart Task Management", language)}
         </h3>
-        <p className="text-text/70 mb-4">
+        <p className="text-dark/70 mb-4">
           {t(
             "Create and organize cleaning tasks by room, priority, and frequency. Mark them complete and track your progress.",
             language
@@ -30,32 +30,32 @@ export function FeaturesSection() {
       </Card>
 
       <Card className="text-center p-6 hover:shadow-lg transition-shadow duration-300 group">
-        <div className="bg-accent/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-          <Calendar className="h-8 w-8 text-accent" />
+        <div className="bg-secondary/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+          <Calendar className="h-8 w-8 text-secondary" />
         </div>
-        <h3 className="text-xl font-semibold text-text mb-2">
+        <h3 className="text-xl font-semibold text-dark mb-2">
           {t("Smart Scheduling", language)}
         </h3>
-        <p className="text-text/70 mb-4">
+        <p className="text-dark/70 mb-4">
           {t(
             "AI-powered scheduling that adapts to your routine and suggests optimal cleaning times based on your habits.",
             language
           )}
         </p>
-        <div className="flex items-center justify-center space-x-2 text-sm text-accent">
+        <div className="flex items-center justify-center space-x-2 text-sm text-secondary">
           <Target className="w-4 h-4" />
           <span>Smart AI scheduling</span>
         </div>
       </Card>
 
       <Card className="text-center p-6 hover:shadow-lg transition-shadow duration-300 group">
-        <div className="bg-gradient-to-br from-primary to-accent w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+        <div className="bg-gradient-to-br from-primary to-secondary w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
           <Target className="h-8 w-8 text-white" />
         </div>
-        <h3 className="text-xl font-semibold text-text mb-2">
+        <h3 className="text-xl font-semibold text-dark mb-2">
           {t("Progress Tracking", language)}
         </h3>
-        <p className="text-text/70 mb-4">
+        <p className="text-dark/70 mb-4">
           {t(
             "Visual progress tracking with streaks, achievements, and detailed analytics to keep you motivated.",
             language

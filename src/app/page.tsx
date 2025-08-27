@@ -36,9 +36,9 @@ export default function Home() {
         <div className="flex items-center space-x-2">
           <div className="relative">
             <Sparkles className="h-8 w-8 text-blue-600 animate-pulse" />
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-bounce"></div>
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-secondary rounded-full animate-bounce"></div>
           </div>
-          <span className="text-2xl font-bold text-text">SparkClean</span>
+          <span className="text-2xl font-bold text-dark">SparkClean</span>
         </div>
         <div className="flex items-center space-x-4">
           <LanguageSwitcher />

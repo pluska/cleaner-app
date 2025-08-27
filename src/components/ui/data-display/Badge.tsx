@@ -23,9 +23,9 @@ export function Badge({
     "inline-flex items-center justify-center font-medium rounded-full transition-colors";
 
   const variants = {
-    default: "bg-base text-text border border-base",
+    default: "bg-base text-dark border border-base",
     primary: "bg-primary/10 text-primary border border-primary/20",
-    secondary: "bg-accent/10 text-text border border-accent/20",
+    secondary: "bg-secondary/10 text-dark border border-secondary/20",
     success: "bg-green-100 text-green-700 border border-green-200",
     warning: "bg-yellow-100 text-yellow-700 border border-yellow-200",
     error: "bg-red-100 text-red-700 border border-red-200",

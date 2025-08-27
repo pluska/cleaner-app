@@ -26,23 +26,22 @@ export function Button({
         };
       case "secondary":
         return {
-          backgroundColor: "var(--color-accent)",
-          color: "var(--color-text)",
-          borderColor: "var(--color-accent)",
-          "--tw-ring-color": "var(--color-accent)",
+          backgroundColor: "var(--color-secondary)",
+          color: "white",
+          "--tw-ring-color": "var(--color-secondary)",
         };
       case "outline":
         return {
           backgroundColor: "transparent",
-          color: "var(--color-text)",
-          borderColor: "var(--color-text)",
-          "--tw-ring-color": "var(--color-text)",
+          color: "var(--color-dark)",
+          borderColor: "var(--color-dark)",
+          "--tw-ring-color": "var(--color-dark)",
         };
       case "ghost":
         return {
           backgroundColor: "transparent",
-          color: "var(--color-text)",
-          "--tw-ring-color": "var(--color-text)",
+          color: "var(--color-dark)",
+          "--tw-ring-color": "var(--color-dark)",
         };
       default:
         return {};
@@ -53,9 +52,9 @@ export function Button({
     primary:
       "text-white hover:bg-opacity-90 focus-visible:ring-opacity-20 shadow-md hover:shadow-lg",
     secondary:
-      "hover:bg-opacity-90 border focus-visible:ring-opacity-20 shadow-md hover:shadow-lg",
+      "hover:bg-opacity-90 focus-visible:ring-opacity-20 shadow-md hover:shadow-lg",
     outline:
-      "border-2 bg-transparent hover:bg-text hover:text-white focus-visible:ring-opacity-20 shadow-md hover:shadow-lg",
+      "border-2 bg-transparent hover:bg-dark hover:text-white focus-visible:ring-opacity-20 shadow-md hover:shadow-lg",
     ghost: "bg-transparent hover:bg-opacity-10 focus-visible:ring-opacity-20",
   };
 

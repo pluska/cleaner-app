@@ -207,14 +207,14 @@ export function GamificationPreview({
         showAnimation={showCompletionAnimation} // Controlled by parent component
       />
 
-      <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-3xl p-8  shadow-xl">
+      <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl p-8  shadow-xl">
         {/* Task Header */}
         <div className="ml-6 relative">
           <div className="flex items-center space-x-3">
             {/* Arrow pointing down to task card */}
             <div className="flex-shrink-0">
               <svg
-                className="w-5 h-5 text-text/40"
+                className="w-5 h-5 text-dark/40"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -242,7 +242,7 @@ export function GamificationPreview({
                 />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-text transition-all duration-700 ease-in-out">
+            <h3 className="text-lg font-semibold text-dark transition-all duration-700 ease-in-out">
               {language === "es"
                 ? `${cleaningVerbs[currentVerbIndex].es} tu tarea`
                 : `${cleaningVerbs[currentVerbIndex].en} your task`}
@@ -280,10 +280,10 @@ export function GamificationPreview({
           </div>
 
           <div className="bg-white rounded-2xl p-4 text-center shadow-md border border-gray-100">
-            <div className="bg-accent/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-2">
-              <Coins className="h-6 w-6 text-accent" />
+            <div className="bg-secondary/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-2">
+              <Coins className="h-6 w-6 text-secondary" />
             </div>
-            <div className="text-2xl font-bold text-accent mb-1">
+            <div className="text-2xl font-bold text-secondary mb-1">
               {totalXP.toLocaleString()} XP
             </div>
           </div>
@@ -292,16 +292,16 @@ export function GamificationPreview({
         {/* Level Progress Bar */}
         <div className="mt-4 bg-white rounded-2xl p-4 shadow-md border border-gray-100">
           <div className="flex items-center justify-between text-sm mb-2">
-            <span className="text-text/70">
+            <span className="text-dark/70">
               Progress to Level {currentLevel + 1}
             </span>
-            <span className="text-text font-medium">
+            <span className="text-dark font-medium">
               {progressToNextLevel}/{xpForNextLevel - xpForCurrentLevel} XP
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-3">
             <div
-              className="bg-gradient-to-r from-primary to-accent h-3 rounded-full transition-all duration-1000 ease-out"
+              className="bg-gradient-to-r from-primary to-secondary h-3 rounded-full transition-all duration-1000 ease-out"
               style={{
                 width: `${Math.min(
                   100,
@@ -315,7 +315,7 @@ export function GamificationPreview({
               }}
             />
           </div>
-          <p className="text-xs text-text/50 mt-2 text-center">
+          <p className="text-xs text-dark/50 mt-2 text-center">
             {xpNeededForNextLevel > 0
               ? language === "es"
                 ? `¡Solo ${xpNeededForNextLevel} XP más para el siguiente nivel!`

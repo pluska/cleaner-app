@@ -87,17 +87,17 @@ export function DashboardStats({ stats }: DashboardStatsProps) {
     return (
       <div
         key={item.label}
-        className="bg-bg rounded-xl shadow-lg border border-base p-8"
+        className="bg-base rounded-xl shadow-lg border border-base p-8"
       >
         <div className="flex items-center">
           <div className={`p-3 rounded-lg ${item.bgColor}`}>
             <Icon className={`h-8 w-8 ${item.color}`} />
           </div>
           <div className="ml-6">
-            <p className="text-sm font-medium text-text/70 mb-1">
+            <p className="text-sm font-medium text-dark/70 mb-1">
               {item.label}
             </p>
-            <p className="text-3xl font-bold text-text">{item.value}</p>
+            <p className="text-3xl font-bold text-dark">{item.value}</p>
           </div>
         </div>
       </div>

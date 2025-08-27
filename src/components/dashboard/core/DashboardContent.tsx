@@ -134,7 +134,7 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
 
   if (isLoadingTasks) {
     return (
-      <div className="max-w-7xl mx-auto bg-bg min-h-screen p-4 sm:p-8">
+      <div className="max-w-7xl mx-auto bg-base min-h-screen p-4 sm:p-8">
         <DashboardHeader />
         <Loading size="lg" text="Loading tasks..." className="mt-12" />
       </div>
@@ -142,7 +142,7 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
   }
 
   return (
-    <div className="max-w-7xl mx-auto bg-bg min-h-screen p-4 sm:p-8">
+    <div className="max-w-7xl mx-auto bg-base min-h-screen p-4 sm:p-8">
       <DashboardHeader />
 
       {showAITaskCreation ? (

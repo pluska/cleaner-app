@@ -37,7 +37,7 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-bg p-4">
+        <div className="min-h-screen flex items-center justify-center bg-base p-4">
           <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
             <div className="mb-6">
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -55,10 +55,10 @@ export class ErrorBoundary extends Component<Props, State> {
                   />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold text-text mb-2">
+              <h2 className="text-2xl font-bold text-dark mb-2">
                 Something went wrong
               </h2>
-              <p className="text-text/70 mb-6">
+              <p className="text-dark/70 mb-6">
                 We encountered an unexpected error. Please try again.
               </p>
             </div>
