@@ -157,6 +157,9 @@ export const translations = {
     of: "of",
 
     // Landing Page
+    "Level Up Your Cleaning": "Level Up Your Cleaning",
+    "Turn chores into challenges. Build your schedule, track progress, and keep your home sparkling.":
+      "Turn chores into challenges. Build your schedule, track progress, and keep your home sparkling.",
     "Organize your home cleaning": "Organize your home cleaning",
     "Create a personalized cleaning schedule and track your progress with our intuitive task management system.":
       "Create a personalized cleaning schedule and track your progress with our intuitive task management system.",
@@ -405,6 +408,9 @@ export const translations = {
     of: "de",
 
     // Landing Page
+    "Level Up Your Cleaning": "Mejora tu Limpieza",
+    "Turn chores into challenges. Build your schedule, track progress, and keep your home sparkling.":
+      "Convierte las tareas en desafíos. Construye tu horario, rastrea el progreso y mantén tu hogar brillante.",
     "Organize your home cleaning": "Organiza la limpieza de tu hogar",
     "Create a personalized cleaning schedule and track your progress with our intuitive task management system.":
       "Crea un horario de limpieza personalizado y rastrea tu progreso con nuestro sistema intuitivo de gestión de tareas.",
@@ -483,6 +489,19 @@ export const translations = {
     "Earn 100 coins": "Gana 100 monedas",
     Unlocked: "Desbloqueado",
     Progress: "Progreso",
+
+    // Common
+    "Loading...": "Cargando...",
+    "Success!": "¡Éxito!",
+    Error: "Error",
+    Close: "Cerrar",
+    Save: "Guardar",
+    Edit: "Editar",
+    Yes: "Sí",
+    No: "No",
+    Confirm: "Confirmar",
+    "Are you sure?": "¿Estás seguro?",
+    "This action cannot be undone.": "Esta acción no se puede deshacer.",
   },
 } as const;
 

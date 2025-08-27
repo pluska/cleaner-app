@@ -1,0 +1,9 @@
+export { HeroSection } from "./HeroSection";
+export { InteractiveTaskCard } from "./InteractiveTaskCard";
+export { GamificationPreview } from "./GamificationPreview";
+export { FeaturesSection } from "./FeaturesSection";
+export { GamificationFeatures } from "./GamificationFeatures";
+export { StatsSection } from "./StatsSection";
+export { AdditionalFeatures } from "./AdditionalFeatures";
+export { CTASection } from "./CTASection";
+export { Footer } from "./Footer";
