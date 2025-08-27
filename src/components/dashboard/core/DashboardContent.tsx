@@ -30,64 +30,107 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
   const [showAITaskCreation, setShowAITaskCreation] = useState(false);
 
-  const handleDateChange = useCallback(async (date: string) => {
-    setSelectedDate(date);
-    setIsLoadingTasks(true);
+  const handleDateChange = useCallback(
+    async (date: string) => {
+      setSelectedDate(date);
 
-    // Fetch tasks for the selected date
-    try {
-      const res = await fetch(`/api/tasks/by-date?date=${date}`, {
-        credentials: "include", // This ensures cookies are sent with the request
-      });
-      if (res.ok) {
-        const { tasks, taskInstances } = await res.json();
-
-        // Combine tasks and instances for the selected date
-        const combinedTasks = [];
-
-        // Add regular tasks for the selected date
-        if (tasks) {
-          const filteredTasks = tasks.filter(
-            (task: Task) => task.due_date === date
-          );
-          combinedTasks.push(...filteredTasks);
-        }
-
-        // Add recurring task instances
-        if (taskInstances) {
-          taskInstances.forEach((instance: any) => {
-            if (instance.tasks) {
-              combinedTasks.push({
-                ...instance.tasks,
-                id: instance.id,
-                completed: instance.completed,
-                due_date: instance.due_date,
-                is_instance: true,
-                original_task_id: instance.task_id,
-              });
-            }
-          });
-        }
-
-        setTodayTasks(combinedTasks);
-      } else {
-        console.error("API request failed:", res.status, res.statusText);
+      // Don't fetch if it's today and we already have the initial tasks
+      const today = formatDateToYYYYMMDD(new Date());
+      if (date === today) {
+        setTodayTasks(initialTodayTasks);
+        return;
       }
-    } catch (error) {
-      console.error("Error fetching tasks for date:", error);
-    } finally {
-      setIsLoadingTasks(false);
-    }
-  }, []);
 
+      setIsLoadingTasks(true);
+
+      // Fetch tasks for the selected date
+      try {
+        const res = await fetch(`/api/tasks/by-date?date=${date}`, {
+          credentials: "include",
+        });
+        if (res.ok) {
+          const { taskInstances, userTasks } = await res.json();
+
+          // Combine tasks and instances for the selected date
+          const combinedTasks: Task[] = [];
+
+          // Add recurring task instances
+          if (taskInstances) {
+            taskInstances.forEach((instance: any) => {
+              if (instance.user_tasks?.task_templates) {
+                combinedTasks.push({
+                  id: instance.id,
+                  title: instance.user_tasks.task_templates.name,
+                  description: instance.user_tasks.task_templates.description,
+                  frequency: "daily",
+                  category: instance.user_tasks.task_templates.category as any,
+                  priority: "medium",
+                  completed: instance.completed,
+                  due_date: instance.due_date,
+                  user_id: userId,
+                  is_recurring:
+                    instance.user_tasks.task_templates.base_frequency_days > 1,
+                  recurrence_start_date: instance.due_date,
+                  recurrence_end_date: undefined,
+                  last_generated_date: undefined,
+                  original_task_id: instance.user_task_id,
+                  day_of_week: undefined,
+                  preferred_time: undefined,
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString(),
+                });
+              }
+            });
+          }
+
+          // Add user tasks that don't have instances yet (for display purposes)
+          if (userTasks) {
+            userTasks.forEach((userTask: any) => {
+              if (userTask.task_templates) {
+                combinedTasks.push({
+                  id: userTask.id,
+                  title: userTask.task_templates.name,
+                  description: userTask.task_templates.description,
+                  frequency: "daily",
+                  category: userTask.task_templates.category as any,
+                  priority: "medium",
+                  completed: false,
+                  due_date: date,
+                  user_id: userId,
+                  is_recurring: userTask.task_templates.base_frequency_days > 1,
+                  recurrence_start_date: date,
+                  recurrence_end_date: undefined,
+                  last_generated_date: undefined,
+                  original_task_id: userTask.id,
+                  day_of_week: undefined,
+                  preferred_time: undefined,
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString(),
+                });
+              }
+            });
+          }
+
+          setTodayTasks(combinedTasks);
+        } else {
+          console.error("API request failed:", res.status, res.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching tasks for date:", error);
+      } finally {
+        setIsLoadingTasks(false);
+      }
+    },
+    [initialTodayTasks, userId]
+  );
+
+  // Update today's tasks when initialTodayTasks changes
   useEffect(() => {
     const today = formatDateToYYYYMMDD(new Date());
     if (selectedDate === today) {
       setTodayTasks(initialTodayTasks);
-    } else {
-      handleDateChange(selectedDate);
     }
-  }, [initialTodayTasks, selectedDate, handleDateChange]);
+  }, [initialTodayTasks, selectedDate]);
 
   if (isLoadingTasks) {
     return (

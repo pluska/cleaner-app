@@ -74,7 +74,7 @@ export async function updateTask(
   updates: Partial<TaskFormData>
 ): Promise<{ task: Task }> {
   const response = await fetch(`/api/tasks/${taskId}`, {
-    method: "PATCH",
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },

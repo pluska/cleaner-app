@@ -365,17 +365,39 @@ export function DailyTasks({
                 </p>
               </div>
             ) : (
-              tasks.map((task) => (
-                <DraggableTask key={task.id} task={task}>
-                  <TaskItem
-                    task={task}
-                    onTaskUpdated={handleTaskUpdated}
-                    onTaskDeleted={handleTaskDeleted}
-                    onReschedule={handleReschedule}
-                    isPastDate={isPastDate(selectedDate)}
-                  />
-                </DraggableTask>
-              ))
+              tasks.map((task) => {
+                // Only enable drag and drop for today's tasks, not for past dates or other contexts
+                const shouldBeDraggable =
+                  selectedDate === formatDateToYYYYMMDD(new Date()) &&
+                  !isPastDate(selectedDate);
+
+                if (shouldBeDraggable) {
+                  return (
+                    <DraggableTask key={task.id} task={task}>
+                      <TaskItem
+                        task={task}
+                        onTaskUpdated={handleTaskUpdated}
+                        onTaskDeleted={handleTaskDeleted}
+                        onReschedule={handleReschedule}
+                        isPastDate={isPastDate(selectedDate)}
+                      />
+                    </DraggableTask>
+                  );
+                } else {
+                  // Render without drag and drop for past dates or other contexts
+                  return (
+                    <div key={task.id}>
+                      <TaskItem
+                        task={task}
+                        onTaskUpdated={handleTaskUpdated}
+                        onTaskDeleted={handleTaskDeleted}
+                        onReschedule={handleReschedule}
+                        isPastDate={isPastDate(selectedDate)}
+                      />
+                    </div>
+                  );
+                }
+              })
             )}
           </div>
         )}

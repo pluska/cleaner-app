@@ -33,6 +33,13 @@ export const WeeklyView: React.FC<WeeklyViewProps> = ({
     setIsToday(selectedDate === today);
   }, [selectedDate]);
 
+  // Update current week start when selected date changes
+  useEffect(() => {
+    const selectedDateObj = new Date(selectedDate);
+    const newWeekStart = getWeekStart(selectedDateObj);
+    setCurrentWeekStart(newWeekStart);
+  }, [selectedDate]);
+
   // Generate week days (Monday to Sunday)
   const getWeekDays = (): string[] => {
     const days = [];
@@ -138,7 +145,9 @@ export const WeeklyView: React.FC<WeeklyViewProps> = ({
           return (
             <Button
               key={date}
-              onClick={() => onDateChange(date)}
+              onClick={() => {
+                onDateChange(date);
+              }}
               variant={isSelected ? "primary" : "outline"}
               size="sm"
               className="w-full h-10 sm:h-12 px-1 sm:px-2"

@@ -78,36 +78,36 @@ export const RescheduleModal: React.FC<RescheduleModalProps> = ({
   const quickDates = getQuickDates();
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-bg rounded-xl shadow-2xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto border border-gray-200">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-text">
+          <h3 className="text-xl font-semibold text-gray-900">
             {language === "es" ? "Reprogramar tarea" : "Reschedule Task"}
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-text transition-colors p-1 rounded-full hover:bg-base"
+            className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <div className="mb-6 p-4 bg-base rounded-lg">
-          <p className="text-sm font-medium text-text mb-2">
+        <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <p className="text-sm font-medium text-gray-600 mb-2">
             {language === "es" ? "Tarea:" : "Task:"}
           </p>
-          <p className="font-semibold text-text text-lg">{taskTitle}</p>
+          <p className="font-semibold text-gray-900 text-lg">{taskTitle}</p>
         </div>
 
-        <div className="mb-6 p-4 bg-primary/10 rounded-lg border border-primary/20">
-          <p className="text-sm font-medium text-primary mb-2">
+        <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <p className="text-sm font-medium text-blue-700 mb-2">
             {language === "es" ? "Fecha actual:" : "Current date:"}
           </p>
-          <p className="text-sm text-primary font-medium">{currentDueDate}</p>
+          <p className="text-sm text-blue-700 font-medium">{currentDueDate}</p>
         </div>
 
         <div className="mb-6">
-          <p className="text-sm font-semibold text-text mb-4">
+          <p className="text-sm font-semibold text-gray-900 mb-4">
             {language === "es" ? "Opciones rápidas:" : "Quick options:"}
           </p>
           <div className="grid grid-cols-1 gap-3">
@@ -117,23 +117,23 @@ export const RescheduleModal: React.FC<RescheduleModalProps> = ({
                 onClick={() => handleQuickDateSelect(option.date)}
                 className={`p-4 text-left rounded-lg border-2 transition-all duration-200 ${
                   selectedDate === option.date
-                    ? "border-primary bg-primary/10 text-primary shadow-md"
-                    : "border-base hover:border-primary/50 hover:bg-primary/5 hover:shadow-sm"
+                    ? "border-blue-500 bg-blue-50 text-blue-700 shadow-md"
+                    : "border-gray-200 hover:border-blue-300 hover:bg-blue-50/50 hover:shadow-sm bg-white"
                 }`}
               >
                 <div className="flex items-center mb-1">
                   <Calendar
                     className={`h-4 w-4 mr-3 ${
                       selectedDate === option.date
-                        ? "text-primary"
-                        : "text-text"
+                        ? "text-blue-500"
+                        : "text-gray-600"
                     }`}
                   />
                   <span
                     className={`${
                       selectedDate === option.date
-                        ? "font-normal text-primary"
-                        : "font-normal text-text"
+                        ? "font-normal text-blue-700"
+                        : "font-normal text-gray-700"
                     }`}
                   >
                     {option.label}
@@ -141,7 +141,9 @@ export const RescheduleModal: React.FC<RescheduleModalProps> = ({
                 </div>
                 <span
                   className={`text-sm ml-7 font-medium ${
-                    selectedDate === option.date ? "text-primary" : "text-text"
+                    selectedDate === option.date
+                      ? "text-blue-700"
+                      : "text-gray-600"
                   }`}
                 >
                   {option.date}
@@ -152,7 +154,7 @@ export const RescheduleModal: React.FC<RescheduleModalProps> = ({
         </div>
 
         <div className="mb-8">
-          <p className="text-sm font-semibold text-text mb-3">
+          <p className="text-sm font-semibold text-gray-900 mb-3">
             {language === "es" ? "O fecha personalizada:" : "Or custom date:"}
           </p>
           <div className="relative">
@@ -161,9 +163,9 @@ export const RescheduleModal: React.FC<RescheduleModalProps> = ({
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
               min={new Date().toISOString().split("T")[0]}
-              className="w-full p-3 border-2 border-base rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
+              className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors bg-white"
             />
-            <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-text" />
+            <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
           </div>
         </div>
 
@@ -171,7 +173,7 @@ export const RescheduleModal: React.FC<RescheduleModalProps> = ({
           <Button
             onClick={handleReschedule}
             disabled={!selectedDate || loading}
-            className="flex-1 py-3 px-4 font-semibold bg-primary hover:bg-primary/90 text-white"
+            className="flex-1 py-3 px-4 font-semibold bg-blue-600 hover:bg-blue-700 text-white"
           >
             {loading
               ? language === "es"
@@ -184,7 +186,7 @@ export const RescheduleModal: React.FC<RescheduleModalProps> = ({
           <Button
             onClick={onClose}
             variant="outline"
-            className="flex-1 py-3 px-4 font-semibold border-2 border-base text-text hover:bg-base"
+            className="flex-1 py-3 px-4 font-semibold border-2 border-gray-300 text-gray-700 hover:bg-gray-50 bg-white"
           >
             {t("Cancel", language)}
           </Button>

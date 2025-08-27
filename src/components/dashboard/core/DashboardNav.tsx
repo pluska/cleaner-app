@@ -231,7 +231,7 @@ export function DashboardNav({ user }: DashboardNavProps) {
                       Lv.{userProfile.level}
                     </span>
                   </div>
-                  <div className="flex items-center space-x-3 text-gray-500 hidden lg:flex">
+                  <div className="items-center space-x-3 text-gray-500 hidden lg:flex">
                     <div className="flex items-center space-x-1">
                       <Coins className="h-4 w-4 text-yellow-500" />
                       <span className="text-sm font-medium">

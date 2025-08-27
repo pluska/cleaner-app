@@ -341,7 +341,7 @@ export function TaskItem({
 
   return (
     <>
-      <div className="p-4 sm:p-8 hover:bg-base transition-colors">
+      <div className="p-4 sm:p-8 hover:bg-base/50 hover:shadow-md transition-all duration-200 rounded-xl cursor-default group">
         {editingTask?.id === task.id ? (
           <div className="bg-base p-4 sm:p-6 rounded-lg">
             {renderTaskForm()}
@@ -352,27 +352,36 @@ export function TaskItem({
               <button
                 onClick={() => handleToggleTask(task.id)}
                 disabled={togglingTasks.has(task.id) || isPastDate}
-                className="text-text/40 hover:text-text/60 transition-colors p-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="text-text/40 hover:text-text/60 hover:bg-text/5 focus:text-text/60 focus:bg-text/5 focus:outline-none focus:ring-2 focus:ring-text/20 transition-all duration-200 p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer group"
+                title={
+                  task.completed
+                    ? language === "es"
+                      ? "Marcar como pendiente"
+                      : "Mark as pending"
+                    : language === "es"
+                    ? "Marcar como completada"
+                    : "Mark as completed"
+                }
               >
                 {togglingTasks.has(task.id) ? (
                   <LoadingSpinner size="sm" />
                 ) : task.completed ? (
-                  <CheckCircle className="h-6 w-6 text-green-500" />
+                  <CheckCircle className="h-6 w-6 text-green-500 group-hover:scale-110 transition-transform duration-200" />
                 ) : (
-                  <Circle className="h-6 w-6" />
+                  <Circle className="h-6 w-6 group-hover:scale-110 transition-transform duration-200" />
                 )}
               </button>
               <div className="flex-1">
                 <h3
                   className={`text-base sm:text-lg font-medium ${getOverdueStyle(
                     task
-                  )} mb-2`}
+                  )} mb-2 transition-all duration-200 rounded px-1`}
                 >
                   {task.title}
                 </h3>
                 {task.description && (
                   <p
-                    className={`text-sm mb-3 ${
+                    className={`text-sm mb-3 transition-all duration-200 rounded px-1 ${
                       task.completed ? "text-text/40" : "text-text/70"
                     }`}
                   >
@@ -452,22 +461,26 @@ export function TaskItem({
             <div className="flex items-center justify-end space-x-2 sm:space-x-3">
               <button
                 onClick={() => openRescheduleModal(task)}
-                className="text-text/40 hover:text-primary transition-colors p-2"
-                title={language === "es" ? "Reprogramar" : "Reschedule"}
+                className="text-text/40 hover:text-[#FFD265] hover:bg-[#FFD265]/10 focus:text-[#FFD265] focus:bg-[#FFD265]/10 focus:outline-none focus:ring-2 focus:ring-[#FFD265]/20 transition-all duration-200 p-2 rounded-lg cursor-pointer group bg-base"
+                title={
+                  language === "es" ? "Reprogramar tarea" : "Reschedule task"
+                }
               >
-                <Calendar className="h-5 w-5" />
+                <Calendar className="h-5 w-5 group-hover:scale-110 transition-transform duration-200" />
               </button>
               <button
                 onClick={() => startEditing(task)}
-                className="text-text/40 hover:text-text/60 transition-colors p-2"
+                className="text-text/40 hover:text-blue-600 hover:bg-blue-600/10 focus:text-blue-600 focus:bg-blue-600/10 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-all duration-200 p-2 rounded-lg cursor-pointer group bg-base"
+                title={language === "es" ? "Editar tarea" : "Edit task"}
               >
-                <Edit className="h-5 w-5" />
+                <Edit className="h-5 w-5 group-hover:scale-110 transition-transform duration-200" />
               </button>
               <button
                 onClick={() => openDeleteConfirmModal(task)}
-                className="text-text/40 hover:text-red-600 transition-colors p-2"
+                className="text-text/40 hover:text-red-600 hover:bg-red-600/10 focus:text-red-600 focus:bg-red-600/10 focus:outline-none focus:ring-2 focus:ring-red-600/20 transition-all duration-200 p-2 rounded-lg cursor-pointer group bg-base"
+                title={language === "es" ? "Eliminar tarea" : "Delete task"}
               >
-                <Trash2 className="h-5 w-5" />
+                <Trash2 className="h-5 w-5 group-hover:scale-110 transition-transform duration-200" />
               </button>
             </div>
           </div>

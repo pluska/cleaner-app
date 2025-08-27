@@ -15,7 +15,10 @@ module.exports = {
   safelist: [
     {
       pattern:
-        /(bg|text|border|hover:bg|hover:text|focus-visible:ring)-(primary|accent|text|base)/,
+        /(bg|text|border|hover:bg|hover:text|focus:bg|focus:text|focus:ring|ring)-(primary|accent|text|base)/,
+    },
+    {
+      pattern: /(text|bg|ring)-(accent|accent\/\d+)/,
     },
   ],
 };
