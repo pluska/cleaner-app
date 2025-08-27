@@ -3,15 +3,15 @@ export type Language = "en" | "es";
 export const translations = {
   en: {
     // Navigation
-    CleanPlanner: "CleanPlanner",
+    SparkClean: "SparkClean",
     Today: "Today",
     Routine: "Routine",
     Schedule: "Schedule",
     "All Tasks": "All Tasks",
     Analytics: "Analytics",
     "User Guide": "User Guide",
-    "Learn how to use CleanPlanner effectively":
-      "Learn how to use CleanPlanner effectively",
+    "Learn how to use SparkClean effectively":
+      "Learn how to use SparkClean effectively",
     "Quick Guide": "Quick Guide",
     "Need Help?": "Need Help?",
     "Community Support": "Community Support",
@@ -175,8 +175,8 @@ export const translations = {
     "Join thousands of users who have already simplified their cleaning routine and created more organized, beautiful homes.":
       "Join and simplify your cleaning routine to create a more organized, beautiful home.",
     "Create Your Free Account": "Create Your Free Account",
-    "© 2024 CleanPlanner. All rights reserved.":
-      "© 2024 CleanPlanner. All rights reserved.",
+    "© 2024 SparkClean. All rights reserved.":
+      "© 2024 SparkClean. All rights reserved.",
     "Task Schedule": "Task Schedule",
     "View and manage your cleaning tasks by different time periods":
       "View and manage your cleaning tasks by different time periods",
@@ -250,15 +250,15 @@ export const translations = {
   },
   es: {
     // Navigation
-    CleanPlanner: "CleanPlanner",
+    SparkClean: "SparkClean",
     Today: "Hoy",
     Routine: "Rutina",
     Schedule: "Programa",
     "All Tasks": "Todas las Tareas",
     Analytics: "Análisis",
     "User Guide": "Guía de Usuario",
-    "Learn how to use CleanPlanner effectively":
-      "Aprende a usar CleanPlanner efectivamente",
+    "Learn how to use SparkClean effectively":
+      "Aprende a usar SparkClean efectivamente",
     "Quick Guide": "Guía Rápida",
     "Need Help?": "¿Necesitas Ayuda?",
     "Community Support": "Soporte Comunitario",
@@ -423,8 +423,8 @@ export const translations = {
     "Join thousands of users who have already simplified their cleaning routine and created more organized, beautiful homes.":
       "Únete y simplifica tu rutina de limpieza para crear un hogar más organizado y hermoso.",
     "Create Your Free Account": "Crea tu Cuenta Gratuita",
-    "© 2024 CleanPlanner. All rights reserved.":
-      "© 2024 CleanPlanner. Todos los derechos reservados.",
+    "© 2024 SparkClean. All rights reserved.":
+      "© 2024 SparkClean. Todos los derechos reservados.",
     "Task Schedule": "Programa de Tareas",
     "View and manage your cleaning tasks by different time periods":
       "Ve y administra tus tareas de limpieza por diferentes períodos de tiempo",

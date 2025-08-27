@@ -94,7 +94,7 @@ export function DashboardNav({ user }: DashboardNavProps) {
             <div className="flex items-center space-x-2">
               <Sparkles className="h-6 w-6 text-blue-600" />
               <span className="text-lg font-bold text-gray-900">
-                {t("CleanPlanner", language)}
+                SparkClean
               </span>
             </div>
             <button
@@ -169,7 +169,7 @@ export function DashboardNav({ user }: DashboardNavProps) {
             <div className="flex items-center space-x-2">
               <Sparkles className="h-8 w-8 text-blue-600" />
               <span className="text-xl font-bold text-gray-900">
-                {t("CleanPlanner", language)}
+                SparkClean
               </span>
             </div>
 

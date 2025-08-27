@@ -36,9 +36,7 @@ function AuthErrorContent() {
         <div className="text-center">
           <div className="flex items-center justify-center space-x-2 mb-6">
             <Sparkles className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-bold text-gray-900">
-              {t("CleanPlanner", language)}
-            </span>
+            <span className="text-2xl font-bold text-gray-900">SparkClean</span>
           </div>
 
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">

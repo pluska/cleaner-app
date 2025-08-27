@@ -1,4 +1,4 @@
-# 🏠 CleanPlanner - Complete User Guide
+# 🏠 SparkClean - Complete User Guide
 
 ## 📖 Table of Contents
 
@@ -16,9 +16,9 @@
 
 ## 🚀 Getting Started
 
-### What is CleanPlanner?
+### What is SparkClean?
 
-CleanPlanner is a gamified home cleaning task manager that transforms household chores into an engaging experience. The app combines task management with gaming elements like experience points, tool management, and area health tracking to make cleaning more enjoyable and effective.
+SparkClean is a gamified home cleaning task manager that transforms household chores into an engaging experience. The app combines task management with gaming elements like experience points, tool management, and area health tracking to make cleaning more enjoyable and effective.
 
 ### Key Features Overview
 
@@ -664,7 +664,7 @@ Profile
 
 ## 🎉 Conclusion
 
-CleanPlanner transforms household cleaning from a chore into an engaging, rewarding experience. By understanding the gamification system, area health mechanics, and tool management, you can maximize your cleaning efficiency while having fun.
+SparkClean transforms household cleaning from a chore into an engaging, rewarding experience. By understanding the gamification system, area health mechanics, and tool management, you can maximize your cleaning efficiency while having fun.
 
 **Key Takeaways:**
 

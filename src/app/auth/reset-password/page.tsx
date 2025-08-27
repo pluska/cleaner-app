@@ -108,7 +108,7 @@ export default function ResetPasswordPage() {
             <div className="flex items-center justify-center space-x-2 mb-6">
               <Sparkles className="h-8 w-8 text-blue-600" />
               <span className="text-2xl font-bold text-gray-900">
-                {t("CleanPlanner", language)}
+                SparkClean
               </span>
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
@@ -134,9 +134,7 @@ export default function ResetPasswordPage() {
         <div className="text-center">
           <div className="flex items-center justify-center space-x-2 mb-6">
             <Sparkles className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-bold text-gray-900">
-              {t("CleanPlanner", language)}
-            </span>
+            <span className="text-2xl font-bold text-gray-900">SparkClean</span>
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             {t("Reset Password", language)}

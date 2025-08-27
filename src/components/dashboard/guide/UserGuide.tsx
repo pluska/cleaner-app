@@ -55,13 +55,13 @@ export function UserGuide() {
           <div className="bg-blue-50 rounded-lg p-4">
             <h3 className="text-lg font-semibold text-blue-900 mb-2">
               {language === "es"
-                ? "¿Qué es CleanPlanner?"
-                : "What is CleanPlanner?"}
+                ? "¿Qué es SparkClean?"
+                : "What is SparkClean?"}
             </h3>
             <p className="text-blue-800">
               {language === "es"
-                ? "CleanPlanner es un gestor de tareas de limpieza gamificado que transforma las tareas domésticas en una experiencia atractiva."
-                : "CleanPlanner is a gamified home cleaning task manager that transforms household chores into an engaging experience."}
+                ? "SparkClean es un gestor de tareas de limpieza gamificado que transforma las tareas domésticas en una experiencia atractiva."
+                : "SparkClean is a gamified home cleaning task manager that transforms household chores into an engaging experience."}
             </p>
           </div>
 

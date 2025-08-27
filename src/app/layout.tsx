@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CleanPlanner",
+  title: "SparkClean",
   description: "Organize your home cleaning tasks efficiently",
   icons: {
     icon: "/sparkles-icon.svg",

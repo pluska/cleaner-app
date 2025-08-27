@@ -16,15 +16,13 @@ export function GuideHeader() {
                 {t("User Guide", language)}
               </h1>
               <p className="text-gray-600">
-                {t("Learn how to use CleanPlanner effectively", language)}
+                {t("Learn how to use SparkClean effectively", language)}
               </p>
             </div>
           </div>
           <div className="ml-auto flex items-center space-x-2">
             <Sparkles className="h-5 w-5 text-blue-600" />
-            <span className="text-sm text-gray-500">
-              {t("CleanPlanner", language)}
-            </span>
+            <span className="text-sm text-gray-500">SparkClean</span>
           </div>
         </div>
       </div>

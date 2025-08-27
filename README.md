@@ -1,4 +1,4 @@
-# CleanPlanner - Home Cleaning Task Manager
+# SparkClean - Home Cleaning Task Manager
 
 A modern web application for managing home cleaning tasks with intelligent scheduling and progress tracking.
 
