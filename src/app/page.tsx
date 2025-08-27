@@ -61,7 +61,7 @@ export default function Home() {
           />
 
           {/* Right Column - Interactive Gamification Preview */}
-          <GamificationPreview />
+          <GamificationPreview showCompletionAnimation={false} />
         </div>
         <StatsSection />
         <FeaturesSection />

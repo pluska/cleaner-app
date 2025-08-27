@@ -15,15 +15,6 @@ export function HeroSection({ onGetStarted, onSignIn }: HeroSectionProps) {
 
   return (
     <div className="text-left">
-      <div className="flex items-center space-x-3 mb-6">
-        <div className="bg-gradient-to-r from-primary to-accent p-3 rounded-2xl shadow-lg">
-          <Trophy className="h-10 w-10 text-yellow-500" />
-        </div>
-        <span className="text-accent font-bold text-lg animate-pulse">
-          {language === "es" ? "¡Gamificado!" : "Gamified!"}
-        </span>
-      </div>
-
       <h1 className="text-5xl md:text-6xl font-bold text-text mb-6 leading-tight">
         {t("Level Up Your Cleaning", language)}
       </h1>
