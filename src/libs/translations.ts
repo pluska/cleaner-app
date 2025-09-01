@@ -189,9 +189,10 @@ export const translations = {
     "Spotless & Organized": "Spotless & Organized",
 
     // Gamification & Features
-    "Reward System": "Reward System",
-    "Turn cleaning into a fun game with our complete gamification system":
-      "Turn cleaning into a fun game with our complete gamification system",
+    "Cleaning made simple, motivating, and stress-free":
+      "Cleaning made simple, motivating, and stress-free",
+    "Tidy up faster, stay consistent, and enjoy a spotless home effortlessly!":
+      "Tidy up faster, stay consistent, and enjoy a spotless home effortlessly!",
     "Level System": "Level System",
     "Level up by completing tasks and unlock new features and special rewards.":
       "Level up by completing tasks and unlock new features and special rewards.",
@@ -211,6 +212,8 @@ export const translations = {
     "+15 XP per task": "+15 XP per task",
     "Smart AI scheduling": "Smart AI scheduling",
     "Detailed analytics": "Detailed analytics",
+    "Visual progress tracking with streaks, achievements, and detailed analytics to keep you motivated.":
+      "Visual progress tracking with streaks, achievements, and detailed analytics to keep you motivated.",
 
     // User Pains & Solutions
     "Make cleaning could be exhausting": "Make cleaning could be exhausting",
@@ -518,9 +521,10 @@ export const translations = {
     "Spotless & Organized": "Limpio y Organizado",
 
     // Gamification & Features
-    "Reward System": "Sistema de Recompensas",
-    "Turn cleaning into a fun game with our complete gamification system":
-      "Convierte la limpieza en un juego divertido con nuestro sistema de gamificación completo",
+    "Cleaning made simple, motivating, and stress-free":
+      "Limpieza simple, motivadora y sin estrés",
+    "Tidy up faster, stay consistent, and enjoy a spotless home effortlessly!":
+      "¡Organiza más rápido, mantén la consistencia y disfruta de un hogar impecable sin esfuerzo!",
     "Level System": "Sistema de Niveles",
     "Level up by completing tasks and unlock new features and special rewards.":
       "Sube de nivel completando tareas y desbloquea nuevas funcionalidades y recompensas especiales.",
@@ -540,6 +544,8 @@ export const translations = {
     "+15 XP per task": "+15 XP por tarea",
     "Smart AI scheduling": "Programación IA inteligente",
     "Detailed analytics": "Análisis detallado",
+    "Visual progress tracking with streaks, achievements, and detailed analytics to keep you motivated.":
+      "Seguimiento visual del progreso con rachas, logros y análisis detallado para mantenerte motivado.",
 
     // User Pains & Solutions
     "Make cleaning could be exhausting": "La limpieza puede ser agotadora",

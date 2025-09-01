@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import {
   HeroSection,
   GamificationPreview,
-  FeaturesSection,
   GamificationFeatures,
   UserPainsSection,
   CTASection,
@@ -64,7 +63,6 @@ export default function Home() {
           <GamificationPreview showCompletionAnimation={false} />
         </div>
         <UserPainsSection />
-        <FeaturesSection />
         <GamificationFeatures />
         <CTASection onGetStarted={handleGetStarted} />
       </main>

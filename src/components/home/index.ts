@@ -2,7 +2,6 @@ export { HeroSection } from "./HeroSection";
 export { InteractiveTaskCard } from "./InteractiveTaskCard";
 export { TaskCompletionAnimation } from "./TaskCompletionAnimation";
 export { GamificationPreview } from "./GamificationPreview";
-export { FeaturesSection } from "./FeaturesSection";
 export { GamificationFeatures } from "./GamificationFeatures";
 export { UserPainsSection } from "./UserPainsSection";
 export { StatsSection } from "./StatsSection";
