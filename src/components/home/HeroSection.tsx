@@ -15,7 +15,7 @@ export function HeroSection({ onGetStarted, onSignIn }: HeroSectionProps) {
 
   return (
     <div className="text-left">
-      <h1 className="text-5xl md:text-6xl font-bold text-dark mb-6 leading-tight">
+      <h1 className="text-primary text-5xl md:text-6xl font-bold mb-6 leading-tight">
         {t("Level Up Your Cleaning", language)}
       </h1>
       <p className="text-xl text-dark/70 mb-8 max-w-lg leading-relaxed">

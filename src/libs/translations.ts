@@ -168,6 +168,9 @@ export const translations = {
     "Smart Task Management": "Smart Task Management",
     "Create and organize cleaning tasks by room, priority, and frequency. Mark them complete and track your progress.":
       "Create and organize cleaning tasks by room, priority, and frequency. Mark them complete and track your progress.",
+    "Smart Scheduling": "Smart Scheduling",
+    "AI-powered scheduling that adapts to your routine and suggests optimal cleaning times based on your habits.":
+      "AI-powered scheduling that adapts to your routine and suggests optimal cleaning times based on your habits.",
     "Flexible Scheduling": "Flexible Scheduling",
     "View your cleaning tasks by day, week, month, or year. Customize schedules that fit your lifestyle.":
       "View your cleaning tasks by day, week, month, or year. Customize schedules that fit your lifestyle.",
@@ -184,6 +187,81 @@ export const translations = {
     "View and manage your cleaning tasks by different time periods":
       "View and manage your cleaning tasks by different time periods",
     "Spotless & Organized": "Spotless & Organized",
+
+    // Gamification & Features
+    "Reward System": "Reward System",
+    "Turn cleaning into a fun game with our complete gamification system":
+      "Turn cleaning into a fun game with our complete gamification system",
+    "Level System": "Level System",
+    "Level up by completing tasks and unlock new features and special rewards.":
+      "Level up by completing tasks and unlock new features and special rewards.",
+    "Experience Points": "Experience Points",
+    "Earn XP for each completed task and build your professional cleaning profile.":
+      "Earn XP for each completed task and build your professional cleaning profile.",
+    "Streaks & Achievements": "Streaks & Achievements",
+    "Maintain daily cleaning streaks and unlock special achievements for your consistency.":
+      "Maintain daily cleaning streaks and unlock special achievements for your consistency.",
+    "Tool Inventory": "Tool Inventory",
+    "Unlock and customize your cleaning tool inventory as you progress.":
+      "Unlock and customize your cleaning tool inventory as you progress.",
+    "25 levels available": "25 levels available",
+    "5-50 XP per task": "5-50 XP per task",
+    "100+ achievements": "100+ achievements",
+    "50+ tools available": "50+ tools available",
+    "+15 XP per task": "+15 XP per task",
+    "Smart AI scheduling": "Smart AI scheduling",
+    "Detailed analytics": "Detailed analytics",
+
+    // User Pains & Solutions
+    "Make cleaning could be exhausting": "Make cleaning could be exhausting",
+    "1 in 6 people admit they go over a month without cleaning.":
+      "1 in 6 people admit they go over a month without cleaning.",
+    "Stage 1": "Stage 1",
+    "Stage 2": "Stage 2",
+    "Stage 3": "Stage 3",
+    "Want to Clean": "Want to Clean",
+    "Begin to Clean": "Begin to Clean",
+    "Get Overwhelmed or Bored": "Get Overwhelmed or Bored",
+    "I know I need to clean, but I don't know where to start or what really matters.":
+      "I know I need to clean, but I don't know where to start or what really matters.",
+    "I start cleaning, but it feels endless and I lose motivation fast.":
+      "I start cleaning, but it feels endless and I lose motivation fast.",
+    "Tasks pile up, others don't help, and I end up frustrated or giving up.":
+      "Tasks pile up, others don't help, and I end up frustrated or giving up.",
+    "Where to start?": "Where to start?",
+    "Motivation killer": "Motivation killer",
+    "Frustration cycle": "Frustration cycle",
+    "SparkClean gives you a clear roadmap and prioritizes what matters most.":
+      "SparkClean gives you a clear roadmap and prioritizes what matters most.",
+    "Break tasks into manageable chunks with progress tracking to keep you motivated.":
+      "Break tasks into manageable chunks with progress tracking to keep you motivated.",
+    "Turn cleaning into a game with rewards, streaks, and shared accountability.":
+      "Turn cleaning into a game with rewards, streaks, and shared accountability.",
+    "Overwhelm & Forgetfulness": "Overwhelm & Forgetfulness",
+    "Users often forget what needs to be cleaned or when.":
+      "Users often forget what needs to be cleaned or when.",
+    "I never know what to clean next, and everything piles up until it feels impossible.":
+      "I never know what to clean next, and everything piles up until it feels impossible.",
+    "SparkClean gives them a personalized schedule and reminders so they never feel lost.":
+      "SparkClean gives them a personalized schedule and reminders so they never feel lost.",
+    "Lack of Motivation": "Lack of Motivation",
+    "Cleaning feels boring and repetitive.":
+      "Cleaning feels boring and repetitive.",
+    "I know I should clean, but I just can't get myself to do it consistently.":
+      "I know I should clean, but I just can't get myself to do it consistently.",
+    "SparkClean adds gamification & progress tracking, turning chores into small wins.":
+      "SparkClean adds gamification & progress tracking, turning chores into small wins.",
+    "Uneven Workload at Home": "Uneven Workload at Home",
+    "Families/roommates often argue about who does what.":
+      "Families/roommates often argue about who does what.",
+    "I end up doing everything because no one else remembers or tracks it.":
+      "I end up doing everything because no one else remembers or tracks it.",
+    "SparkClean allows task sharing & accountability, making cleaning more fair and visible.":
+      "SparkClean allows task sharing & accountability, making cleaning more fair and visible.",
+    "The problem:": "The problem:",
+    "The solution:": "The solution:",
+    "El problema:": "El problema:",
+    "La solución:": "La solución:",
 
     // Area Management
     "Home Health Map": "Home Health Map",
@@ -419,6 +497,9 @@ export const translations = {
     "Smart Task Management": "Gestión Inteligente de Tareas",
     "Create and organize cleaning tasks by room, priority, and frequency. Mark them complete and track your progress.":
       "Crea y organiza tareas de limpieza por habitación, prioridad y frecuencia. Márcalas como completadas y rastrea tu progreso.",
+    "Smart Scheduling": "Programación Inteligente",
+    "AI-powered scheduling that adapts to your routine and suggests optimal cleaning times based on your habits.":
+      "Programación impulsada por IA que se adapta a tu rutina y sugiere horarios óptimos de limpieza basados en tus hábitos.",
     "Flexible Scheduling": "Programación Flexible",
     "View your cleaning tasks by day, week, month, or year. Customize schedules that fit your lifestyle.":
       "Ve tus tareas de limpieza por día, semana, mes o año. Personaliza horarios que se adapten a tu estilo de vida.",
@@ -435,6 +516,79 @@ export const translations = {
     "View and manage your cleaning tasks by different time periods":
       "Ve y administra tus tareas de limpieza por diferentes períodos de tiempo",
     "Spotless & Organized": "Limpio y Organizado",
+
+    // Gamification & Features
+    "Reward System": "Sistema de Recompensas",
+    "Turn cleaning into a fun game with our complete gamification system":
+      "Convierte la limpieza en un juego divertido con nuestro sistema de gamificación completo",
+    "Level System": "Sistema de Niveles",
+    "Level up by completing tasks and unlock new features and special rewards.":
+      "Sube de nivel completando tareas y desbloquea nuevas funcionalidades y recompensas especiales.",
+    "Experience Points": "Puntos de Experiencia",
+    "Earn XP for each completed task and build your professional cleaning profile.":
+      "Gana XP por cada tarea completada y construye tu perfil de limpieza profesional.",
+    "Streaks & Achievements": "Rachas y Logros",
+    "Maintain daily cleaning streaks and unlock special achievements for your consistency.":
+      "Mantén rachas de limpieza diaria y desbloquea logros especiales por tu consistencia.",
+    "Tool Inventory": "Inventario de Herramientas",
+    "Unlock and customize your cleaning tool inventory as you progress.":
+      "Desbloquea y personaliza tu inventario de herramientas de limpieza mientras progresas.",
+    "25 levels available": "25 niveles disponibles",
+    "5-50 XP per task": "5-50 XP por tarea",
+    "100+ achievements": "100+ logros",
+    "50+ tools available": "50+ herramientas disponibles",
+    "+15 XP per task": "+15 XP por tarea",
+    "Smart AI scheduling": "Programación IA inteligente",
+    "Detailed analytics": "Análisis detallado",
+
+    // User Pains & Solutions
+    "Make cleaning could be exhausting": "La limpieza puede ser agotadora",
+    "1 in 6 people admit they go over a month without cleaning.":
+      "1 en 6 personas admite que pasan un mes sin limpiar.",
+    "Stage 1": "Etapa 1",
+    "Stage 2": "Etapa 2",
+    "Stage 3": "Etapa 3",
+    "Want to Clean": "Quiero Limpiar",
+    "Begin to Clean": "Comenzar a Limpiar",
+    "Get Overwhelmed or Bored": "Me Abrumo o Me Aburro",
+    "I know I need to clean, but I don't know where to start or what really matters.":
+      "Sé que necesito limpiar, pero no sé por dónde empezar o qué realmente importa.",
+    "I start cleaning, but it feels endless and I lose motivation fast.":
+      "Empiezo a limpiar, pero se siente interminable y pierdo la motivación rápidamente.",
+    "Tasks pile up, others don't help, and I end up frustrated or giving up.":
+      "Las tareas se acumulan, otros no ayudan, y termino frustrado o rindiéndome.",
+    "Where to start?": "¿Por dónde empezar?",
+    "Motivation killer": "Asesino de motivación",
+    "Frustration cycle": "Ciclo de frustración",
+    "SparkClean gives you a clear roadmap and prioritizes what matters most.":
+      "SparkClean te da una hoja de ruta clara y prioriza lo que más importa.",
+    "Break tasks into manageable chunks with progress tracking to keep you motivated.":
+      "Divide las tareas en fragmentos manejables con seguimiento de progreso para mantenerte motivado.",
+    "Turn cleaning into a game with rewards, streaks, and shared accountability.":
+      "Convierte la limpieza en un juego con recompensas, rachas y responsabilidad compartida.",
+    "Overwhelm & Forgetfulness": "Abrumación y Olvido",
+    "Users often forget what needs to be cleaned or when.":
+      "Los usuarios suelen olvidar qué necesitan limpiar o cuándo.",
+    "I never know what to clean next, and everything piles up until it feels impossible.":
+      "Nunca sé qué limpiar después, y todo se acumula hasta que se siente imposible.",
+    "SparkClean gives them a personalized schedule and reminders so they never feel lost.":
+      "SparkClean les da un horario personalizado y recordatorios para que nunca se sientan perdidos.",
+    "Lack of Motivation": "Falta de Motivación",
+    "Cleaning feels boring and repetitive.":
+      "La limpieza se siente aburrida y repetitiva.",
+    "I know I should clean, but I just can't get myself to do it consistently.":
+      "Sé que debería limpiar, pero simplemente no puedo hacerlo consistentemente.",
+    "SparkClean adds gamification & progress tracking, turning chores into small wins.":
+      "SparkClean agrega gamificación y seguimiento de progreso, convirtiendo las tareas en pequeñas victorias.",
+    "Uneven Workload at Home": "Carga de Trabajo Desigual en Casa",
+    "Families/roommates often argue about who does what.":
+      "Las familias/compañeros de cuarto suelen discutir sobre quién hace qué.",
+    "I end up doing everything because no one else remembers or tracks it.":
+      "Termino haciendo todo porque nadie más recuerda o rastrea las tareas.",
+    "SparkClean allows task sharing & accountability, making cleaning more fair and visible.":
+      "SparkClean permite compartir tareas y responsabilidad, haciendo la limpieza más justa y visible.",
+    "The problem:": "El problema:",
+    "The solution:": "La solución:",
 
     // Area Management
     "Home Health Map": "Mapa de Salud del Hogar",

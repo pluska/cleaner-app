@@ -2,6 +2,7 @@
 
 import { Trophy, Sparkles } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { t } from "@/libs/translations";
 import { Card } from "@/components/ui/layout/Card";
 import { Button } from "@/components/ui/forms/Button";
 
@@ -18,14 +19,13 @@ export function CTASection({ onGetStarted }: CTASectionProps) {
         <Trophy className="h-10 w-10 text-white" />
       </div>
       <h2 className="text-3xl font-bold text-dark mb-4">
-        {language === "es"
-          ? "¿Listo para Transformar tu Hogar?"
-          : "Ready to Transform Your Home?"}
+        {t("Ready to Transform Your Home?", language)}
       </h2>
       <p className="text-dark/70 mb-8 max-w-2xl mx-auto">
-        {language === "es"
-          ? "Únete a miles de usuarios que ya han simplificado su rutina de limpieza y creado hogares más organizados y hermosos."
-          : "Join thousands of users who have already simplified their cleaning routine and created more organized, beautiful homes."}
+        {t(
+          "Join thousands of users who have already simplified their cleaning routine and created more organized, beautiful homes.",
+          language
+        )}
       </p>
       <Button
         onClick={onGetStarted}
@@ -34,9 +34,7 @@ export function CTASection({ onGetStarted }: CTASectionProps) {
         className="group"
       >
         <Sparkles className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
-        {language === "es"
-          ? "Crear Cuenta Gratuita"
-          : "Create Your Free Account"}
+        {t("Create Your Free Account", language)}
       </Button>
     </Card>
   );

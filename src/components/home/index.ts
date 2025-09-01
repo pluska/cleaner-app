@@ -4,6 +4,7 @@ export { TaskCompletionAnimation } from "./TaskCompletionAnimation";
 export { GamificationPreview } from "./GamificationPreview";
 export { FeaturesSection } from "./FeaturesSection";
 export { GamificationFeatures } from "./GamificationFeatures";
+export { UserPainsSection } from "./UserPainsSection";
 export { StatsSection } from "./StatsSection";
 export { AdditionalFeatures } from "./AdditionalFeatures";
 export { CTASection } from "./CTASection";

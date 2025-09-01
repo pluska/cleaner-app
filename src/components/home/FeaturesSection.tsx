@@ -25,7 +25,7 @@ export function FeaturesSection() {
         </p>
         <div className="flex items-center justify-center space-x-2 text-sm text-primary">
           <Star className="w-4 h-4" />
-          <span>+15 XP per task</span>
+          <span>{t("+15 XP per task", language)}</span>
         </div>
       </Card>
 

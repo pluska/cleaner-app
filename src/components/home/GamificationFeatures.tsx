@@ -11,6 +11,7 @@ import {
   Target,
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { t } from "@/libs/translations";
 import { Card } from "@/components/ui/layout/Card";
 
 export function GamificationFeatures() {
@@ -20,12 +21,13 @@ export function GamificationFeatures() {
     <div className="mt-20">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold text-dark mb-4">
-          {language === "es" ? "Sistema de Recompensas" : "Reward System"}
+          {t("Reward System", language)}
         </h2>
         <p className="text-dark/70 max-w-2xl mx-auto">
-          {language === "es"
-            ? "Convierte la limpieza en un juego divertido con nuestro sistema de gamificación completo"
-            : "Turn cleaning into a fun game with our complete gamification system"}
+          {t(
+            "Turn cleaning into a fun game with our complete gamification system",
+            language
+          )}
         </p>
       </div>
 
@@ -37,16 +39,17 @@ export function GamificationFeatures() {
             </div>
             <div>
               <h3 className="text-xl font-semibold text-dark mb-2">
-                {language === "es" ? "Sistema de Niveles" : "Level System"}
+                {t("Level System", language)}
               </h3>
               <p className="text-dark/70 mb-4">
-                {language === "es"
-                  ? "Sube de nivel completando tareas y desbloquea nuevas funcionalidades y recompensas especiales."
-                  : "Level up by completing tasks and unlock new features and special rewards."}
+                {t(
+                  "Level up by completing tasks and unlock new features and special rewards.",
+                  language
+                )}
               </p>
               <div className="flex items-center space-x-2 text-sm text-primary">
                 <Star className="w-4 h-4" />
-                <span>25 levels available</span>
+                <span>{t("25 levels available", language)}</span>
               </div>
             </div>
           </div>
@@ -59,18 +62,17 @@ export function GamificationFeatures() {
             </div>
             <div>
               <h3 className="text-xl font-semibold text-dark mb-2">
-                {language === "es"
-                  ? "Puntos de Experiencia"
-                  : "Experience Points"}
+                {t("Experience Points", language)}
               </h3>
               <p className="text-dark/70 mb-4">
-                {language === "es"
-                  ? "Gana XP por cada tarea completada y construye tu perfil de limpieza profesional."
-                  : "Earn XP for each completed task and build your professional cleaning profile."}
+                {t(
+                  "Earn XP for each completed task and build your professional cleaning profile.",
+                  language
+                )}
               </p>
               <div className="flex items-center space-x-2 text-sm text-secondary">
                 <Zap className="w-4 h-4" />
-                <span>5-50 XP per task</span>
+                <span>{t("5-50 XP per task", language)}</span>
               </div>
             </div>
           </div>
@@ -83,18 +85,17 @@ export function GamificationFeatures() {
             </div>
             <div>
               <h3 className="text-xl font-semibold text-dark mb-2">
-                {language === "es"
-                  ? "Rachas y Logros"
-                  : "Streaks & Achievements"}
+                {t("Streaks & Achievements", language)}
               </h3>
               <p className="text-dark/70 mb-4">
-                {language === "es"
-                  ? "Mantén rachas de limpieza diaria y desbloquea logros especiales por tu consistencia."
-                  : "Maintain daily cleaning streaks and unlock special achievements for your consistency."}
+                {t(
+                  "Maintain daily cleaning streaks and unlock special achievements for your consistency.",
+                  language
+                )}
               </p>
               <div className="flex items-center space-x-2 text-sm text-primary">
                 <Award className="w-4 h-4" />
-                <span>100+ achievements</span>
+                <span>{t("100+ achievements", language)}</span>
               </div>
             </div>
           </div>
@@ -107,18 +108,17 @@ export function GamificationFeatures() {
             </div>
             <div>
               <h3 className="text-xl font-semibold text-dark mb-2">
-                {language === "es"
-                  ? "Inventario de Herramientas"
-                  : "Tool Inventory"}
+                {t("Tool Inventory", language)}
               </h3>
               <p className="text-dark/70 mb-4">
-                {language === "es"
-                  ? "Desbloquea y personaliza tu inventario de herramientas de limpieza mientras progresas."
-                  : "Unlock and customize your cleaning tool inventory as you progress."}
+                {t(
+                  "Unlock and customize your cleaning tool inventory as you progress.",
+                  language
+                )}
               </p>
               <div className="flex items-center space-x-2 text-sm text-secondary">
                 <Target className="w-4 h-4" />
-                <span>50+ tools available</span>
+                <span>{t("50+ tools available", language)}</span>
               </div>
             </div>
           </div>

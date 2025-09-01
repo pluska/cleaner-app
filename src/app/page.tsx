@@ -12,7 +12,7 @@ import {
   GamificationPreview,
   FeaturesSection,
   GamificationFeatures,
-  StatsSection,
+  UserPainsSection,
   CTASection,
   Footer,
 } from "@/components/home";
@@ -63,7 +63,7 @@ export default function Home() {
           {/* Right Column - Interactive Gamification Preview */}
           <GamificationPreview showCompletionAnimation={false} />
         </div>
-        <StatsSection />
+        <UserPainsSection />
         <FeaturesSection />
         <GamificationFeatures />
         <CTASection onGetStarted={handleGetStarted} />

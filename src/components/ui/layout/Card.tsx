@@ -5,6 +5,7 @@ interface CardProps {
   className?: string;
   padding?: "sm" | "md" | "lg";
   shadow?: "sm" | "md" | "lg";
+  style?: React.CSSProperties;
 }
 
 export function Card({
@@ -12,6 +13,7 @@ export function Card({
   className = "",
   padding = "md",
   shadow = "md",
+  style,
 }: CardProps) {
   const paddingClasses = {
     sm: "p-4",
@@ -29,5 +31,9 @@ export function Card({
     "bg-white rounded-2xl border border-base transition-all duration-200";
   const classes = `${baseClasses} ${paddingClasses[padding]} ${shadowClasses[shadow]} ${className}`;
 
-  return <div className={classes}>{children}</div>;
+  return (
+    <div className={classes} style={style}>
+      {children}
+    </div>
+  );
 }
