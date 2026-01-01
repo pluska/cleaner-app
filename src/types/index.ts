@@ -183,6 +183,7 @@ export interface Room {
   has_hardwood: boolean;
   has_tile: boolean;
   special_features?: string[];
+  quantity?: number;
 }
 
 // =====================================================

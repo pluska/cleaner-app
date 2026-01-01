@@ -25,7 +25,7 @@ export default function Home() {
   };
 
   const handleGetStarted = () => {
-    router.push("/auth/signup");
+    router.push("/first-steps");
   };
 
   return (

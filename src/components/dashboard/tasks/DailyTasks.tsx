@@ -323,13 +323,10 @@ export function DailyTasks({
               {onShowAITaskCreation && (
                 <Button
                   onClick={onShowAITaskCreation}
-                  size="sm"
-                  className="w-full sm:w-auto"
+                  className="bg-primary text-white hover:bg-primary/90 shadow-sm transition-all hover:scale-105"
                 >
-                  <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
-                  <span className="font-medium text-sm sm:text-base">
-                    {language === "es" ? "AI Asistente" : "AI Assistant"}
-                  </span>
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  {language === "es" ? "Invocar a Sparklin" : "Summon Sparklin"}
                 </Button>
               )}
             </div>

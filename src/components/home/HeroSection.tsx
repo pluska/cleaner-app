@@ -16,11 +16,11 @@ export function HeroSection({ onGetStarted, onSignIn }: HeroSectionProps) {
   return (
     <div className="text-left">
       <h1 className="text-primary text-5xl md:text-6xl font-bold mb-6 leading-tight">
-        {t("Level Up Your Cleaning", language)}
+        {t("Turn Cleaning Into a Game", language)}
       </h1>
       <p className="text-xl text-dark/70 mb-8 max-w-lg leading-relaxed">
         {t(
-          "Turn chores into challenges. Build your schedule, track progress, and keep your home sparkling.",
+          "Stop procrastinating. Turn boring chores into rewarding quests, track your XP, and build a home you're proud of.",
           language
         )}
       </p>
@@ -33,7 +33,7 @@ export function HeroSection({ onGetStarted, onSignIn }: HeroSectionProps) {
           className="group"
         >
           <Trophy className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-          {t("Get Started", language)}
+          {t("Start Playing", language)}
         </Button>
         <Button onClick={onSignIn} variant="ghost" size="lg">
           {t("Sign In", language)}

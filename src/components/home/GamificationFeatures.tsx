@@ -24,7 +24,7 @@ export function GamificationFeatures() {
     <div className="mt-20">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold text-dark mb-4">
-          {t("Cleaning made simple, motivating, and stress-free", language)}
+          {t("Cleaning made fun, easy, and rewarding", language)}
         </h2>
         <p className="text-dark/70 max-w-2xl mx-auto">
           {t(
@@ -41,11 +41,11 @@ export function GamificationFeatures() {
             <CheckCircle className="h-8 w-8 text-primary" />
           </div>
           <h3 className="text-xl font-semibold text-dark mb-2">
-            {t("Smart Task Management", language)}
+            {t("Daily Quests", language)}
           </h3>
           <p className="text-dark/70 mb-4">
             {t(
-              "Create and organize cleaning tasks by room, priority, and frequency. Mark them complete and track your progress.",
+              "Turn your to-do list into a series of bite-sized quests. Complete them to earn rewards and clear your mind.",
               language
             )}
           </p>
@@ -60,17 +60,17 @@ export function GamificationFeatures() {
             <Calendar className="h-8 w-8 text-secondary" />
           </div>
           <h3 className="text-xl font-semibold text-dark mb-2">
-            {t("Smart Scheduling", language)}
+            {t("Smart Schedule", language)}
           </h3>
           <p className="text-dark/70 mb-4">
             {t(
-              "AI-powered scheduling that adapts to your routine and suggests optimal cleaning times based on your habits.",
+              "Never worry about what to clean next. Our AI builds a perfect schedule that adapts to your life, not the other way around.",
               language
             )}
           </p>
           <div className="flex items-center justify-center space-x-2 text-sm text-secondary">
             <Target className="w-4 h-4" />
-            <span>{t("Smart AI scheduling", language)}</span>
+            <span>{t("Auto-pilot mode", language)}</span>
           </div>
         </Card>
 
@@ -79,17 +79,17 @@ export function GamificationFeatures() {
             <TrendingUp className="h-8 w-8 text-black" />
           </div>
           <h3 className="text-xl font-semibold text-dark mb-2">
-            {t("Progress Tracking", language)}
+            {t("Level Up Your Life", language)}
           </h3>
           <p className="text-dark/70 mb-4">
             {t(
-              "Visual progress tracking with streaks, achievements, and detailed analytics to keep you motivated.",
+              "Watch your character grow as your home becomes cleaner. Build real-world habits that stick forever.",
               language
             )}
           </p>
           <div className="flex items-center justify-center space-x-2 text-sm text-primary">
             <Star className="w-4 h-4" />
-            <span>{t("Detailed analytics", language)}</span>
+            <span>{t("Become a Pro", language)}</span>
           </div>
         </Card>
       </div>
@@ -103,17 +103,17 @@ export function GamificationFeatures() {
             </div>
             <div>
               <h3 className="text-xl font-semibold text-dark mb-2">
-                {t("Level System", language)}
+                {t("Real Progression", language)}
               </h3>
               <p className="text-dark/70 mb-4">
                 {t(
-                  "Level up by completing tasks and unlock new features and special rewards.",
+                  "Earn XP for every minute you clean. Unlock new titles, badges, and customization options.",
                   language
                 )}
               </p>
               <div className="flex items-center justify-center space-x-2 text-sm text-primary">
                 <Star className="w-4 h-4" />
-                <span>{t("25 levels available", language)}</span>
+                <span>{t("Infinite levels", language)}</span>
               </div>
             </div>
           </div>
@@ -126,17 +126,17 @@ export function GamificationFeatures() {
             </div>
             <div>
               <h3 className="text-xl font-semibold text-dark mb-2">
-                {t("Experience Points", language)}
+                {t("Instant Gratification", language)}
               </h3>
               <p className="text-dark/70 mb-4">
                 {t(
-                  "Earn XP for each completed task and build your professional cleaning profile.",
+                  "Get immediate feedback for your hard work. Every completed task gives you a dopamine hit.",
                   language
                 )}
               </p>
               <div className="flex items-center justify-center space-x-2 text-sm text-secondary">
                 <Zap className="w-4 h-4" />
-                <span>{t("5-50 XP per task", language)}</span>
+                <span>{t("Feel good instantly", language)}</span>
               </div>
             </div>
           </div>

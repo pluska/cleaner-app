@@ -151,58 +151,52 @@ export function AITaskCreation({ onComplete, onCancel }: AITaskCreationProps) {
   };
 
   const renderWelcome = () => (
-    <Card className="p-8 max-w-2xl mx-auto text-center">
+    <Card className="p-8 max-w-2xl mx-auto text-center border-2 border-blue-200">
       <div className="flex flex-col items-center space-y-6">
         <div className="flex items-center space-x-3">
-          <Sparkles className="w-12 h-12 text-blue-600" />
+          <div className="bg-blue-100 p-3 rounded-full">
+             <Sparkles className="w-12 h-12 text-blue-600" />
+          </div>
           <h1 className="text-3xl font-bold text-gray-900">
             {language === "es"
-              ? "AI Asistente de Limpieza"
-              : "AI Cleaning Assistant"}
+              ? "Habla con Sparklin"
+              : "Consult Sparklin"}
           </h1>
         </div>
 
-        <p className="text-lg text-gray-600 max-w-lg">
-          {language === "es"
-            ? "Nuestro AI inteligente analizará tu hogar y creará un plan de limpieza personalizado basado en tu estilo de vida y necesidades específicas."
-            : "Our intelligent AI will analyze your home and create a personalized cleaning plan based on your lifestyle and specific needs."}
+        <p className="text-lg text-gray-600 max-w-lg italic">
+          "{language === "es"
+            ? "Saludos, Héroe. Los Conejitos de Polvo se reúnen en las esquinas. ¿Debemos desterrarlos?"
+            : "Greetings, Hero. The Dust Bunnies gather in the dark corners. Shall we banish them?"}"
         </p>
 
-        <div className="bg-blue-50 rounded-lg p-6 text-left max-w-md">
-          <h3 className="font-semibold text-blue-900 mb-3">
-            {language === "es" ? "¿Qué incluye?" : "What's included?"}
+        <div className="bg-blue-50 rounded-lg p-6 text-left max-w-md border border-blue-100">
+          <h3 className="font-bold text-blue-900 mb-3 uppercase tracking-wide text-xs">
+            {language === "es" ? "Servicios del Oráculo" : "Oracle Services"}
           </h3>
           <ul className="space-y-2 text-sm text-blue-800">
             <li className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-blue-600 rounded-full" />
+              <span className="text-xl">🏰</span>
               <span>
                 {language === "es"
-                  ? "Evaluación personalizada de tu hogar"
-                  : "Personalized home assessment"}
+                  ? "Evaluación del Reino (Hogar)"
+                  : "Realm Assessment (Home Analysis)"}
               </span>
             </li>
             <li className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-blue-600 rounded-full" />
+              <span className="text-xl">📜</span>
               <span>
                 {language === "es"
-                  ? "Recomendaciones basadas en evidencia científica"
-                  : "Evidence-based recommendations"}
+                  ? "Pergaminos de Sabiduría (Consejos)"
+                  : "Scrolls of Wisdom (Tips)"}
               </span>
             </li>
             <li className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-blue-600 rounded-full" />
+              <span className="text-xl">⚔️</span>
               <span>
                 {language === "es"
-                  ? "Tareas adaptadas a tu estilo de vida"
-                  : "Tasks adapted to your lifestyle"}
-              </span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-blue-600 rounded-full" />
-              <span>
-                {language === "es"
-                  ? "Explicaciones educativas sobre salud"
-                  : "Educational health explanations"}
+                  ? "Contratos de Misión (Tareas)"
+                  : "Quest Contracts (Tasks)"}
               </span>
             </li>
           </ul>
@@ -210,24 +204,12 @@ export function AITaskCreation({ onComplete, onCancel }: AITaskCreationProps) {
 
         <div className="flex space-x-4">
           <Button variant="outline" onClick={handleCancel}>
-            {language === "es" ? "Cancelar" : "Cancel"}
+            {language === "es" ? "Retirarse" : "Retreat"}
           </Button>
 
-          <Button
-            variant="outline"
-            onClick={() => {
-              setCurrentStep("interview");
-              setIsGeneratingTasks(true);
-              setTimeout(() => {
-                setIsGeneratingTasks(false);
-              }, 3000);
-            }}
-          >
-            {language === "es" ? "Probar Carga" : "Test Loading"}
-          </Button>
-
-          <Button onClick={handleStartInterview}>
-            {language === "es" ? "Comenzar" : "Get Started"}
+          <Button onClick={handleStartInterview} className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg transform hover:scale-105 transition-all">
+            <Sparkles className="w-4 h-4 mr-2" />
+            {language === "es" ? "Invocar a Sparklin" : "Summon Sparklin"}
           </Button>
         </div>
       </div>
@@ -235,24 +217,24 @@ export function AITaskCreation({ onComplete, onCancel }: AITaskCreationProps) {
   );
 
   const renderComplete = () => (
-    <Card className="p-8 max-w-2xl mx-auto text-center">
+    <Card className="p-8 max-w-2xl mx-auto text-center border-2 border-green-200">
       <div className="flex flex-col items-center space-y-6">
-        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center animate-bounce">
           <Sparkles className="w-8 h-8 text-green-600" />
         </div>
 
         <h2 className="text-2xl font-bold text-gray-900">
-          {language === "es" ? "¡Tareas Creadas!" : "Tasks Created!"}
+          {language === "es" ? "¡Misiones Generadas!" : "Quests Generated!"}
         </h2>
 
         <p className="text-gray-600">
           {language === "es"
-            ? "Tu plan de limpieza personalizado ha sido creado exitosamente. Puedes ver tus nuevas tareas en el dashboard."
-            : "Your personalized cleaning plan has been created successfully. You can view your new tasks in the dashboard."}
+            ? "El Oráculo ha hablado. Tu Diario de Aventuras ha sido actualizado."
+            : "The Oracle has spoken. Your Adventure Log has been updated with new quests."}
         </p>
 
         <Button onClick={onComplete} className="flex items-center space-x-2">
-          <span>{language === "es" ? "Ver Dashboard" : "View Dashboard"}</span>
+          <span>{language === "es" ? "Ver Tablero" : "View Quest Board"}</span>
           <ArrowRight className="w-4 h-4" />
         </Button>
       </div>
@@ -263,56 +245,22 @@ export function AITaskCreation({ onComplete, onCancel }: AITaskCreationProps) {
     <Card className="p-8 max-w-2xl mx-auto text-center">
       <div className="flex flex-col items-center space-y-6">
         <div className="relative">
-          <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-          <Sparkles className="w-8 h-8 text-blue-600 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+          <div className="w-20 h-20 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
+          <Sparkles className="w-10 h-10 text-purple-600 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-pulse" />
         </div>
 
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-purple-900">
             {language === "es"
-              ? "Generando Recomendaciones Personalizadas"
-              : "Generating Personalized Recommendations"}
+              ? "Consultando los Textos Antiguos..."
+              : "Consulting the Ancient Texts..."}
           </h2>
 
-          <p className="text-lg text-gray-600 max-w-md">
-            {language === "es"
-              ? "Nuestro AI está analizando tu hogar y creando un plan de limpieza personalizado basado en tus necesidades específicas..."
-              : "Our AI is analyzing your home and creating a personalized cleaning plan based on your specific needs..."}
+          <p className="text-lg text-gray-600 max-w-md italic">
+            "{language === "es"
+              ? "Sparklin está tejiendo los hilos del destino (y de la limpieza)..."
+              : "Sparklin is weaving the threads of fate (and cleaning)..."}"
           </p>
-
-          <div className="bg-blue-50 rounded-lg p-4 text-left max-w-sm">
-            <h3 className="font-semibold text-blue-900 mb-2">
-              {language === "es" ? "Analizando:" : "Analyzing:"}
-            </h3>
-            <ul className="space-y-1 text-sm text-blue-800">
-              <li className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
-                <span>{language === "es" ? "Tipo de hogar" : "Home type"}</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
-                <span>{language === "es" ? "Habitaciones" : "Rooms"}</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
-                <span>
-                  {language === "es" ? "Estilo de vida" : "Lifestyle"}
-                </span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
-                <span>
-                  {language === "es" ? "Preferencias" : "Preferences"}
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="text-sm text-gray-500">
-            {language === "es"
-              ? "Esto puede tomar unos segundos..."
-              : "This may take a few seconds..."}
-          </div>
         </div>
       </div>
     </Card>

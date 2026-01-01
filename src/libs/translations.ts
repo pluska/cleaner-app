@@ -160,6 +160,17 @@ export const translations = {
     "Level Up Your Cleaning": "Level Up Your Cleaning",
     "Turn chores into challenges. Build your schedule, track progress, and keep your home sparkling.":
       "Turn chores into challenges. Build your schedule, track progress, and keep your home sparkling.",
+    "Turn Cleaning Into a Game": "Turn Cleaning Into a Game",
+    "Stop procrastinating. Turn boring chores into rewarding quests, track your XP, and build a home you're proud of.":
+      "Stop procrastinating. Turn boring chores into rewarding quests, track your XP, and build a home you're proud of.",
+    "Start Playing": "Start Playing",
+    "Beat the Mess for Good": "Beat the Mess for Good",
+    "Join thousands of users who have turned their chores into a game. Stop cleaning, start playing.":
+      "Join thousands of users who have turned their chores into a game. Stop cleaning, start playing.",
+    "Gamify My Cleaning": "Gamify My Cleaning",
+    "Why is cleaning so hard?": "Why is cleaning so hard?",
+    "It's not you. It's the boring, endless nature of chores. We fixed that.":
+      "It's not you. It's the boring, endless nature of chores. We fixed that.",
     "Organize your home cleaning": "Organize your home cleaning",
     "Create a personalized cleaning schedule and track your progress with our intuitive task management system.":
       "Create a personalized cleaning schedule and track your progress with our intuitive task management system.",
@@ -193,6 +204,26 @@ export const translations = {
       "Cleaning made simple, motivating, and stress-free",
     "Tidy up faster, stay consistent, and enjoy a spotless home effortlessly!":
       "Tidy up faster, stay consistent, and enjoy a spotless home effortlessly!",
+    "Cleaning made fun, easy, and rewarding": "Cleaning made fun, easy, and rewarding",
+    "Daily Quests": "Daily Quests",
+    "Turn your to-do list into a series of bite-sized quests. Complete them to earn rewards and clear your mind.":
+      "Turn your to-do list into a series of bite-sized quests. Complete them to earn rewards and clear your mind.",
+    "Smart Schedule": "Smart Schedule",
+    "Never worry about what to clean next. Our AI builds a perfect schedule that adapts to your life, not the other way around.":
+      "Never worry about what to clean next. Our AI builds a perfect schedule that adapts to your life, not the other way around.",
+    "Auto-pilot mode": "Auto-pilot mode",
+    "Level Up Your Life": "Level Up Your Life",
+    "Watch your character grow as your home becomes cleaner. Build real-world habits that stick forever.":
+      "Watch your character grow as your home becomes cleaner. Build real-world habits that stick forever.",
+    "Become a Pro": "Become a Pro",
+    "Real Progression": "Real Progression",
+    "Earn XP for every minute you clean. Unlock new titles, badges, and customization options.":
+      "Earn XP for every minute you clean. Unlock new titles, badges, and customization options.",
+    "Infinite levels": "Infinite levels",
+    "Instant Gratification": "Instant Gratification",
+    "Get immediate feedback for your hard work. Every completed task gives you a dopamine hit.":
+      "Get immediate feedback for your hard work. Every completed task gives you a dopamine hit.",
+    "Feel good instantly": "Feel good instantly",
     "Level System": "Level System",
     "Level up by completing tasks and unlock new features and special rewards.":
       "Level up by completing tasks and unlock new features and special rewards.",
@@ -254,6 +285,14 @@ export const translations = {
       "I know I should clean, but I just can't get myself to do it consistently.",
     "SparkClean adds gamification & progress tracking, turning chores into small wins.":
       "SparkClean adds gamification & progress tracking, turning chores into small wins.",
+    "I know I need to clean, but I just can't get started. It feels like a chore, not something I want to do.":
+      "I know I need to clean, but I just can't get started. It feels like a chore, not something I want to do.",
+    "Overwhelmed by Mess": "Overwhelmed by Mess",
+    "The mess is too big. I don't know where to begin, so I end up doing nothing at all.":
+      "The mess is too big. I don't know where to begin, so I end up doing nothing at all.",
+    "Can't Stay Consistent": "Can't Stay Consistent",
+    "I clean once in a while, but then I stop. I wish I could build a habit that actually sticks.":
+      "I clean once in a while, but then I stop. I wish I could build a habit that actually sticks.",
     "Uneven Workload at Home": "Uneven Workload at Home",
     "Families/roommates often argue about who does what.":
       "Families/roommates often argue about who does what.",
@@ -492,6 +531,17 @@ export const translations = {
     "Level Up Your Cleaning": "Mejora tu Limpieza",
     "Turn chores into challenges. Build your schedule, track progress, and keep your home sparkling.":
       "Convierte las tareas en desafíos. Construye tu horario, rastrea el progreso y mantén tu hogar brillante.",
+    "Turn Cleaning Into a Game": "Haz de la Limpieza un Juego",
+    "Stop procrastinating. Turn boring chores into rewarding quests, track your XP, and build a home you're proud of.":
+      "Deja de procrastinar. Convierte tareas aburridas en misiones gratificantes, rastrea tu XP y construye un hogar del que estés orgulloso.",
+    "Start Playing": "Empezar a Jugar",
+    "Beat the Mess for Good": "Vence al Desorden para Siempre",
+    "Join thousands of users who have turned their chores into a game. Stop cleaning, start playing.":
+      "Únete a miles de usuarios que han convertido sus tareas en un juego. Deja de limpiar, empieza a jugar.",
+    "Gamify My Cleaning": "Gamificar mi Limpieza",
+    "Why is cleaning so hard?": "¿Por qué es tan difícil limpiar?",
+    "It's not you. It's the boring, endless nature of chores. We fixed that.":
+      "No eres tú. Es la naturaleza aburrida e interminable de las tareas. Nosotros arreglamos eso.",
     "Organize your home cleaning": "Organiza la limpieza de tu hogar",
     "Create a personalized cleaning schedule and track your progress with our intuitive task management system.":
       "Crea un horario de limpieza personalizado y rastrea tu progreso con nuestro sistema intuitivo de gestión de tareas.",
@@ -525,6 +575,26 @@ export const translations = {
       "Limpieza simple, motivadora y sin estrés",
     "Tidy up faster, stay consistent, and enjoy a spotless home effortlessly!":
       "¡Organiza más rápido, mantén la consistencia y disfruta de un hogar impecable sin esfuerzo!",
+    "Cleaning made fun, easy, and rewarding": "Limpieza divertida, fácil y gratificante",
+    "Daily Quests": "Misiones Diarias",
+    "Turn your to-do list into a series of bite-sized quests. Complete them to earn rewards and clear your mind.":
+      "Convierte tu lista de tareas en misiones pequeñas. Complétalas para ganar recompensas y despejar tu mente.",
+    "Smart Schedule": "Horario Inteligente",
+    "Never worry about what to clean next. Our AI builds a perfect schedule that adapts to your life, not the other way around.":
+      "Nunca te preocupes por qué limpiar después. Nuestra IA crea un horario perfecto que se adapta a tu vida, no al revés.",
+    "Auto-pilot mode": "Modo piloto automático",
+    "Level Up Your Life": "Sube de Nivel tu Vida",
+    "Watch your character grow as your home becomes cleaner. Build real-world habits that stick forever.":
+      "Mira crecer a tu personaje mientras tu hogar se limpia. Construye hábitos reales que duren para siempre.",
+    "Become a Pro": "Conviértete en un Profesional",
+    "Real Progression": "Progresión Real",
+    "Earn XP for every minute you clean. Unlock new titles, badges, and customization options.":
+      "Gana XP por cada minuto que limpies. Desbloquea títulos, insignias y opciones de personalización.",
+    "Infinite levels": "Niveles infinitos",
+    "Instant Gratification": "Gratificación Instantánea",
+    "Get immediate feedback for your hard work. Every completed task gives you a dopamine hit.":
+      "Obtén retroalimentación inmediata por tu trabajo. Cada tarea completada te da un golpe de dopamina.",
+    "Feel good instantly": "Siéntete bien al instante",
     "Level System": "Sistema de Niveles",
     "Level up by completing tasks and unlock new features and special rewards.":
       "Sube de nivel completando tareas y desbloquea nuevas funcionalidades y recompensas especiales.",
@@ -586,6 +656,14 @@ export const translations = {
       "Sé que debería limpiar, pero simplemente no puedo hacerlo consistentemente.",
     "SparkClean adds gamification & progress tracking, turning chores into small wins.":
       "SparkClean agrega gamificación y seguimiento de progreso, convirtiendo las tareas en pequeñas victorias.",
+    "I know I need to clean, but I just can't get started. It feels like a chore, not something I want to do.":
+      "Sé que necesito limpiar, pero no puedo empezar. Se siente como una obligación, no algo que quiera hacer.",
+    "Overwhelmed by Mess": "Abrumado por el Desorden",
+    "The mess is too big. I don't know where to begin, so I end up doing nothing at all.":
+      "El desorden es demasiado grande. No sé por dónde empezar, así que termino no haciendo nada.",
+    "Can't Stay Consistent": "No Puedo Ser Consistente",
+    "I clean once in a while, but then I stop. I wish I could build a habit that actually sticks.":
+      "Limpio de vez en cuando, pero luego paro. Desearía poder construir un hábito que realmente dure.",
     "Uneven Workload at Home": "Carga de Trabajo Desigual en Casa",
     "Families/roommates often argue about who does what.":
       "Las familias/compañeros de cuarto suelen discutir sobre quién hace qué.",
@@ -659,6 +737,8 @@ export const translations = {
     Edit: "Editar",
     Yes: "Sí",
     No: "No",
+    "El problema:": "El problema:",
+    "La solución:": "La solución:",
     Confirm: "Confirmar",
     "Are you sure?": "¿Estás seguro?",
     "This action cannot be undone.": "Esta acción no se puede deshacer.",

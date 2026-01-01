@@ -10,6 +10,7 @@ import { formatDateToYYYYMMDD } from "@/libs/date-utils";
 import { GamificationTester } from "../gamification/GamificationTester";
 import { AuthDebugger } from "../AuthDebugger";
 import { AITaskCreation } from "../ai/AITaskCreation";
+import { FirstLoginReception } from "../gamification/FirstLoginReception";
 
 interface DashboardContentProps {
   initialTodayTasks: Task[];
@@ -156,6 +157,10 @@ export const DashboardContent: React.FC<DashboardContentProps> = ({
         />
       ) : (
         <>
+          <FirstLoginReception
+            userName="Hero"
+            onComplete={() => console.log("Welcome modal closed")}
+          />
           <WeeklyView
             selectedDate={selectedDate}
             onDateChange={handleDateChange}
