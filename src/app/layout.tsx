@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { SessionProvider } from "@/contexts/LanguageContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import { SessionExpiredNotification } from "@/components/ui/feedback/SessionExpiredNotification";
 import { ErrorBoundary } from "@/components/ui/data-display/ErrorBoundary";
 
@@ -41,14 +42,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base text-dark`}
+        suppressHydrationWarning
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-base text-dark overflow-hidden`}
       >
         <LanguageProvider>
           <SessionProvider>
-            <ErrorBoundary>
-              <SessionExpiredNotification />
-              {children}
-            </ErrorBoundary>
+            <ThemeProvider>
+              <ErrorBoundary>
+                <SessionExpiredNotification />
+                {children}
+              </ErrorBoundary>
+            </ThemeProvider>
           </SessionProvider>
         </LanguageProvider>
       </body>

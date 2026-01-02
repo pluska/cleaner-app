@@ -1,10 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --color-base: #ffffff;
-  --color-primary: #3b82f6;
-  --color-secondary: #10b981;
-  --color-dark: #111827;
+  /* Default Theme Variables (Ranger-ish/Neutral defaults) */
+  --theme-bg: #ffffff;
+  --theme-surface: #ffffff;
+  --theme-text: #111827;
+  --theme-primary: #3b82f6;
+  --theme-secondary: #10b981;
+  --theme-border: #e5e7eb;
+
+  /* Map System Colors to Theme Variables */
+  --color-base: var(--theme-bg); /* bg-base now uses --theme-bg */
+  --color-primary: var(--theme-primary); /* bg-primary now uses --theme-primary */
+  --color-secondary: var(--theme-secondary);
+  --color-dark: var(--theme-text);
+  
+  /* Additional utilities mapped to theme */
+  --color-surface: var(--theme-surface); 
+  --color-border: var(--theme-border);
 
   --background: var(--color-base);
   --foreground: var(--color-dark);
@@ -13,6 +26,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--theme-surface);
+  --color-border: var(--theme-border);
 }
 
 body {

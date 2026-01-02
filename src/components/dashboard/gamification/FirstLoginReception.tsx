@@ -12,6 +12,7 @@ import {
 import { Card } from "@/components/ui/layout/Card";
 import { Button } from "@/components/ui/forms/Button";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import characterTemplates from "@/data/onboarding/character-templates.json";
 
 interface FirstLoginReceptionProps {
@@ -24,6 +25,7 @@ export const FirstLoginReception: React.FC<FirstLoginReceptionProps> = ({
   onComplete,
 }) => {
   const { language } = useLanguage();
+  const { setThemeId } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [data, setData] = useState<{
     classId: string;
@@ -67,6 +69,9 @@ export const FirstLoginReception: React.FC<FirstLoginReceptionProps> = ({
   }, [language]);
 
   const handleClose = () => {
+    if (data?.classId) {
+      setThemeId(data.classId as any); // Set valid theme
+    }
     setIsOpen(false);
     localStorage.removeItem("firstLoginData");
     onComplete();
