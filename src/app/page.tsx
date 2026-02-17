@@ -25,7 +25,7 @@ export default function Home() {
   };
 
   const handleGetStarted = () => {
-    router.push("/first-steps");
+    router.push("/onboarding");
   };
 
   return (

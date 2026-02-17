@@ -110,7 +110,7 @@ export default function OnboardingPage() {
             localStorage.removeItem("pendingGamificationProfile");
           }
           localStorage.removeItem("pendingHomeAssessment");
-          router.push("/dashboard");
+          router.push("/");
         }, 2000);
 
       } catch (error) {
