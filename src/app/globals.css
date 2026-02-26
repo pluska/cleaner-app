@@ -28,6 +28,10 @@
   --color-foreground: var(--foreground);
   --color-surface: var(--theme-surface);
   --color-border: var(--theme-border);
+  --color-primary: var(--theme-primary);
+  --color-secondary: var(--theme-secondary);
+  --color-dark: var(--theme-text);
+  --color-base: var(--theme-bg);
 }
 
 body {

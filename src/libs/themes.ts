@@ -1,4 +1,4 @@
-export type ThemeType = 'ranger' | 'noble' | 'high_elf';
+export type ThemeType = 'brand' | 'ranger' | 'noble' | 'high_elf';
 
 export interface Theme {
   id: ThemeType;
@@ -22,6 +22,26 @@ export interface Theme {
 }
 
 export const themes: Record<ThemeType, Theme> = {
+  brand: {
+    id: 'brand',
+    name: 'SparkClean Brand',
+    colors: {
+      primary: '#3B82F6', // brand blue
+      secondary: '#10B981', // brand green
+      background: '#FFFFFF',
+      surface: '#F8F9FA',
+      text: '#111827', // dark slate
+      border: '#E5E7EB',
+      accent: '#F59E0B', // gold
+    },
+    assets: {
+      bgPattern: 'none',
+      buttonTexture: 'clean',
+    },
+    typography: {
+      heading: 'sans-serif',
+    },
+  },
   ranger: {
     id: 'ranger',
     name: 'Ranger',
@@ -85,5 +105,5 @@ export const themes: Record<ThemeType, Theme> = {
 };
 
 export const getTheme = (id: string): Theme => {
-  return themes[id as ThemeType] || themes.ranger;
+  return themes[id as ThemeType] || themes.brand;
 };

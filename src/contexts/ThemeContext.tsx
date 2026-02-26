@@ -12,16 +12,14 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [currentThemeId, setCurrentThemeId] = useState<ThemeType>("ranger");
+  const [currentThemeId, setCurrentThemeId] = useState<ThemeType>("brand");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    // Try to recover theme from localStorage
-    const saved = localStorage.getItem("gamification_theme");
-    if (saved && (themes as any)[saved]) {
-      setCurrentThemeId(saved as ThemeType);
-    }
+    // Force the brand theme for now as there is no UI to switch Gamification themes
+    setCurrentThemeId("brand");
+    localStorage.setItem("gamification_theme", "brand");
   }, []);
 
   const handleSetTheme = (id: ThemeType) => {
