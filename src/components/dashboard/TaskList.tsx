@@ -6,11 +6,12 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 import Link from "next/link";
 import { TaskItem, TaskType } from "./TaskItem";
+import { TaskDetailModal } from "./TaskDetailModal";
 import { useInView } from "react-intersection-observer";
 
 interface TaskListProps {
   tasks: TaskType[];
-  onToggleTask: (id: string) => void;
+  onToggleTask: (task: TaskType) => void;
 }
 
 export function TaskList({ tasks: initialTasks, onToggleTask }: TaskListProps) {
@@ -20,6 +21,9 @@ export function TaskList({ tasks: initialTasks, onToggleTask }: TaskListProps) {
   const [displayedTasks, setDisplayedTasks] = useState<TaskType[]>([]);
   const [page, setPage] = useState(1);
   const itemsPerPage = 3;
+
+  // Selected Task State for Modal
+  const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
   
   const { ref, inView } = useInView({
     threshold: 0,
@@ -62,7 +66,12 @@ export function TaskList({ tasks: initialTasks, onToggleTask }: TaskListProps) {
 
       <div className="pl-[30px] space-y-3 relative z-10">
         {groupTasks.map((task) => (
-          <TaskItem key={task.id} task={task} onToggle={onToggleTask} />
+          <TaskItem 
+            key={task.id} 
+            task={task} 
+            onToggle={onToggleTask} 
+            onViewDetails={setSelectedTask} 
+          />
         ))}
       </div>
     </div>
@@ -96,6 +105,14 @@ export function TaskList({ tasks: initialTasks, onToggleTask }: TaskListProps) {
           </div>
         )}
       </div>
+
+      {/* Task Details Modal */}
+      {selectedTask && (
+        <TaskDetailModal 
+          task={selectedTask} 
+          onClose={() => setSelectedTask(null)} 
+        />
+      )}
     </div>
   );
 }

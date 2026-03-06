@@ -2,19 +2,35 @@ import { NextResponse } from "next/server";
 import { TaskType } from "@/components/dashboard/TaskItem";
 
 const ALL_MOCK_TASKS: TaskType[] = [
-  { id: "p1", title: "Clean Kitchen View", room: "KITCHEN", duration: 15, completed: false },
-  { id: "p2", title: "Mop living room floor", room: "LIVING ROOM", duration: 10, completed: false },
-  { id: "p3", title: "Clean bathroom mirrors", room: "BATHROOM", duration: 5, completed: false },
-  { id: "p4", title: "Deep clean oven", room: "KITCHEN", duration: 45, completed: false },
-  { id: "s1", title: "Change bed sheets", room: "BEDROOM", duration: 15, completed: true },
-  { id: "s2", title: "Load dishwasher", room: "KITCHEN", duration: 5, completed: false },
-  { id: "s3", title: "Take out trash", room: "KITCHEN", duration: 5, completed: false },
-  { id: "s4", title: "Scrub toilet", room: "BATHROOM", duration: 15, completed: false },
-  { id: "s5", title: "Vacuum rugs", room: "LIVING ROOM", duration: 20, completed: false },
-  { id: "s6", title: "Wipe counters", room: "KITCHEN", duration: 10, completed: false },
-  { id: "s7", title: "Organize nightstand", room: "BEDROOM", duration: 10, completed: false },
-  { id: "s8", title: "Dust blinds", room: "LIVING ROOM", duration: 15, completed: false },
-  { id: "s9", title: "Clean shower head", room: "BATHROOM", duration: 20, completed: false },
+  { 
+    id: "p1", title: "Clean Kitchen View", room: "KITCHEN", duration: 15, completed: false,
+    difficulty: "MEDIUM",
+    description: "Despejar todas las encimeras, limpiar migajas y darle brillo al fregadero de acero inoxidable.",
+    healthReason: "Las bacterias se multiplican rápidamente en la cocina si hay restos orgánicos.",
+    tools: ["Esponja", "Limpiador multiusos", "Toallas de papel"],
+    subtasks: [
+      { id: "p1-1", title: "Limpiar encimeras", duration: 5, completed: false },
+      { id: "p1-2", title: "Organizar platos fuera de lugar", duration: 5, completed: false },
+      { id: "p1-3", title: "Frotar fregadero", duration: 5, completed: false }
+    ]
+  },
+  { 
+    id: "p2", title: "Mop living room floor", room: "LIVING ROOM", duration: 10, completed: false,
+    difficulty: "HIGH",
+    frequency: "Semanal",
+    tools: ["Trapeador", "Cubo de agua", "Limpiador de pisos"]
+  },
+  { id: "p3", title: "Clean bathroom mirrors", room: "BATHROOM", duration: 5, completed: false, difficulty: "LOW" },
+  { id: "p4", title: "Deep clean oven", room: "KITCHEN", duration: 45, completed: false, difficulty: "HIGH", frequency: "Mensual" },
+  { id: "s1", title: "Change bed sheets", room: "BEDROOM", duration: 15, completed: true, difficulty: "MEDIUM" },
+  { id: "s2", title: "Load dishwasher", room: "KITCHEN", duration: 5, completed: false, difficulty: "LOW" },
+  { id: "s3", title: "Take out trash", room: "KITCHEN", duration: 5, completed: false, difficulty: "LOW" },
+  { id: "s4", title: "Scrub toilet", room: "BATHROOM", duration: 15, completed: false, difficulty: "MEDIUM" },
+  { id: "s5", title: "Vacuum rugs", room: "LIVING ROOM", duration: 20, completed: false, difficulty: "MEDIUM" },
+  { id: "s6", title: "Wipe counters", room: "KITCHEN", duration: 10, completed: false, difficulty: "LOW" },
+  { id: "s7", title: "Organize nightstand", room: "BEDROOM", duration: 10, completed: false, difficulty: "LOW" },
+  { id: "s8", title: "Dust blinds", room: "LIVING ROOM", duration: 15, completed: false, difficulty: "MEDIUM" },
+  { id: "s9", title: "Clean shower head", room: "BATHROOM", duration: 20, completed: false, difficulty: "LOW" },
 ];
 
 export async function GET(request: Request) {

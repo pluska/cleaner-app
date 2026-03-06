@@ -20,7 +20,7 @@ export default function DashboardPage() {
       setIsLoading(true);
       try {
         const dateString = selectedDate.toISOString().split("T")[0];
-        const res = await fetch(`/api/mock-tasks?date=${dateString}`);
+        const res = await fetch(`/api/tasks?date=${dateString}`);
         if (!res.ok) throw new Error("Failed to fetch tasks");
         const data = await res.json();
         
@@ -43,12 +43,40 @@ export default function DashboardPage() {
     };
   }, [selectedDate]);
 
-  const handleToggleTask = (id: string) => {
+  const handleToggleTask = async (task: TaskType) => {
+    // Optimistic UI Update
     setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
+      prev.map((t) =>
+        t.id === task.id ? { ...t, completed: !task.completed } : t
       )
     );
+
+    // Call D1 real backend
+    try {
+      const dateString = selectedDate.toISOString().split("T")[0];
+      const res = await fetch(`/api/tasks/${task.id}/complete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dueDate: dateString })
+      });
+      
+      if (!res.ok) {
+        // Revert on failure
+        setTasks((prev) =>
+          prev.map((t) =>
+            t.id === task.id ? { ...t, completed: task.completed } : t
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Failed to complete task on server:", err);
+      // Revert on local failure
+       setTasks((prev) =>
+        prev.map((t) =>
+          t.id === task.id ? { ...t, completed: task.completed } : t
+        )
+      );
+    }
   };
 
   return (

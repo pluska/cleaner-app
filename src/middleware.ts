@@ -1,4 +1,4 @@
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { User } from "@supabase/supabase-js";
@@ -92,7 +92,7 @@ function createSupabaseClient(request: NextRequest) {
     {
       cookies: {
         getAll: () => request.cookies.getAll(),
-        setAll: (cookiesToSet: any[]) => {
+        setAll: (cookiesToSet: { name: string; value: string; options: CookieOptions }[]) => {
           // Supabase will handle setting the cookies on the response
           // We don't need to do anything here
         },
