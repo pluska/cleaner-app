@@ -19,11 +19,11 @@ export function CTASection({ onGetStarted }: CTASectionProps) {
         <Trophy className="h-10 w-10 text-white" />
       </div>
       <h2 className="text-3xl font-bold text-dark mb-4">
-        {t("Ready to Transform Your Home?", language)}
+        {t("Beat the Mess for Good", language)}
       </h2>
       <p className="text-dark/70 mb-8 max-w-2xl mx-auto">
         {t(
-          "Join thousands of users who have already simplified their cleaning routine and created more organized, beautiful homes.",
+          "Join thousands of users who have turned their chores into a game. Stop cleaning, start playing.",
           language
         )}
       </p>
@@ -34,7 +34,7 @@ export function CTASection({ onGetStarted }: CTASectionProps) {
         className="group"
       >
         <Sparkles className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
-        {t("Create Your Free Account", language)}
+        {t("Gamify My Cleaning", language)}
       </Button>
     </Card>
   );

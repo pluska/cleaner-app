@@ -1,27 +1,20 @@
-import { createServerSupabaseClient } from "@/libs/supabase-server";
-import { redirect } from "next/navigation";
-import { DashboardNav } from "@/components/dashboard/core/DashboardNav";
-import { SessionExpiredNotification } from "@/components/ui/feedback/SessionExpiredNotification";
+"use client";
 
-export default async function DashboardLayout({
+import { BottomNav } from "@/components/ui/layout/BottomNav";
+
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/auth/login");
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <SessionExpiredNotification />
-      <DashboardNav user={user} />
-      <main className="p-6">{children}</main>
+    <div className="min-h-screen bg-[#F8F9FA] pb-24">
+      {/* 
+        The pb-24 ensures content doesn't get hidden behind the floating BottomNav.
+        The background color #F8F9FA matches the very light grey/off-white of the mockup.
+      */}
+      {children}
+      <BottomNav />
     </div>
   );
 }

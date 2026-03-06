@@ -1,0 +1,163 @@
+{
+  "classes": [
+    {
+      "id": "ranger",
+      "name": "The Ranger",
+      "name_es": "El Explorador",
+      "subtitle": "Easy / Essential",
+      "subtitle_es": "Fácil / Esencial",
+      "description": "Minimalist, practical, always ready for adventure. You don't care if the mirrors are streak-free or the cushions are plumped perfectly. You just want the 'Base Camp' clear of mud and trash so you can rest.",
+      "description_es": "Minimalista, práctico, siempre listo para la aventura. No te importa si los espejos están impecables o los cojines perfectos. Solo quieres tu 'Campamento Base' libre de basura para poder descansar.",
+      "motto": "Clean enough to rest, ready to leave.",
+      "motto_es": "Limpio para descansar, listo para salir.",
+      "service_name": "The Ranger's Rest",
+      "service_name_es": "El Descanso del Explorador",
+      "service_desc": "Focus on floors, trash, and main surfaces. No deep detailing.",
+      "service_desc_es": "Enfoque en pisos, basura y superficies principales. Sin detalles profundos.",
+      "attributes": {
+        "lifestyle": "relaxed",
+        "cleaning_preferences": "minimal"
+      }
+    },
+    {
+      "id": "noble",
+      "name": "The Noble",
+      "name_es": "El Noble",
+      "subtitle": "Normal / Standard",
+      "subtitle_es": "Normal / Estándar",
+      "description": "Structural, organized, dignified. You want a house that commands respect. Everything should be in its place. It's the standard of civilization.",
+      "description_es": "Estructural, organizado, digno. Quieres una casa que inspire respeto. Todo debe estar en su lugar. Es el estándar de la civilización.",
+      "motto": "Order in the realm.",
+      "motto_es": "Orden en el reino.",
+      "service_name": "The Castle Keep",
+      "service_name_es": "La Fortaleza",
+      "service_desc": "Standard vacuuming, mopping, bathrooms, and dusting. The baseline for a civilized home.",
+      "service_desc_es": "Aspirado estándar, fregado, baños y polvo. La base para un hogar civilizado.",
+      "attributes": {
+        "lifestyle": "moderate",
+        "cleaning_preferences": "standard"
+      }
+    },
+    {
+      "id": "high_elf",
+      "name": "The High Elf",
+      "name_es": "El Alto Elfo",
+      "subtitle": "Hard / Perfectionist",
+      "subtitle_es": "Difícil / Perfeccionista",
+      "description": "Ethereal, timeless, spotless. Dust is an insult. You want the light to reflect off every surface. You want the air to smell fresh and pure.",
+      "description_es": "Etéreo, atemporal, impecable. El polvo es un insulto. Quieres que la luz se refleje en cada superficie. Quieres que el aire huela fresco y puro.",
+      "motto": "Perfection is the only option.",
+      "motto_es": "La perfección es la única opción.",
+      "service_name": "The Ethereal Glow",
+      "service_name_es": "El Brillo Etéreo",
+      "service_desc": "Deep scrubbing, polishing fixtures, cleaning inside windows, moving furniture to clean behind it.",
+      "service_desc_es": "Fregado profundo, pulido de accesorios, limpieza interior de ventanas, mover muebles para limpiar detrás.",
+      "attributes": {
+        "lifestyle": "busy",
+        "cleaning_preferences": "thorough"
+      }
+    }
+  ],
+  "party_modes": [
+    {
+      "id": "lone_wolf",
+      "name": "Lone Wolf",
+      "name_es": "Lobo Solitario",
+      "icon": "🧘",
+      "copy": "Solo Adventurer",
+      "copy_es": "Aventurero Solitario",
+      "detail": "Just me and my loot. No extra fur or sticky fingers.",
+      "detail_es": "Solo yo y mi botín. Sin pelos extra ni dedos pegajosos.",
+      "attributes": {
+        "pets": false,
+        "children": false
+      }
+    },
+    {
+      "id": "pets",
+      "name": "Beast Companions",
+      "name_es": "Compañeros Bestiales",
+      "icon": "🐺",
+      "copy": "Paw Print",
+      "copy_es": "Huella de Pata",
+      "detail": "I live with creatures of the wild.",
+      "detail_es": "Vivo con criaturas salvajes.",
+      "effect": "Deep Vacuuming",
+      "effect_es": "Aspirado Profundo",
+      "attributes": {
+        "pets": true,
+        "children": false
+      }
+    },
+    {
+      "id": "kids",
+      "name": "Tiny Adventurers",
+      "name_es": "Pequeños Aventureros",
+      "icon": "⚔️",
+      "copy": "Future Heroes",
+      "copy_es": "Futuros Héroes",
+      "detail": "I am raising the next generation of heroes.",
+      "detail_es": "Estoy criando a la próxima generación de héroes.",
+      "effect": "Spot Cleaning & Organization",
+      "effect_es": "Limpieza de Manchas y Organización",
+      "attributes": {
+        "pets": false,
+        "children": true
+      }
+    },
+    {
+      "id": "guild",
+      "name": "Full Guild Hall",
+      "name_es": "Gremio Completo",
+      "icon": "🎪",
+      "copy": "Full House",
+      "copy_es": "Casa Llena",
+      "detail": "My house is a bustling tavern full of life, beasts, and tiny humans.",
+      "detail_es": "Mi casa es una taberna animada llena de vida, bestias y pequeños humanos.",
+      "effect": "Max difficulty modifier",
+      "effect_es": "Modificador de dificultad máxima",
+      "attributes": {
+        "pets": true,
+        "children": true
+      }
+    }
+  ],
+  "rooms": [
+    {
+      "id": "kitchen",
+      "label_en": "Kitchen",
+      "label_es": "Cocina",
+      "icon": "KitchenIcon"
+    },
+    {
+      "id": "bathroom",
+      "label_en": "Bathroom",
+      "label_es": "Baño",
+      "icon": "BathroomIcon"
+    },
+    {
+      "id": "bedroom",
+      "label_en": "Bedroom",
+      "label_es": "Dormitorio",
+      "icon": "BedroomIcon"
+    },
+    {
+      "id": "living_room",
+      "label_en": "Living Room",
+      "label_es": "Sala de Estar",
+      "icon": "LivingIcon"
+    },
+    {
+      "id": "dining_room",
+      "label_en": "Dining Room",
+      "label_es": "Comedor",
+      "icon": "DiningIcon"
+    },
+    {
+      "id": "office",
+      "label_en": "Office",
+      "label_es": "Oficina",
+      "icon": "OfficeIcon"
+    }
+  ]
+}

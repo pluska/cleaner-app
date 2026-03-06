@@ -63,6 +63,23 @@ export interface HomeArea extends BaseEntity {
 // ENHANCED TASK SYSTEM TYPES
 // =====================================================
 
+export interface Building extends BaseEntity {
+  user_id: string;
+  type: 'TAVERN' | 'TOWER' | 'WELL' | 'ENTRANCE';
+  name: string;
+  level: number;
+  slot_index: number;
+  corruption_level: number; // 0-100
+}
+
+export interface UserInventory {
+  user_id: string;
+  gold: number;
+  gems: number;
+  mana: number;
+  streak_count: number;
+}
+
 // Task Template (now with gamification data)
 export interface TaskTemplate {
   id: string;
@@ -183,6 +200,7 @@ export interface Room {
   has_hardwood: boolean;
   has_tile: boolean;
   special_features?: string[];
+  quantity?: number;
 }
 
 // =====================================================

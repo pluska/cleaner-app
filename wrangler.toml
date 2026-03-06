@@ -1,0 +1,10 @@
+# wrangler.toml
+name = "cleaner-planner"
+compatibility_date = "2024-02-26"
+pages_build_output_dir = ".vercel/output/static"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cleaner-planner-db"
+database_id = "00000000-0000-0000-0000-000000000000" # We will replace this later in Prod
+migrations_dir = "./drizzle"

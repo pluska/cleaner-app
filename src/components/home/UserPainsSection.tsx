@@ -11,9 +11,9 @@ export function UserPainsSection() {
   const pains = [
     {
       icon: AlertCircle,
-      title: t("Want to Clean", language),
+      title: t("Lack of Motivation", language),
       pain: t(
-        "I know I need to clean, but I don't know where to start or what really matters.",
+        "I know I need to clean, but I just can't get started. It feels like a chore, not something I want to do.",
         language
       ),
       color: "from-yellow-500 to-orange-500",
@@ -22,9 +22,9 @@ export function UserPainsSection() {
     },
     {
       icon: Target,
-      title: t("Begin to Clean", language),
+      title: t("Overwhelmed by Mess", language),
       pain: t(
-        "I start cleaning, but it feels endless and I lose motivation fast.",
+        "The mess is too big. I don't know where to begin, so I end up doing nothing at all.",
         language
       ),
       color: "from-blue-500 to-purple-500",
@@ -33,9 +33,9 @@ export function UserPainsSection() {
     },
     {
       icon: Users,
-      title: t("Get Overwhelmed or Bored", language),
+      title: t("Can't Stay Consistent", language),
       pain: t(
-        "Tasks pile up, others don't help, and I end up frustrated or giving up.",
+        "I clean once in a while, but then I stop. I wish I could build a habit that actually sticks.",
         language
       ),
       color: "from-green-500 to-teal-500",
@@ -48,11 +48,11 @@ export function UserPainsSection() {
     <div className="mt-20">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold text-dark mb-4">
-          {t("Make cleaning could be exhausting", language)}
+          {t("Why is cleaning so hard?", language)}
         </h2>
         <p className="text-dark/70 max-w-2xl mx-auto">
           {t(
-            "1 in 6 people admit they go over a month without cleaning.",
+            "It's not you. It's the boring, endless nature of chores. We fixed that.",
             language
           )}
         </p>

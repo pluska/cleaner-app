@@ -1,101 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/libs/supabase-server";
-import { TaskFormData } from "@/types";
+import { TaskService } from "@/services/taskService";
+// Note: Authentication will be migrated to NextAuth later, for now we mock the userId
+// since we removed the direct Supabase dependency for tasks.
+const MOCK_USER_ID = "user-123";
 
 // GET /api/tasks - Get all tasks for the authenticated user
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient();
-
-    // Get authenticated user
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // Get query parameters for filtering
     const { searchParams } = new URL(request.url);
-    const category = searchParams.get("category");
-    const frequency = searchParams.get("frequency");
-    const completed = searchParams.get("completed");
-    const dueDate = searchParams.get("dueDate");
-    const includeInstances = searchParams.get("includeInstances") === "true";
-    const userId = searchParams.get("user_id");
-    const comingSoon = searchParams.get("coming_soon");
-    const today = searchParams.get("today");
-
-    if (userId && comingSoon && today) {
-      // Only return coming soon tasks
-      const { data: tasks, error } = await supabase
-        .from("tasks")
-        .select("*")
-        .eq("user_id", userId)
-        .gt("due_date", today)
-        .order("due_date", { ascending: true });
-
-      console.log(
-        "Coming soon tasks:",
-        tasks?.map((t) => ({ title: t.title, due_date: t.due_date }))
-      );
-
-      if (error) {
-        console.error("Error fetching coming soon tasks:", error);
-        return NextResponse.json(
-          { error: "Failed to fetch tasks" },
-          { status: 500 }
-        );
-      }
-
-      return NextResponse.json({ tasks });
+    const dateParam = searchParams.get("date") || new Date().toISOString().split("T")[0];
+    
+    const targetDate = new Date(dateParam);
+    if (isNaN(targetDate.getTime())) {
+      return NextResponse.json({ error: "Invalid date format" }, { status: 400 });
     }
 
-    // Build query
-    let query = supabase.from("tasks").select("*").eq("user_id", user.id);
+    // Generate and merge tasks for the requested date using our gamified RRule service
+    const tasks = await TaskService.getTasksForDate(MOCK_USER_ID, targetDate);
 
-    // Apply filters
-    if (category && category !== "all") {
-      query = query.eq("category", category);
-    }
-    if (frequency) {
-      query = query.eq("frequency", frequency);
-    }
-    if (completed !== null) {
-      query = query.eq("completed", completed === "true");
-    }
-    if (dueDate) {
-      query = query.eq("due_date", dueDate);
-    }
-
-    const { data: tasks, error } = await query.order("created_at", {
-      ascending: false,
+    return NextResponse.json({ 
+      date: dateParam,
+      tasks 
     });
-
-    if (error) {
-      console.error("Error fetching tasks:", error);
-      return NextResponse.json(
-        { error: "Failed to fetch tasks" },
-        { status: 500 }
-      );
-    }
-
-    // If includeInstances is requested, also fetch task instances
-    if (includeInstances && tasks) {
-      const { data: instances } = await supabase
-        .from("task_instances")
-        .select("*")
-        .eq("user_id", user.id)
-        .gte("due_date", new Date().toISOString().split("T")[0]);
-
-      return NextResponse.json({ tasks, instances });
-    }
-
-    return NextResponse.json({ tasks });
   } catch (error) {
-    console.error("API Error:", error);
+    console.error("API Error fetching tasks:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -103,127 +31,81 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/tasks - Create a new task
+import { RRule } from "rrule";
+import { v4 as uuidv4 } from "uuid";
+import { db } from "@/db";
+import { taskTemplates } from "@/db/schema";
+import { eq } from "drizzle-orm";
+
+// POST /api/tasks - Create a new gamified task blueprint (template)
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient();
+    const body = await request.json();
 
-    // Get authenticated user
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // Parse request body
-    const body: TaskFormData = await request.json();
-
-    // Validate required fields
+    // Validate minimal required fields
     if (!body.title || !body.title.trim()) {
       return NextResponse.json({ error: "Title is required" }, { status: 400 });
     }
 
-    // Validate frequency
-    const validFrequencies = ["daily", "weekly", "monthly", "yearly"];
+    if (!body.roomId) {
+      return NextResponse.json({ error: "Room ID is required" }, { status: 400 });
+    }
+
+    const validFrequencies = ["daily", "weekly", "monthly", "yearly", "once"];
     if (body.frequency && !validFrequencies.includes(body.frequency)) {
       return NextResponse.json({ error: "Invalid frequency" }, { status: 400 });
     }
 
-    // Validate category
-    const validCategories = [
-      "kitchen",
-      "bathroom",
-      "bedroom",
-      "living_room",
-      "laundry",
-      "exterior",
-      "general",
-    ];
-    if (!validCategories.includes(body.category)) {
-      return NextResponse.json({ error: "Invalid category" }, { status: 400 });
+    // 1. Generate the mathematical RRULE string
+    let rruleStr = "";
+    const startDate = new Date(body.startDate || new Date());
+    
+    if (body.frequency === "daily") {
+      rruleStr = new RRule({ freq: RRule.DAILY, dtstart: startDate }).toString();
+    } else if (body.frequency === "weekly") {
+       // If a specific day is passed, use it, otherwise use the start date's day
+       const byweekday = body.dayOfWeek !== undefined ? [body.dayOfWeek] : undefined;
+       rruleStr = new RRule({ freq: RRule.WEEKLY, byweekday, dtstart: startDate }).toString();
+    } else if (body.frequency === "monthly") {
+      rruleStr = new RRule({ freq: RRule.MONTHLY, dtstart: startDate }).toString();
+    } else if (body.frequency === "yearly") {
+      rruleStr = new RRule({ freq: RRule.YEARLY, dtstart: startDate }).toString();
+    } else {
+      // "once" - we use EXACTLY one count so it only occurs on the start date
+      rruleStr = new RRule({ freq: RRule.DAILY, count: 1, dtstart: startDate }).toString();
     }
 
-    // Validate priority
-    const validPriorities = ["low", "medium", "high"];
-    if (body.priority && !validPriorities.includes(body.priority)) {
-      return NextResponse.json({ error: "Invalid priority" }, { status: 400 });
-    }
-
-    // Validate day_of_week if provided
-    if (
-      body.day_of_week !== undefined &&
-      (body.day_of_week < 0 || body.day_of_week > 6)
-    ) {
-      return NextResponse.json(
-        { error: "Invalid day of week" },
-        { status: 400 }
-      );
-    }
-
-    // Calculate the initial due date based on frequency and day_of_week
-    let initialDueDate =
-      body.due_date || new Date().toISOString().split("T")[0];
-
-    if (body.frequency === "weekly" && body.day_of_week !== undefined) {
-      const today = new Date();
-      const currentDayOfWeek = today.getDay(); // 0-6 (Sunday-Saturday)
-      const targetDayOfWeek = body.day_of_week;
-
-      let daysToAdd = 0;
-      if (targetDayOfWeek > currentDayOfWeek) {
-        daysToAdd = targetDayOfWeek - currentDayOfWeek;
-      } else if (targetDayOfWeek < currentDayOfWeek) {
-        daysToAdd = 7 - currentDayOfWeek + targetDayOfWeek;
-      } else {
-        // Same day, schedule for next week
-        daysToAdd = 7;
-      }
-
-      const targetDate = new Date(today);
-      targetDate.setDate(today.getDate() + daysToAdd);
-      initialDueDate = targetDate.toISOString().split("T")[0];
-    }
-
-    // Determine if task should be recurring
-    const isRecurring = body.frequency !== "daily" || body.is_recurring;
-
-    // Create task data
-    const taskData = {
+    // 2. Insert the Template into D1
+    const newTemplateId = uuidv4();
+    await db.insert(taskTemplates).values({
+      id: newTemplateId,
+      userId: MOCK_USER_ID,
+      roomId: body.roomId,
       title: body.title.trim(),
       description: body.description?.trim() || null,
-      frequency: body.frequency,
-      category: body.category,
-      priority: body.priority,
-      completed: false,
-      due_date: initialDueDate,
-      user_id: user.id,
-      is_recurring: isRecurring,
-      recurrence_start_date: body.recurrence_start_date || initialDueDate,
-      recurrence_end_date: body.recurrence_end_date || null,
-      day_of_week: body.day_of_week || null,
-      preferred_time: body.preferred_time || null,
-    };
+      
+      // Gamification Base Defaults (Can be passed from frontend if complex UI exists)
+      importanceLevel: body.importanceLevel || 3,
+      expReward: body.expReward || 10,
+      healthImpact: body.healthImpact || null,
+      scientificSource: body.scientificSource || null,
+      aiExplanation: body.aiExplanation || null,
 
-    const { data: task, error } = await supabase
-      .from("tasks")
-      .insert([taskData])
-      .select()
-      .single();
+      // Recurrence
+      rrule: rruleStr,
+      startDate: startDate,
+      endDate: body.endDate ? new Date(body.endDate) : null,
+    });
 
-    if (error) {
-      console.error("Error creating task:", error);
-      return NextResponse.json(
-        { error: "Failed to create task" },
-        { status: 500 }
-      );
-    }
+    // 3. (Optional) Insert Subtasks / Tools if provided in the body layer
+    // This could be expanded based on frontend payload...
 
-    return NextResponse.json({ task }, { status: 201 });
+    // Fetch the newly inserted template to return
+    const [inserted] = await db.select().from(taskTemplates).where(eq(taskTemplates.id, newTemplateId));
+
+    return NextResponse.json({ task: inserted }, { status: 201 });
   } catch (error) {
-    console.error("API Error:", error);
+    console.error("API Error creating task template:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
