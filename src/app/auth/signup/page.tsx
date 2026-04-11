@@ -28,8 +28,8 @@ function SignupContent() {
   const handleSuccess = () => {
     setIsRedirecting(true);
 
-    // If user came from first-steps, redirect to onboarding
-    if (fromFirstSteps) {
+    // If user registered or came from first-steps, redirect to onboarding
+    if (isSignup || fromFirstSteps) {
       router.push("/onboarding");
     } else {
       router.push("/dashboard");
@@ -85,10 +85,10 @@ function SignupContent() {
           <div className="inline-flex items-center space-x-2 text-blue-600">
             <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
             <span className="text-sm">
-              {fromFirstSteps
+              {fromFirstSteps || isSignup
                 ? language === "es"
-                  ? "Redirigiendo a configuración..."
-                  : "Redirecting to setup..."
+                  ? "Redirigiendo a introducción..."
+                  : "Redirecting to introduction..."
                 : t("Redirecting to dashboard...", language)}
             </span>
           </div>

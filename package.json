@@ -6,9 +6,21 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "pages:build": "npx @cloudflare/next-on-pages",
+    "pages:preview": "npm run pages:build && wrangler pages dev .vercel/output/static --d1=DB",
+    "pages:deploy": "npm run pages:build && wrangler pages deploy .vercel/output/static",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply cleaner-planner-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply cleaner-planner-db --remote",
+    "db:studio": "npx drizzle-kit studio"
+  },
+  "overrides": {
+    "esbuild": "^0.27.3",
+    "serialize-javascript": "^7.0.4"
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "^1.11.1",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
@@ -17,15 +29,14 @@
     "@libsql/client": "^0.17.0",
     "@pixi/react": "^8.0.5",
     "@react-spring/web": "^10.0.3",
-    "@supabase/auth-helpers-nextjs": "^0.10.0",
-    "@supabase/ssr": "^0.6.1",
-    "@supabase/supabase-js": "^2.52.0",
+    "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.45.1",
     "framer-motion": "^12.34.3",
     "lucide-react": "^0.525.0",
-    "next": "15.4.2",
+    "next": "^15.5.12",
+    "next-auth": "^5.0.0-beta.30",
     "pixi.js": "^8.14.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -36,8 +47,10 @@
     "zustand": "^5.0.9"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.16",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4.1.12",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

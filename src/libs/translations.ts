@@ -65,6 +65,9 @@ export const translations = {
     "Please request a new password reset link":
       "Please request a new password reset link",
     "Request New Reset Link": "Request New Reset Link",
+    "Account created, but automatic sign in failed. Please sign in manually.":
+      "Account created, but automatic sign in failed. Please sign in manually.",
+    "Invalid email or password": "Invalid email or password",
 
     // Dashboard
     "Welcome back": "Welcome back",
@@ -439,6 +442,9 @@ export const translations = {
     "Please request a new password reset link":
       "Por favor solicita un nuevo enlace de restablecimiento",
     "Request New Reset Link": "Solicitar Nuevo Enlace de Restablecimiento",
+    "Account created, but automatic sign in failed. Please sign in manually.":
+      "Cuenta creada, pero el inicio de sesión automático falló. Por favor, inicia sesión manualmente.",
+    "Invalid email or password": "Correo o contraseña inválidos",
 
     // Dashboard
     "Welcome back": "Bienvenido de vuelta",

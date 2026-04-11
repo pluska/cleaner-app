@@ -2,10 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/contexts/LanguageContext";
-import { SessionProvider } from "@/contexts/LanguageContext";
+import { AppStatusProvider } from "@/contexts/LanguageContext";
+import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { SessionExpiredNotification } from "@/components/ui/feedback/SessionExpiredNotification";
 import { ErrorBoundary } from "@/components/ui/data-display/ErrorBoundary";
+import { SparklinChat } from "@/components/sparklin/SparklinChat";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,12 +49,15 @@ export default function RootLayout({
       >
         <LanguageProvider>
           <SessionProvider>
-            <ThemeProvider>
-              <ErrorBoundary>
-                <SessionExpiredNotification />
-                {children}
-              </ErrorBoundary>
-            </ThemeProvider>
+            <AppStatusProvider>
+              <ThemeProvider>
+                <ErrorBoundary>
+                  <SessionExpiredNotification />
+                  {children}
+                  <SparklinChat />
+                </ErrorBoundary>
+              </ThemeProvider>
+            </AppStatusProvider>
           </SessionProvider>
         </LanguageProvider>
       </body>

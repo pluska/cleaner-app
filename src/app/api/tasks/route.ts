@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { TaskService } from "@/services/taskService";
-// Note: Authentication will be migrated to NextAuth later, for now we mock the userId
-// since we removed the direct Supabase dependency for tasks.
-const MOCK_USER_ID = "user-123";
+import { auth } from "@/auth";
 
 // GET /api/tasks - Get all tasks for the authenticated user
 export async function GET(request: NextRequest) {
   try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const userId = session.user.id;
+
     const { searchParams } = new URL(request.url);
     const dateParam = searchParams.get("date") || new Date().toISOString().split("T")[0];
     
@@ -16,7 +20,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Generate and merge tasks for the requested date using our gamified RRule service
-    const tasks = await TaskService.getTasksForDate(MOCK_USER_ID, targetDate);
+    const tasks = await TaskService.getTasksForDate(userId, targetDate);
 
     return NextResponse.json({ 
       date: dateParam,
@@ -31,7 +35,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-import { RRule } from "rrule";
+import { RRule, rrulestr } from "rrule";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "@/db";
 import { taskTemplates } from "@/db/schema";
@@ -40,6 +44,12 @@ import { eq } from "drizzle-orm";
 // POST /api/tasks - Create a new gamified task blueprint (template)
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const userId = session.user.id;
+
     const body = await request.json();
 
     // Validate minimal required fields
@@ -60,6 +70,8 @@ export async function POST(request: NextRequest) {
     let rruleStr = "";
     const startDate = new Date(body.startDate || new Date());
     
+    let nextOccurrenceDate = startDate;
+    
     if (body.frequency === "daily") {
       rruleStr = new RRule({ freq: RRule.DAILY, dtstart: startDate }).toString();
     } else if (body.frequency === "weekly") {
@@ -74,12 +86,23 @@ export async function POST(request: NextRequest) {
       // "once" - we use EXACTLY one count so it only occurs on the start date
       rruleStr = new RRule({ freq: RRule.DAILY, count: 1, dtstart: startDate }).toString();
     }
+    
+    // Parse it back to cleanly get the single strictly first occurrence
+    try {
+      const parsedRule = rrulestr(rruleStr, { dtstart: startDate });
+      const nextDate = parsedRule.after(new Date(), true); // true = inclusive of today
+      if (nextDate) {
+        nextOccurrenceDate = nextDate;
+      }
+    } catch (err) {
+      console.error("Error calculating nextOccurrence during creation:", err);
+    }
 
     // 2. Insert the Template into D1
     const newTemplateId = uuidv4();
     await db.insert(taskTemplates).values({
       id: newTemplateId,
-      userId: MOCK_USER_ID,
+      userId: userId,
       roomId: body.roomId,
       title: body.title.trim(),
       description: body.description?.trim() || null,
@@ -95,6 +118,7 @@ export async function POST(request: NextRequest) {
       rrule: rruleStr,
       startDate: startDate,
       endDate: body.endDate ? new Date(body.endDate) : null,
+      nextOccurrence: nextOccurrenceDate,
     });
 
     // 3. (Optional) Insert Subtasks / Tools if provided in the body layer

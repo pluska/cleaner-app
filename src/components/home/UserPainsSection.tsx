@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, Target, Users, CheckCircle } from "lucide-react";
+import { AlertCircle, Target, Users } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 import { Card } from "@/components/ui/layout/Card";
@@ -85,7 +85,7 @@ export function UserPainsSection() {
 
                 <div className="mb-4 p-3 bg-white/60 rounded-xl border border-gray-200">
                   <p className="text-dark/70 text-sm leading-relaxed">
-                    "{pain.pain}"
+                    &quot;{pain.pain}&quot;
                   </p>
                 </div>
               </div>

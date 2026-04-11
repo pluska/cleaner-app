@@ -1,102 +1,70 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/libs/supabase-server";
+import { auth } from "@/auth";
+import { db } from "@/db";
+import { taskInstances, taskTemplates } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 
 export async function PATCH(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = await createServerSupabaseClient();
-
-    // Get authenticated user
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
+    const session = await auth();
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const taskId = (await params).id;
+    const { id } = await params;
 
-    // First, check if this is a task instance
-    const { data: instance, error: instanceError } = await supabase
-      .from("task_instances")
-      .select("*")
-      .eq("id", taskId)
-      .eq("user_id", user.id)
-      .single();
+    // Check if this is a task instance
+    const [instance] = await db
+      .select({
+        id: taskInstances.id,
+        status: taskInstances.status,
+        templateId: taskInstances.templateId,
+      })
+      .from(taskInstances)
+      .where(eq(taskInstances.id, id))
+      .limit(1);
 
-    if (instance && !instanceError) {
-      // This is a task instance, toggle its completion
-      const { data: updatedInstance, error: updateError } = await supabase
-        .from("task_instances")
-        .update({ completed: !instance.completed })
-        .eq("id", taskId)
-        .select(
-          `
-          *,
-          tasks (*)
-        `
-        )
-        .single();
+    if (instance) {
+      // Check ownership via template
+      const [template] = await db
+        .select()
+        .from(taskTemplates)
+        .where(and(eq(taskTemplates.id, instance.templateId), eq(taskTemplates.userId, session.user.id)))
+        .limit(1);
 
-      if (updateError) {
-        console.error("Error updating task instance:", updateError);
-        return NextResponse.json(
-          { error: "Failed to update task instance" },
-          { status: 500 }
-        );
+      if (!template) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
 
-      // Return the task data with instance completion status
-      if (updatedInstance && updatedInstance.tasks) {
-        return NextResponse.json({
-          task: {
-            ...updatedInstance.tasks,
-            id: updatedInstance.id,
-            completed: updatedInstance.completed,
-            due_date: updatedInstance.due_date,
-            is_instance: true,
-            original_task_id: updatedInstance.task_id,
-          },
-        });
-      }
+      const newStatus = instance.status === "completed" ? "pending" : "completed";
+      
+      const [updatedInstance] = await db
+        .update(taskInstances)
+        .set({ 
+          status: newStatus,
+          completedAt: newStatus === "completed" ? new Date() : null
+        })
+        .where(eq(taskInstances.id, id))
+        .returning();
+
+      return NextResponse.json({
+        task: {
+          ...template,
+          id: updatedInstance.id,
+          status: updatedInstance.status,
+          dueDate: updatedInstance.dueDate,
+          isInstance: true,
+          templateId: updatedInstance.templateId,
+        },
+      });
     }
 
-    // If not a task instance, treat as regular task
-    const { data: task, error: taskError } = await supabase
-      .from("tasks")
-      .select("*")
-      .eq("id", taskId)
-      .eq("user_id", user.id)
-      .single();
-
-    if (taskError || !task) {
-      console.error("Error fetching task:", taskError);
-      return NextResponse.json({ error: "Task not found" }, { status: 404 });
-    }
-
-    // Toggle the task completion
-    const { data: updatedTask, error: updateError } = await supabase
-      .from("tasks")
-      .update({ completed: !task.completed })
-      .eq("id", taskId)
-      .select()
-      .single();
-
-    if (updateError) {
-      console.error("Error updating task:", updateError);
-      return NextResponse.json(
-        { error: "Failed to update task" },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ task: updatedTask });
+    return NextResponse.json({ error: "Task instance not found" }, { status: 404 });
   } catch (error) {
-    console.error("API Error:", error);
+    console.error("API Error in toggle PATCH:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

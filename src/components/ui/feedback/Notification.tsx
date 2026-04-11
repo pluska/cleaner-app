@@ -156,7 +156,13 @@ export function useNotificationManager() {
     );
   };
 
-  const showRewards = (rewards: any) => {
+  const showRewards = (rewards: {
+    exp_earned: number;
+    coins_earned: number;
+    gems_earned: number;
+    level_up: boolean;
+    area_health_restored: number;
+  }) => {
     if (rewards.exp_earned > 0) {
       showNotification("exp", rewards.exp_earned, "Experience gained!");
     }

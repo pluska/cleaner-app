@@ -1,57 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { auth } from "@/auth";
+import { db } from "@/db";
+import { tools, userTools, userProfiles } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 
 // GET /api/user/tools - Get user tools
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    // Use direct client for now to avoid cookie issues
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-
-    // Get authorization header
-    const authHeader = request.headers.get("authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json(
-        { error: "No authorization token" },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.replace("Bearer ", "");
-
-    // Set the session with the token
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser(token);
-
-    if (authError || !user) {
+    const session = await auth();
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get user tools using service role client
-    const serviceRoleClient = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const uTools = await db
+      .select({
+        id: userTools.id,
+        toolId: userTools.toolId,
+        currentDurability: userTools.currentDurability,
+        isEquipped: userTools.isEquipped,
+        acquiredAt: userTools.acquiredAt,
+        tool: {
+          nameEn: tools.nameEn,
+          nameEs: tools.nameEs,
+          category: tools.category,
+          rarity: tools.rarity,
+          durabilityMax: tools.durabilityMax,
+        }
+      })
+      .from(userTools)
+      .innerJoin(tools, eq(userTools.toolId, tools.id))
+      .where(eq(userTools.userId, session.user.id))
+      .orderBy(userTools.acquiredAt);
 
-    const { data: tools, error } = await serviceRoleClient
-      .from("user_tools")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("acquired_at", { ascending: false });
-
-    if (error) {
-      console.error("Error fetching user tools:", error);
-      return NextResponse.json(
-        { error: "Failed to fetch tools" },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ tools: tools || [] });
+    return NextResponse.json({ tools: uTools || [] });
   } catch (error) {
     console.error("Unexpected error in tools GET:", error);
     return NextResponse.json(
@@ -64,110 +45,96 @@ export async function GET(request: NextRequest) {
 // POST /api/user/tools - Add new tool to user inventory
 export async function POST(request: NextRequest) {
   try {
-    // Use direct client for now to avoid cookie issues
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-
-    // Get authorization header
-    const authHeader = request.headers.get("authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json(
-        { error: "No authorization token" },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.replace("Bearer ", "");
-
-    // Set the session with the token
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser(token);
-
-    if (authError || !user) {
+    const session = await auth();
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
-    const { tool_id, tool_name } = body;
+    const { tool_id } = body;
 
     // Validate input
-    if (!tool_id || !tool_name) {
+    if (!tool_id) {
       return NextResponse.json(
-        { error: "Tool ID and name are required" },
+        { error: "Tool ID is required" },
         { status: 400 }
       );
     }
 
-    // Get tool definition from cleaning-tools.json
-    const toolsData = await import("@/data/templates/cleaning-tools.json");
-    const toolDefinition = toolsData.default.tools.find(
-      (t: any) => t.id === tool_id
-    );
+    // Check if tool exists in dictionary, seed if empty
+    let toolDefinition = await db
+      .select()
+      .from(tools)
+      .where(eq(tools.id, tool_id))
+      .limit(1)
+      .then(rows => rows[0]);
 
     if (!toolDefinition) {
-      return NextResponse.json({ error: "Invalid tool ID" }, { status: 400 });
+      // Seed from JSON if needed
+      const toolsData = (await import("@/data/templates/cleaning-tools.json")).default as {
+        tools: Array<{
+          id: string;
+          name_en?: string;
+          name_es?: string;
+          name?: string;
+          category: string;
+          rarity: string;
+          durability_max: number;
+        }>;
+      };
+      const jsonTool = toolsData.tools.find((t) => t.id === tool_id);
+      
+      if (!jsonTool) {
+        return NextResponse.json({ error: "Invalid tool ID" }, { status: 400 });
+      }
+
+      for (const t of toolsData.tools) {
+        await db.insert(tools).values({
+          id: t.id,
+          nameEn: t.name_en || t.name || "",
+          nameEs: t.name_es || t.name || "",
+          category: t.category,
+          rarity: t.rarity || "common",
+          durabilityMax: t.durability_max || 100,
+          durabilityLossPerUse: 1,
+        }).onConflictDoNothing();
+      }
+      
+      toolDefinition = await db
+        .select()
+        .from(tools)
+        .where(eq(tools.id, tool_id))
+        .limit(1)
+        .then(rows => rows[0]);
     }
 
     // Check if user has a profile, create one if not
-    const serviceRoleClient = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const [profile] = await db
+      .select()
+      .from(userProfiles)
+      .where(eq(userProfiles.userId, session.user.id))
+      .limit(1);
 
-    // Check if profile exists using service role client
-    const { data: profile, error: profileError } = await serviceRoleClient
-      .from("user_profiles")
-      .select("user_id")
-      .eq("user_id", user.id)
-      .single();
-
-    if (profileError && profileError.code === "PGRST116") {
-      // Profile doesn't exist, create one
-      const { error: createProfileError } = await serviceRoleClient
-        .from("user_profiles")
-        .insert({
-          user_id: user.id,
-          username: user.email?.split("@")[0] || "User",
-          display_name:
-            user.user_metadata?.full_name ||
-            user.email?.split("@")[0] ||
-            "User",
-          level: 1,
-          experience_points: 0,
-          total_tasks_completed: 0,
-          total_subtasks_completed: 0,
-          streak_days: 0,
-          longest_streak: 0,
-          coins: 100,
-          gems: 10,
-        });
-
-      if (createProfileError) {
-        console.error("Error creating profile:", createProfileError);
-        return NextResponse.json(
-          { error: "Failed to create user profile" },
-          { status: 500 }
-        );
-      }
-    } else if (profileError) {
-      console.error("Error checking profile:", profileError);
-      return NextResponse.json(
-        { error: "Failed to check user profile" },
-        { status: 500 }
-      );
+    if (!profile) {
+      await db.insert(userProfiles).values({
+        userId: session.user.id,
+        level: 1,
+        xp: 0,
+        coins: 100,
+      });
     }
 
     // Check if user already has this tool
-    const { data: existingTool } = await supabase
-      .from("user_tools")
-      .select("id")
-      .eq("user_id", user.id)
-      .eq("tool_id", tool_id)
-      .single();
+    const [existingTool] = await db
+      .select({ id: userTools.id })
+      .from(userTools)
+      .where(
+        and(
+          eq(userTools.userId, session.user.id),
+          eq(userTools.toolId, tool_id)
+        )
+      )
+      .limit(1);
 
     if (existingTool) {
       return NextResponse.json(
@@ -176,31 +143,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Add tool to user inventory using service role client
-    const { data: tool, error } = await serviceRoleClient
-      .from("user_tools")
-      .insert([
-        {
-          user_id: user.id,
-          tool_id: tool_id,
-          tool_name: tool_name,
-          current_durability: toolDefinition.durability_max,
-          max_durability: toolDefinition.durability_max,
-          uses_count: 0,
-        },
-      ])
-      .select()
-      .single();
+    // Add tool to user inventory
+    const [newUserTool] = await db
+      .insert(userTools)
+      .values({
+        id: crypto.randomUUID(),
+        userId: session.user.id,
+        toolId: tool_id,
+        currentDurability: toolDefinition.durabilityMax,
+        isEquipped: false,
+      })
+      .returning();
 
-    if (error) {
-      console.error("Error adding tool to inventory:", error);
-      return NextResponse.json(
-        { error: "Failed to add tool" },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ tool }, { status: 201 });
+    return NextResponse.json({ tool: newUserTool }, { status: 201 });
   } catch (error) {
     console.error("Unexpected error in tools POST:", error);
     return NextResponse.json(

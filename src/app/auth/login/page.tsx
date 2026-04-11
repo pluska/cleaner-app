@@ -18,7 +18,11 @@ function LoginContent() {
 
   const handleSuccess = () => {
     setIsRedirecting(true);
-    router.push("/dashboard");
+    if (isSignup) {
+      router.push("/onboarding");
+    } else {
+      router.push("/dashboard");
+    }
   };
 
   return (
@@ -53,7 +57,11 @@ function LoginContent() {
           <div className="inline-flex items-center space-x-2 text-blue-600">
             <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
             <span className="text-sm">
-              {t("Redirecting to dashboard...", language)}
+              {isSignup
+                ? language === "es"
+                  ? "Redirigiendo a introducción..."
+                  : "Redirecting to introduction..."
+                : t("Redirecting to dashboard...", language)}
             </span>
           </div>
         </div>

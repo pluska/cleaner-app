@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSession } from "@/contexts/LanguageContext";
+import { useAppStatus } from "@/contexts/LanguageContext";
 import { AlertTriangle, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/forms/Button";
 
 export function SessionExpiredNotification() {
-  const { isSessionExpired, redirectToLogin } = useSession();
+  const { isSessionExpired, redirectToLogin } = useAppStatus();
   const [isVisible, setIsVisible] = useState(false);
   const [autoRedirectCountdown, setAutoRedirectCountdown] = useState(30);
 

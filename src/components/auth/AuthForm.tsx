@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/libs/supabase";
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/forms/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { LoadingSpinner } from "@/components/ui/feedback/LoadingSpinner";
@@ -22,31 +22,40 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const supabase = createClient();
   const { language } = useLanguage();
 
-  const checkEmailExists = async (email: string): Promise<boolean> => {
-    try {
-      const response = await fetch("/api/auth/check-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
+  // Password strength logic
+  const getPasswordStrength = (pass: string) => {
+    let score = 0;
+    if (!pass) return score;
+    if (pass.length >= 8) score += 1; // Base length
+    if (/(?=.*[A-Z])/.test(pass)) score += 1; // Uppercase
+    if (/(?=.*\d)/.test(pass) || /(?=.*[!@#$%^&*])/.test(pass)) score += 1; // Number or Symbol
+    return score;
+  };
 
-      if (!response.ok) {
-        console.error("Failed to check email:", response.statusText);
-        return false; // Assume email doesn't exist if check fails
-      }
-
-      const data = await response.json();
-      return data.exists;
-    } catch (error) {
-      console.error("Error checking email:", error);
-      return false; // Assume email doesn't exist if check fails
+  const strengthScore = getPasswordStrength(password);
+  
+  const getStrengthColor = () => {
+    switch (strengthScore) {
+      case 0: return "bg-gray-200";
+      case 1: return "bg-red-500";
+      case 2: return "bg-yellow-500";
+      case 3: return "bg-green-500";
+      default: return "bg-gray-200";
     }
   };
+  
+  const getStrengthText = () => {
+    switch (strengthScore) {
+      case 0: return "";
+      case 1: return language === "es" ? "Santo y seña débil" : "Weak pass-phrase";
+      case 2: return language === "es" ? "Santo y seña aceptable" : "Acceptable pass-phrase";
+      case 3: return language === "es" ? "Santo y seña inquebrantable" : "Unbreakable pass-phrase";
+      default: return "";
+    }
+  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,78 +65,88 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
 
     try {
       if (mode === "signup") {
-        // Secure server-side email check
-        const emailExists = await checkEmailExists(email);
-
-        if (emailExists) {
+        if (!email) {
           setError(
-            t(
-              "This email is already registered. Please sign in instead.",
-              language
-            )
+            language === "es"
+              ? "Necesitamos tu correo para saber a qué reino enviaremos las provisiones."
+              : "We need your email to know which kingdom we should send the provisions to."
           );
+          setLoading(false);
           return;
         }
 
-        // Proceed with signup
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/auth/login`,
-          },
-        });
-
-        if (error) {
-          // Check for various possible error messages
-          const errorMessage = error.message.toLowerCase();
-          if (
-            errorMessage.includes("already") ||
-            errorMessage.includes("exists") ||
-            errorMessage.includes("registered") ||
-            errorMessage.includes("duplicate")
-          ) {
-            setError(
-              t(
-                "This email is already registered. Please sign in instead.",
-                language
-              )
-            );
-            return;
-          }
-          throw error;
-        }
-
-        // Check if user was created but needs email confirmation
-        if (data.user && !data.session) {
-          setSuccess(true);
-          setTimeout(() => {
-            setSuccess(false);
-            setError(
-              t(
-                "Please check your email to confirm your account before signing in.",
-                language
-              )
-            );
-          }, 3000);
+        // RPG Themed Frontend Validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          setError(
+            language === "es"
+              ? "Tu correo no parece pertenecer a ningún reino conocido."
+              : "Your email does not seem to belong to any known kingdom."
+          );
+          setLoading(false);
           return;
         }
 
-        // If we have a session, user was created and signed in
-        if (data.session) {
-          setSuccess(true);
-          setTimeout(() => {
-            onSuccess?.();
-          }, 2000);
+        if (!password) {
+           setError(
+            language === "es"
+              ? "Necesitas proteger a tu reino con un santo y seña."
+              : "You need to protect your kingdom with a pass-phrase."
+          );
+          setLoading(false);
+          return;
         }
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
+
+        if (strengthScore < 3) {
+           setError(
+            language === "es"
+              ? "Tu santo y seña debe contener al menos 8 caracteres, mayúsculas y números para ser seguro."
+              : "Your pass-phrase must contain at least 8 characters, uppercase letters, and numbers to be secure."
+          );
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
         });
-        if (error) throw error;
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Signup failed");
+        }
+
         setSuccess(true);
-        // For login, redirect immediately
+        // Automatically sign in after signup
+        const result = await signIn("credentials", {
+          redirect: false,
+          email,
+          password,
+        });
+
+        if (result?.error) {
+          setError(t("Account created, but automatic sign in failed. Please sign in manually.", language));
+          return;
+        }
+
+        setTimeout(() => {
+          onSuccess?.();
+        }, 2000);
+      } else {
+        const result = await signIn("credentials", {
+          redirect: false,
+          email,
+          password,
+        });
+
+        if (result?.error) {
+          throw new Error(t("Invalid email or password", language));
+        }
+
+        setSuccess(true);
         setTimeout(() => {
           onSuccess?.();
         }, 1000);
@@ -158,7 +177,7 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
           required
         />
       </div>
-      <div>
+      <div className="space-y-1">
         <Input
           type="password"
           placeholder={t("Password", language)}
@@ -167,8 +186,26 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
             setPassword(e.target.value)
           }
           disabled={loading || success}
-          required
+          required={mode === "login"}
         />
+        
+        {/* RPG Password Strength Meter */}
+        {mode === "signup" && password.length > 0 && (
+          <div className="pt-2">
+            <div className="flex gap-1 h-1.5 w-full rounded-full overflow-hidden bg-gray-200">
+              <div className={`h-full transition-all duration-300 ${strengthScore >= 1 ? getStrengthColor() : 'bg-transparent'}`} style={{ width: '33.33%' }} />
+              <div className={`h-full transition-all duration-300 ${strengthScore >= 2 ? getStrengthColor() : 'bg-transparent'}`} style={{ width: '33.33%' }} />
+              <div className={`h-full transition-all duration-300 ${strengthScore === 3 ? getStrengthColor() : 'bg-transparent'}`} style={{ width: '33.33%' }} />
+            </div>
+            <p className={`text-xs mt-1 font-medium transition-colors ${
+              strengthScore === 1 ? 'text-red-500' : 
+              strengthScore === 2 ? 'text-yellow-600' : 
+              'text-green-600'
+            }`}>
+              {getStrengthText()}
+            </p>
+          </div>
+        )}
       </div>
       
       {mode === "login" && (

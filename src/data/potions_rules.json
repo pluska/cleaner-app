@@ -1,0 +1,288 @@
+{
+  "safetyRules": [
+    {
+      "id": "BLEACH_AMMONIA",
+      "requiredIngredients": [
+        ["bleach", "lejia", "lejía", "cloro"],
+        ["ammonia", "amoniaco", "amoníaco"]
+      ],
+      "ruleType": "DANGER",
+      "en": "⚠️ HALT! By the ancient laws of alchemy, mixing bleach and ammonia creates a toxic gas of doom (chloramine)! Never mix these two potions!",
+      "es": "⚠️ ¡ALTO! Por las antiguas leyes de la alquimia, mezclar lejía y amoníaco crea un gas tóxico de la perdición (cloramina). ¡Nunca mezcles estas dos pociones!",
+      "recommendation": {
+        "en": "✨ THE SAFE PATH: Choose only ONE champion for your battle. Use either a bleach-based potion OR an ammonia-based one. Rinse the surface thoroughly with water before ever switching spells.",
+        "es": "✨ EL CAMINO SEGURO: Elige solo UN campeón para tu batalla. Usa una poción con lejía O una con amoníaco. Enjuaga bien la superficie con agua antes de cambiar de hechizo."
+      }
+    },
+    {
+      "id": "BLEACH_VINEGAR",
+      "requiredIngredients": [
+        ["bleach", "lejia", "lejía", "cloro"],
+        ["vinegar", "vinagre"]
+      ],
+      "ruleType": "DANGER",
+      "en": "⚠️ CEASE YOUR MAGIC! Mixing bleach and vinegar summons chlorine gas, a truly evil and deadly vapor! Evacuate your chambers if you have done this!",
+      "es": "⚠️ ¡CESA TU MAGIA! Mezclar lejía y vinagre invoca gas cloro, ¡un vapor verdaderamente malvado y mortal! ¡Evacua tus aposentos si has hecho esto!",
+      "recommendation": {
+        "en": "✨ THE SAFE PATH: If you seek powerful disinfection, rely on bleach alone diluted in water. If you seek to banish scale and odors, use vinegar alone. Never let their streams cross!",
+        "es": "✨ EL CAMINO SEGURO: Si buscas desinfección poderosa, confía solo en la lejía diluida en agua. Si buscas desterrar el sarro y los malos olores, usa solo vinagre. ¡Nunca cruces sus rayos!"
+      }
+    },
+    {
+      "id": "BLEACH_ALCOHOL",
+      "requiredIngredients": [
+        ["bleach", "lejia", "lejía", "cloro"],
+        ["alcohol", "rubbing alcohol", "isopropilico", "isopropílico", "medicinal"]
+      ],
+      "ruleType": "DANGER",
+      "en": "⚠️ A DARK CONJURATION! Mixing bleach and rubbing alcohol creates chloroform, a highly toxic vapor that will steal your breath away! Flee the room immediately!",
+      "es": "⚠️ ¡UNA CONJURACIÓN OSCURA! Mezclar lejía y alcohol crea cloroformo, ¡un vapor altamente tóxico que te robará el aliento! ¡Huye de la habitación inmediatamente!",
+      "recommendation": {
+        "en": "✨ THE SAFE PATH: Wash the surface with basic soap and water first. If you must sanitize, pick just one standard disinfectant and let the room breathe by opening a window.",
+        "es": "✨ EL CAMINO SEGURO: Lava la superficie con agua y jabón básico primero. Si debes desinfectar, elige un solo desinfectante estándar y deja que la habitación respire abriendo una ventana."
+      }
+    },
+    {
+      "id": "BLEACH_TOILET_CLEANER",
+      "requiredIngredients": [
+        ["bleach", "lejia", "lejía", "cloro"],
+        ["toilet cleaner", "limpiainodoros", "harpic", "pato purific", "muriatic acid", "acido"]
+      ],
+      "ruleType": "DANGER",
+      "en": "⚠️ STOP YOUR INCANTATION! Toilet bowl cleaners hold acidic magics. Mixing them with bleach releases deadly fumes! Never combine these forces in your porcelain throne!",
+      "es": "⚠️ ¡DETÉN TU ENCANTAMIENTO! Los limpiadores de inodoros contienen magias ácidas. ¡Mezclarlos con lejía libera vapores mortales! ¡Nunca combines estas fuerzas en tu trono de porcelana!",
+      "recommendation": {
+        "en": "✨ THE SAFE PATH: Trust the specific toilet bowl potion to do its job. Apply it, let it sit to break the curse, scrub with your mighty brush, and flush the evil away.",
+        "es": "✨ EL CAMINO SEGURO: Confía en la poción específica para inodoros. Aplícala, déjala reposar para romper la maldición, frota con tu poderoso cepillo y tira de la cadena para expulsar el mal."
+      }
+    },
+    {
+      "id": "PEROXIDE_VINEGAR",
+      "requiredIngredients": [
+        ["hydrogen peroxide", "agua oxigenada", "peroxide", "peroxido", "peróxido"],
+        ["vinegar", "vinagre"]
+      ],
+      "ruleType": "DANGER",
+      "en": "⚠️ BY THE DARK ARTS! Mixing hydrogen peroxide and vinegar in the same vessel brews peracetic acid, a highly corrosive and foul potion. Keep them apart!",
+      "es": "⚠️ ¡POR LAS ARTES OSCURAS! Mezclar agua oxigenada y vinagre en el mismo recipiente elabora ácido peracético, una poción altamente corrosiva y repugnante. ¡Mantenlos separados!",
+      "recommendation": {
+        "en": "✨ THE SAFE PATH: You may use them on the same surface, but ONLY one after the other. Spray one, wipe the surface completely dry, and then spray the other.",
+        "es": "✨ EL CAMINO SEGURO: Puedes usarlos en la misma superficie, pero SOLO uno después del otro. Rocía uno, seca la superficie por completo y luego rocía el otro."
+      }
+    },
+    {
+      "id": "DRAIN_CLEANERS",
+      "requiredIngredients": [
+        ["drain cleaner", "desatorador", "destapacaños", "plumber", "drano"],
+        ["mix", "mezclar", "another", "diferente", "different", "dos"]
+      ],
+      "ruleType": "DANGER",
+      "en": "⚠️ A RECIPE FOR EXPLOSIONS! Never mix different unblocking potions in your drains. Their clashing magics can cause a violent, boiling eruption of toxic sludge!",
+      "es": "⚠️ ¡UNA RECETA PARA EXPLOSIONES! Nunca mezcles diferentes pociones desatoradoras en tus desagües. ¡Sus magias en conflicto pueden causar una erupción violenta e hirviente de lodo tóxico!",
+      "recommendation": {
+        "en": "✨ THE SAFE PATH: If the first potion fails to clear the blockage, do not add another! Summon a Grand Master of Pipes (a plumber) or use a mechanical drain snake to defeat the clog.",
+        "es": "✨ EL CAMINO SEGURO: Si la primera poción falla, ¡no agregues otra! Invoca a un Gran Maestro de las Tuberías (un plomero) o usa una serpiente de drenaje mecánica para derrotar el atasco."
+      }
+    },
+    {
+      "id": "BLEACH_WOOD",
+      "requiredIngredients": [
+        ["bleach", "lejia", "lejía", "cloro"],
+        ["wood", "madera", "hardwood", "parquet"]
+      ],
+      "ruleType": "WARNING",
+      "en": "Halt your brush! Bleach is far too aggressive for wood floors; it will strip the finish, destroy its natural color, and dry out the wood.",
+      "es": "¡Detén tu brocha! La lejía es demasiado agresiva para los pisos de madera; eliminará el acabado, destruirá su color natural y secará la madera.",
+      "recommendation": {
+        "en": "✨ THE RIGHTFUL SPELL: To restore your wooden floors, mix a potion of warm water with a few drops of pH-neutral dish soap, or use a specialized wood elixir. Mop gently and dry swiftly!",
+        "es": "✨ EL HECHIZO CORRECTO: Para restaurar tus pisos, mezcla una poción de agua tibia con unas gotas de jabón para platos de pH neutro, o usa un elixir especial para madera. ¡Trapea suavemente y seca rápido!"
+      }
+    },
+    {
+      "id": "BLEACH_STAINLESS_STEEL",
+      "requiredIngredients": [
+        ["bleach", "lejia", "lejía", "cloro"],
+        ["stainless steel", "acero inoxidable", "inoxidable"]
+      ],
+      "ruleType": "WARNING",
+      "en": "Beware! Bleach is the sworn enemy of stainless steel armor. It will pit and corrode the metal, inviting the Rust Goblins.",
+      "es": "¡Cuidado! La lejía es el enemigo jurado de la armadura de acero inoxidable. Picará y corroerá el metal, invitando a los Duendes del Óxido.",
+      "recommendation": {
+        "en": "✨ THE RIGHTFUL SPELL: To make your armor shine, use mild dish soap and warm water, then polish with a microfiber cloth and a drop of olive oil or specialized steel cleaner.",
+        "es": "✨ EL HECHIZO CORRECTO: Para que tu armadura brille, usa jabón lavaplatos suave y agua tibia, luego pule con un paño de microfibra y una gota de aceite de oliva o limpiador especial de acero."
+      }
+    },
+    {
+      "id": "VINEGAR_WOOD",
+      "requiredIngredients": [
+        ["vinegar", "vinagre"],
+        ["wood", "madera", "hardwood", "parquet"]
+      ],
+      "ruleType": "WARNING",
+      "en": "Be wary, apprentice. Vinegar is acidic and can ruin the protective finish on hardwood floors over time, leaving them dull.",
+      "es": "Ten cuidado, aprendiz. El vinagre es ácido y con el tiempo puede arruinar el acabado protector de los pisos de madera, dejándolos opacos.",
+      "recommendation": {
+        "en": "✨ THE RIGHTFUL SPELL: Sweep the Dust Dragons away first, then use a slightly damp mop with a specialized, pH-neutral wood cleaning potion. No puddles allowed!",
+        "es": "✨ EL HECHIZO CORRECTO: Barre los Dragones de Polvo primero, luego usa un trapeador ligeramente húmedo con una poción de limpieza para madera especializada y con pH neutro. ¡No se permiten charcos!"
+      }
+    },
+    {
+      "id": "VINEGAR_MARBLE",
+      "requiredIngredients": [
+        ["vinegar", "vinagre", "lemon", "limon", "limón"],
+        ["marble", "marmol", "mármol", "granite", "granito", "stone", "piedra"]
+      ],
+      "ruleType": "WARNING",
+      "en": "A foul idea! Acidic potions like vinegar or lemon will etch and destroy the magical, shiny surface of marble or natural stone.",
+      "es": "¡Una idea atroz! Las pociones ácidas como el vinagre o el limón grabarán y destruirán la superficie brillante de mármol o piedra natural.",
+      "recommendation": {
+        "en": "✨ THE RIGHTFUL SPELL: Stone requires gentle care. Use a few drops of mild dish soap mixed in warm water, or a potion crafted specifically for natural stone.",
+        "es": "✨ EL HECHIZO CORRECTO: La piedra requiere un cuidado suave. Usa unas gotas de jabón lavaplatos suave mezclado con agua tibia, o una poción elaborada específicamente para piedra natural."
+      }
+    },
+    {
+      "id": "GLASS_SCREENS",
+      "requiredIngredients": [
+        ["windex", "glass cleaner", "limpiacristales", "vidrio"],
+        ["screen", "pantalla", "tv", "monitor", "televisor"]
+      ],
+      "ruleType": "WARNING",
+      "en": "Halt your spraying! Glass potions are too harsh for your magical viewing crystals (screens). They will strip the anti-glare enchantment.",
+      "es": "¡Detén tu rociado! Las pociones para vidrio son demasiado fuertes para tus cristales de visión mágicos (pantallas). Eliminarán el encantamiento antirreflejo.",
+      "recommendation": {
+        "en": "✨ THE RIGHTFUL SPELL: Turn off the crystal, then gently wipe away the dust with a dry, clean microfiber cloth. For stubborn smudges, slightly dampen the cloth with pure water.",
+        "es": "✨ EL HECHIZO CORRECTO: Apaga el cristal, luego limpia suavemente el polvo con un paño de microfibra seco y limpio. Para manchas difíciles, humedece ligeramente el paño con agua pura."
+      }
+    },
+    {
+      "id": "CAST_IRON_SOAP",
+      "requiredIngredients": [
+        ["cast iron", "hierro fundido", "sarten", "skillet"],
+        ["dishwasher", "lavavajillas", "soap", "jabon", "jabón"]
+      ],
+      "ruleType": "WARNING",
+      "en": "Blasphemy! Never drown your trusty cast iron pan in soapy waters or banish it to the dishwashing machine. You will destroy its seasoned armor!",
+      "es": "¡Blasfemia! Nunca ahogues tu confiable sartén de hierro fundido en aguas jabonosas ni lo destierres a la máquina lavavajillas. ¡Destruirás su armadura curada!",
+      "recommendation": {
+        "en": "✨ THE RIGHTFUL SPELL: While the iron is still warm, scrub it with a brush and hot water. For stubborn remnants, scrub with coarse salt, rinse, dry immediately, and bless it with a thin layer of cooking oil.",
+        "es": "✨ EL HECHIZO CORRECTO: Mientras el hierro aún está tibio, frótalo con un cepillo y agua caliente. Para restos difíciles, frota con sal gruesa, enjuaga, seca inmediatamente y bendícelo con una fina capa de aceite de cocina."
+      }
+    },
+    {
+      "id": "BLOOD_HOT_WATER",
+      "requiredIngredients": [
+        ["blood", "sangre"],
+        ["hot water", "agua caliente", "heat", "calor"]
+      ],
+      "ruleType": "WARNING",
+      "en": "Hold the fire! Never use hot water on a bloodstain, for the heat will cook the proteins and bind the curse to the fabric forever.",
+      "es": "¡Detén el fuego! Nunca uses agua caliente sobre una mancha de sangre, pues el calor cocinará las proteínas y unirá la maldición a la tela para siempre.",
+      "recommendation": {
+        "en": "✨ THE RIGHTFUL SPELL: Flush the fabric with freezing cold water immediately. Then, treat the area with a magical enzymatic stain remover or simple soap before washing.",
+        "es": "✨ EL HECHIZO CORRECTO: Enjuaga la tela con agua helada inmediatamente. Luego, trata la zona con un quitamanchas enzimático mágico o jabón simple antes de lavar."
+      }
+    },
+    {
+      "id": "DISH_SOAP_DISHWASHER",
+      "requiredIngredients": [
+        ["dish soap", "jabon de platos", "jabón líquido", "ayudin", "ayudín", "dawn"],
+        ["dishwasher", "lavavajillas", "maquina", "máquina"]
+      ],
+      "ruleType": "WARNING",
+      "en": "A comical but tragic error! Pouring regular dish soap into the mechanical dishwasher will summon a terrifying avalanche of bubbles in your kitchen!",
+      "es": "¡Un error cómico pero trágico! Verter jabón de platos normal en el lavavajillas mecánico invocará ¡una aterradora avalancha de burbujas en tu cocina!",
+      "recommendation": {
+        "en": "✨ THE RIGHTFUL SPELL: Use only the specialized powders or pods forged specifically for the mechanical washing beast. Keep the liquid soap for manual sink quests only.",
+        "es": "✨ EL HECHIZO CORRECTO: Usa solo los polvos o cápsulas especializadas forjadas específicamente para la bestia de lavado mecánico. Guarda el jabón líquido solo para misiones manuales en el fregadero."
+      }
+    }
+  ],
+  "surfaceGuides": [
+    {
+    "id": "STAINLESS_STEEL",
+      "keywords": ["stainless steel", "acero", "inoxidable", "fridge", "nevera", "refrigerador"],
+      "en": "🛡️ STAINLESS STEEL ARMOR: To make your metallic beasts shine, wipe in the direction of the grain! Use a potion of warm water and mild dish soap. Dry immediately and buff with a single drop of olive oil for a magical gleam! Never use abrasive scourers, lest you scratch the shield.",
+      "es": "🛡️ ARMADURA DE ACERO INOXIDABLE: ¡Para que tus bestias metálicas brillen, limpia en dirección a la veta! Usa una poción de agua tibia y jabón suave. ¡Seca inmediatamente y pule con una gota de aceite de oliva para un brillo mágico! Nunca uses estropajos abrasivos, para no rayar el escudo."
+    },
+    {
+      "id": "SCREENS",
+      "keywords": ["screen", "pantalla", "tv", "monitor", "televisor", "display"],
+      "en": "🔮 MAGICAL VIEWING CRYSTALS: Before clearing the vision of your screens, sever their power! Use only a dry, clean microfiber cloth. If a stubborn smudge remains, lightly mist the cloth (never the crystal itself!) with pure water. Harsh potions will destroy their anti-glare enchantments!",
+      "es": "🔮 CRISTALES DE VISIÓN MÁGICOS: ¡Antes de aclarar la visión de tus pantallas, corta su energía! Usa solo un paño de microfibra seco y limpio. Si queda una mancha rebelde, rocía ligeramente el paño (¡nunca el cristal!) con agua pura. ¡Las pociones fuertes destruirán sus encantamientos antirreflejo!"
+    },
+    {
+      "id": "CAST_IRON",
+      "keywords": ["cast iron", "hierro fundido", "sarten de hierro", "skillet", "olla de hierro"],
+      "en": "🍳 THE IRON CAULDRON: Treat your cast iron with reverence! Wash it while still warm with water and a stiff brush—no harsh soaps! For stuck-on remnants, use coarse salt as a natural scrub. Dry it immediately over a low flame and bless it with a thin veil of cooking oil.",
+      "es": "🍳 EL CALDERO DE HIERRO: ¡Trata tu hierro fundido con reverencia! Lávalo mientras aún está tibio con agua y un cepillo duro, ¡sin jabones fuertes! Para restos pegados, usa sal gruesa como exfoliante natural. Sécalo inmediatamente a fuego lento y bendícelo con un fino velo de aceite de cocina."
+    },
+    {
+      "id": "WINDOWS_GLASS",
+      "keywords": ["window", "ventana", "glass", "vidrio", "cristal", "espejo", "mirror"],
+      "en": "✨ INVISIBLE PORTALS: To achieve streak-free windows and mirrors, mix equal parts water and white vinegar. Squeegee from top to bottom! A wise wizard's secret: clean on a cloudy day, for the sun's fiery rays will dry your potion too swiftly and leave cursed streaks behind.",
+      "es": "✨ PORTALES INVISIBLES: Para lograr ventanas y espejos sin marcas, mezcla partes iguales de agua y vinagre blanco. ¡Usa un limpiacristales de arriba a abajo! El secreto de un mago sabio: limpia en un día nublado, pues los ardientes rayos del sol secarán tu poción muy rápido y dejarán marcas malditas."
+    },
+    {
+      "id": "WOOD_FLOORS",
+      "keywords": ["wood", "madera", "hardwood", "parquet", "piso de madera"],
+      "en": "🌳 THE ANCIENT WOODS: Wood despises standing water! Sweep away the Dust Dragons first. Then, use a barely-damp mop and a specialized, pH-neutral wood elixir. Never use harsh acids like vinegar, for they will strip the forest's natural protective wards.",
+      "es": "🌳 LOS BOSQUES ANTIGUOS: ¡La madera odia el agua estancada! Barre a los Dragones de Polvo primero. Luego, usa un trapeador apenas húmedo y un elixir para madera especializado y de pH neutro. Nunca uses ácidos como el vinagre, pues eliminarán las barreras protectoras naturales del bosque."
+    },
+    {
+      "id": "NATURAL_STONE",
+      "keywords": ["marble", "marmol", "mármol", "granite", "granito", "stone", "piedra", "cuarzo", "quartz"],
+      "en": "🏛️ THE SACRED STONES: Marble and granite are sensitive to acidic magics! Vinegar and lemon will etch their polished surfaces. Cleanse these stones using only warm water and a few drops of mild dish soap, or a specialized stone potion.",
+      "es": "🏛️ LAS PIEDRAS SAGRADAS: ¡El mármol y el granito son sensibles a las magias ácidas! El vinagre y el limón grabarán sus superficies pulidas. Purifica estas piedras usando solo agua tibia y unas gotas de jabón suave, o una poción especializada para piedra."
+    },
+    {
+      "id": "TILES_GROUT",
+      "keywords": ["tile", "azulejo", "grout", "fragua", "junta", "mayolica", "ceramica", "cerámica"],
+      "en": "🧱 LABYRINTH OF GROUT: To banish dark mold from the valleys between your tiles, mix a paste of baking soda and water, or summon the power of hydrogen peroxide. Let the potion sit, then scrub fiercely with a stiff brush before rinsing the evil away.",
+      "es": "🧱 LABERINTO DE FRAGUA: Para desterrar el moho oscuro de los valles entre tus azulejos, mezcla una pasta de bicarbonato y agua, o invoca el poder del agua oxigenada. Deja reposar la poción, luego frota ferozmente con un cepillo duro antes de enjuagar el mal."
+    },
+    {
+      "id": "LAMINATE_FLOOR",
+      "keywords": ["laminate", "laminado", "flotante", "linoleum", "linoleo"],
+      "en": "🪵 FAUX-WOOD ILLUSIONS: Laminate floors despise the flood! Never use a soaking wet mop, or the planks will warp and buckle. Use a microfiber mop slightly misted with a specialized laminate potion or highly diluted vinegar.",
+      "es": "🪵 ILUSIONES DE MADERA: ¡Los pisos laminados desprecian las inundaciones! Nunca uses un trapeador empapado, o las tablas se deformarán. Usa una mopa de microfibra ligeramente rociada con una poción especializada para laminados o vinagre muy diluido."
+    },
+    {
+      "id": "MICROWAVE",
+      "keywords": ["microwave", "microondas"],
+      "en": "⚡ THE CHAMBER OF QUICK-HEAT: To defeat caked-on food explosions, summon a cloud of steam! Microwave a bowl of water with a sliced lemon or a splash of vinegar for 3-5 minutes. Let the magical steam soften the grime, then simply wipe the chamber clean.",
+      "es": "⚡ LA CÁMARA DE CALOR RÁPIDO: ¡Para derrotar explosiones de comida reseca, invoca una nube de vapor! Calienta en el microondas un tazón con agua y rodajas de limón o un chorrito de vinagre por 3-5 minutos. Deja que el vapor mágico ablande la mugre, y luego simplemente limpia la cámara con un paño."
+    },
+    {
+      "id": "OVEN",
+      "keywords": ["oven", "horno", "stove", "estufa"],
+      "en": "🔥 THE DRAGON'S BELLY: To cleanse the charred remains within your oven, coat the cold interior with a thick paste of baking soda and water (avoiding the heating elements). Let this enchantment rest overnight, then wipe away the vanquished grease with a damp cloth.",
+      "es": "🔥 EL VIENTRE DEL DRAGÓN: Para limpiar los restos carbonizados dentro de tu horno, cubre el interior frío con una pasta espesa de bicarbonato y agua (evitando los elementos térmicos). Deja que este encantamiento repose toda la noche, luego retira la grasa vencida con un paño húmedo."
+    },
+    {
+      "id": "LEATHER",
+      "keywords": ["leather", "cuero", "sofa", "sillón", "sillon"],
+      "en": "🛋️ HIDE OF THE BEAST: Leather requires gentle alchemy to prevent cracking! Vacuum the crumbs first. Then, wipe with a potion of equal parts water and white vinegar. Dry immediately, and cast a conditioning spell (leather conditioner) to keep the hide supple.",
+      "es": "🛋️ PIEL DE LA BESTIA: ¡El cuero requiere una alquimia suave para evitar que se agriete! Aspira las migajas primero. Luego, limpia con una poción de partes iguales de agua y vinagre blanco. Seca inmediatamente, y lanza un hechizo acondicionador (crema para cuero) para mantener la piel flexible."
+    },
+    {
+      "id": "GLASS_STOVETOP",
+      "keywords": ["stovetop", "vitroceramica", "vitrocerámica", "encimera", "hornilla", "induction"],
+      "en": "🍳 THE GLASS ALTAR: When the cooking fires cool, treat glass stovetops gently! Avoid abrasive sponges that cast permanent scratch curses. Use a specialized glass cooktop potion or a paste of baking soda, and a razor blade scraper held flat to banish burnt-on food safely.",
+      "es": "🍳 EL ALTAR DE CRISTAL: Cuando los fuegos de cocina se enfríen, ¡trata las placas de vidrio con suavidad! Evita las esponjas abrasivas que lanzan maldiciones de rayones permanentes. Usa una poción especial para vitrocerámica o una pasta de bicarbonato, y un rascador de cuchilla plano para desterrar la comida quemada de forma segura."
+    },
+    {
+      "id": "SILVER",
+      "keywords": ["silver", "plata", "cubiertos", "cubertería", "joyas"],
+      "en": "🌙 MOON-METAL: To restore the shine to tarnished silver without harsh scrubbing, perform this ritual: line a bowl with aluminum foil, add hot water, baking soda, and salt. Submerge the silver, and watch the tarnish transfer to the foil through pure electro-chemical magic!",
+      "es": "🌙 METAL LUNAR: Para restaurar el brillo de la plata empañada sin frotar bruscamente, realiza este ritual: forra un bol con papel de aluminio, añade agua caliente, bicarbonato y sal. Sumerge la plata, y observa cómo la opacidad se transfiere al aluminio ¡a través de pura magia electroquímica!"
+    },
+    {
+      "id": "COPPER_BRASS",
+      "keywords": ["copper", "cobre", "brass", "bronce", "laton", "latón"],
+      "en": "☀️ SUN-METAL GOLEMS: Copper and brass respond well to acidic enchantments. Cut a lemon in half, dip it in coarse salt, and rub it directly onto the tarnished metal. Rinse well and dry instantly to reveal their ancient golden fire!",
+      "es": "☀️ GOLEMS DE METAL SOLAR: El cobre y el bronce responden bien a los encantamientos ácidos. Corta un limón por la mitad, sumérgelo en sal gruesa y frótalo directamente sobre el metal empañado. ¡Enjuaga bien y seca al instante para revelar su antiguo fuego dorado!"
+    }
+  ]
+}
+
+

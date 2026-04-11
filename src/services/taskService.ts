@@ -1,6 +1,6 @@
-import { RRule, rrulestr } from "rrule";
+import { rrulestr } from "rrule";
 import { db } from "../db";
-import { taskTemplates, taskInstances, taskSubtemplates, subtaskInstances } from "../db/schema";
+import { taskTemplates, taskInstances, taskSubtemplates } from "../db/schema";
 import { eq, and } from "drizzle-orm";
 import { format, startOfDay, endOfDay } from "date-fns";
 
@@ -21,7 +21,12 @@ export class TaskService {
     const allTemplates = await db
       .select()
       .from(taskTemplates)
-      .where(eq(taskTemplates.userId, userId));
+      .where(
+        and(
+          eq(taskTemplates.userId, userId),
+          eq(taskTemplates.isArchived, false)
+        )
+      );
 
     // 2. Fetch actually materialized instances for this specific day
     const materializedInstances = await db

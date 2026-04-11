@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Star, Coins } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { InteractiveTaskCard } from "./InteractiveTaskCard";
@@ -44,6 +44,10 @@ interface GamificationPreviewProps {
   showCompletionAnimation?: boolean; // Optional prop to control animation display
 }
 
+interface TaskTemplatesData {
+  templates: TaskTemplate[];
+}
+
 export function GamificationPreview({
   showCompletionAnimation = true,
 }: GamificationPreviewProps) {
@@ -62,26 +66,32 @@ export function GamificationPreview({
 
   // Get task templates based on language
   const taskTemplates =
-    language === "es" ? taskTemplatesEs.templates : taskTemplatesEn.templates;
+    language === "es" 
+      ? (taskTemplatesEs as unknown as TaskTemplatesData).templates 
+      : (taskTemplatesEn as unknown as TaskTemplatesData).templates;
 
   // Transform templates to our Task format
-  const tasks: Task[] = taskTemplates.map((template: TaskTemplate) => ({
-    id: template.id,
-    title: template.name,
-    description: `${template.category.replace("_", " ")} • ${
+  const tasks: Task[] = taskTemplates.map((template) => {
+    const description = `${template.category.replace("_", " ")} • ${
       template.base_frequency_days === 1
         ? "Daily"
         : template.base_frequency_days === 7
         ? "Weekly"
         : "Monthly"
-    }`,
-    totalXpReward: template.exp_reward,
-    subtasks: template.subtasks.map((subtask) => ({
-      id: subtask.id,
-      title: subtask.title,
-      xpReward: subtask.exp_reward,
-    })),
-  }));
+    }`;
+
+    return {
+      id: template.id,
+      title: template.name,
+      description: description,
+      totalXpReward: template.exp_reward,
+      subtasks: template.subtasks.map((subtask) => ({
+        id: subtask.id,
+        title: subtask.title,
+        xpReward: subtask.exp_reward,
+      })),
+    };
+  });
 
   // Cleaning action verbs in both languages
   const cleaningVerbs = [

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import 'react';
 import { Container, Sprite, Text, Graphics } from 'pixi.js';
 

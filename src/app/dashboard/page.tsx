@@ -6,9 +6,11 @@ import { StatsOverview } from "@/components/dashboard/StatsOverview";
 import { CalendarStrip } from "@/components/dashboard/CalendarStrip";
 import { TaskList } from "@/components/dashboard/TaskList";
 import { TaskType } from "@/components/dashboard/TaskItem";
+import { useUser } from "@/hooks/useUser";
 
 export default function DashboardPage() {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const { user } = useUser();
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date()); 
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -81,7 +83,7 @@ export default function DashboardPage() {
 
   return (
     <div className="w-full max-w-md md:max-w-xl lg:max-w-2xl mx-auto min-h-screen bg-[#F8F9FA] px-6 md:px-8 pt-12 md:pt-16 pb-32">
-      <DashboardHeader userName="Sarah" />
+      <DashboardHeader userName={user?.name || ""} />
       <StatsOverview statusPercentage={17} streakCount={12} />
       <CalendarStrip 
         selectedDate={selectedDate} 

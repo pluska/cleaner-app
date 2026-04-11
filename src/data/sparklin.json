@@ -1,0 +1,134 @@
+{
+  "greetings": [
+    {
+      "startHour": 0,
+      "endHour": 4,
+      "en": "Halt! Who goes there at this ungodly hour? Even my enchanted brooms are sleeping. Return to your chambers before I turn your dirty laundry into a dragon!",
+      "es": "¡Alto! ¿Quién anda ahí a esta hora impía? Hasta mis escobas encantadas están durmiendo. ¡Vuelve a tus aposentos antes de que convierta tu ropa sucia en un dragón!"
+    },
+    {
+      "startHour": 5,
+      "endHour": 8,
+      "en": "Good morrow, brave soul! The sun rises, and so must we. Grab your mop of destiny and let us banish the sleepiness like a foul stain on a royal tunic!",
+      "es": "¡Buen día, alma valiente! El sol se levanta, y nosotros también debemos hacerlo. ¡Toma tu trapeador del destino y desterremos la somnolencia como una mancha repugnante en una túnica real!"
+    },
+    {
+      "startHour": 9,
+      "endHour": 14,
+      "en": "Hail! The battle against the Grime Goblins rages on. Keep your scrubbing arm strong and your soap potions bubbling. Victory (and a sparkling floor) shall be ours!",
+      "es": "¡Salve! La batalla contra los Duendes de la Mugre continúa. Mantén fuerte tu brazo de fregar y tus pociones de jabón burbujeando. ¡La victoria (y un piso brillante) será nuestra!"
+    },
+    {
+      "startHour": 15,
+      "endHour": 19,
+      "en": "Greetings as the sun descends! I see the crusade has tired you. Fear not, for a clean castle is the ultimate reward. Just a few more spells of sanitization before we feast!",
+      "es": "¡Saludos mientras el sol desciende! Veo que la cruzada te ha cansado. No temas, porque un castillo limpio es la máxima recompensa. ¡Solo unos cuantos hechizos de desinfección más antes del festín!"
+    },
+    {
+      "startHour": 20,
+      "endHour": 22,
+      "en": "Evening falls, weary knight. The floors are vanquished, the dust dragons slain. Unstrap your armor, lay down your sponge, and enjoy the pristine peace of your realm.",
+      "es": "Cae la noche, caballero cansado. Los pisos han sido vencidos, los dragones de polvo derrotados. Quítate la armadura, deja tu esponja y disfruta de la paz inmaculada de tu reino."
+    },
+    {
+      "startHour": 23,
+      "endHour": 23,
+      "en": "Hark! The midnight hour approaches. I cast a ward of freshness upon this domain. Let no speck of dust cross these gates while you slumber. Rest now, the wizard stands guard.",
+      "es": "¡Escucha! Se acerca la medianoche. Lanzo un conjuro de frescura sobre este dominio. Que ni una mota de polvo cruce estas puertas mientras duermes. Descansa ahora, el mago hace guardia."
+    }
+  ],
+  "statusCodes": {
+    "2xx": [
+      {
+        "en": "Huzzah! The spell was cast perfectly. Your request is sealed in the royal archives.",
+        "es": "¡Huzzah! El hechizo se lanzó a la perfección. Tu petición está sellada en los archivos reales."
+      },
+      {
+        "en": "By the shiny floors of Camelot, it worked! A flawless execution, my apprentice.",
+        "es": "¡Por los pisos brillantes de Camelot, funcionó! Una ejecución impecable, mi aprendiz."
+      }
+    ],
+    "404": [
+      {
+        "en": "Halt! This chamber does not exist. Did you read the enchanted scroll upside down?",
+        "es": "¡Alto! Esta cámara no existe. ¿Leíste el pergamino encantado al revés?"
+      }
+    ],
+    "401_403": [
+      {
+        "en": "Access denied! You lack the proper amulet to enter these private quarters.",
+        "es": "¡Acceso denegado! Te falta el amuleto adecuado para entrar a estos aposentos privados."
+      }
+    ],
+    "5xx": [
+      {
+        "en": "By my dusty robes! My alchemy lab just exploded. The server is covered in enchanted suds. Give me a moment to clean this up!",
+        "es": "¡Por mis túnicas polvorientas! Mi laboratorio de alquimia acaba de explotar. El servidor está cubierto de espuma encantada. ¡Dame un momento para limpiar esto!"
+      }
+    ]
+  },
+  "warnings": {
+    "pendingTasksLate": {
+      "en": "The moon rises, but the grime remains! Finish your quests before the midnight bell tolls, or the Dust Goblins will claim victory today!",
+      "es": "¡La luna se eleva, pero la mugre permanece! ¡Termina tus misiones antes de que suene la campana de medianoche, o los Duendes del Polvo cantarán victoria hoy!"
+    },
+    "abandonedCastle": {
+      "en": "Where have you been, brave knight? The cobwebs are taking over the grand hall! Unsheathe your mop and return to the fray before we are overrun!",
+      "es": "¿Dónde has estado, valiente caballero? ¡Las telarañas se están apoderando del gran salón! ¡Desenvaina tu trapeador y vuelve a la refriega antes de que nos invadan!"
+    },
+    "accountDeactivation": {
+      "en": "You wish to abandon the crusade? The kingdom will surely fall to the Mud Lord! Are you absolutely certain you want to hang up your wand of washing forever?",
+      "es": "¿Deseas abandonar la cruzada? ¡El reino seguramente caerá ante el Señor del Barro! ¿Estás absolutamente seguro de que quieres colgar tu varita de lavar para siempre?"
+    }
+  },
+  "antiSpam": [
+    {
+      "en": "Patience, young apprentice! Tapping my hat 50 times will not make the cleaning magic work any faster. My crystal ball is buffering!",
+      "es": "¡Paciencia, joven aprendiz! Tocar mi sombrero 50 veces no hará que la magia de limpieza funcione más rápido. ¡Mi bola de cristal está cargando!"
+    },
+    {
+      "en": "Halt your furious clicking! I am a powerful wizard of cleanliness, not a tavern bell. State your business once and let the spells work.",
+      "es": "¡Detén tus clics furiosos! Soy un poderoso mago de la limpieza, no una campana de taberna. Declara tu asunto una vez y deja que los hechizos actúen."
+    },
+    {
+      "en": "By the lather of the Great Soap! If you poke me one more time, I shall turn your cursor into a dirty sponge!",
+      "es": "¡Por la espuma del Gran Jabón! Si me pinchas una vez más, ¡convertiré tu cursor en una esponja sucia!"
+    }
+  ],
+  "completedTasks": [
+    {
+      "en": "Another foul stain banished to the shadow realm! Well done.",
+      "es": "¡Otra mancha asquerosa desterrada al reino de las sombras! Bien hecho."
+    },
+    {
+      "en": "A glorious victory for cleanliness! The royal floors shall sing your praises.",
+      "es": "¡Una gloriosa victoria para la limpieza! Los pisos reales cantarán tus alabanzas."
+    },
+    {
+      "en": "Your scrub brush strikes true! One less dusty beast to worry about.",
+      "es": "¡Tu cepillo de fregar da en el blanco! Una bestia polvorienta menos de la que preocuparse."
+    },
+    {
+      "en": "Immaculate! You wield that sponge like Excalibur itself.",
+      "es": "¡Inmaculado! Empuñas esa esponja como la mismísima Excalibur."
+    }
+  ],
+  "streaks": [
+    {
+      "en": "A streak of pure magic! You fight the dirt like a true Paladin of Purity.",
+      "es": "¡Una racha de pura magia! Luchas contra la suciedad como un verdadero Paladín de la Pureza."
+    },
+    {
+      "en": "Your streak burns brighter than dragon fire! Do not let the flame of cleanliness die out.",
+      "es": "¡Tu racha arde más brillante que el fuego de dragón! No dejes que la llama de la limpieza se apague."
+    },
+    {
+      "en": "Legendary stamina! The bards will sing of your unbroken streak of tidiness for centuries to come.",
+      "es": "¡Resistencia legendaria! Los bardos cantarán sobre tu racha ininterrumpida de orden durante los siglos venideros."
+    },
+    {
+      "en": "You are unstoppable! Even the Great Grime Wizard cowers before your daily dedication.",
+      "es": "¡Eres imparable! Incluso el Gran Mago de la Mugre se encoge de miedo ante tu dedicación diaria."
+    }
+  ]
+}

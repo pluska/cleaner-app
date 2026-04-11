@@ -7,7 +7,7 @@ interface LanguageContextType {
   setLanguage: (lang: "en" | "es") => void;
 }
 
-interface SessionContextType {
+interface AppStatusContextType {
   isSessionExpired: boolean;
   setSessionExpired: (expired: boolean) => void;
   redirectToLogin: () => void;
@@ -16,7 +16,7 @@ interface SessionContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(
   undefined
 );
-const SessionContext = createContext<SessionContextType | undefined>(undefined);
+const AppStatusContext = createContext<AppStatusContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<"en" | "es">("en");
@@ -42,7 +42,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function SessionProvider({ children }: { children: React.ReactNode }) {
+export function AppStatusProvider({ children }: { children: React.ReactNode }) {
   const [isSessionExpired, setIsSessionExpired] = useState(false);
 
   const setSessionExpired = (expired: boolean) => {
@@ -106,11 +106,11 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <SessionContext.Provider
+    <AppStatusContext.Provider
       value={{ isSessionExpired, setSessionExpired, redirectToLogin }}
     >
       {children}
-    </SessionContext.Provider>
+    </AppStatusContext.Provider>
   );
 }
 
@@ -122,10 +122,10 @@ export function useLanguage() {
   return context;
 }
 
-export function useSession() {
-  const context = useContext(SessionContext);
+export function useAppStatus() {
+  const context = useContext(AppStatusContext);
   if (context === undefined) {
-    throw new Error("useSession must be used within a SessionProvider");
+    throw new Error("useAppStatus must be used within an AppStatusProvider");
   }
   return context;
 }

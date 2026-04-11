@@ -29,10 +29,9 @@ function ResetPasswordContent() {
   const { language } = useLanguage();
 
   useEffect(() => {
-    const accessToken = searchParams.get("access_token");
-    const refreshToken = searchParams.get("refresh_token");
+    const accessToken = searchParams.get("token");
 
-    if (accessToken && refreshToken) {
+    if (accessToken) {
       setToken(accessToken);
     } else {
       setError("Invalid or missing reset token");
@@ -64,9 +63,8 @@ function ResetPasswordContent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          password,
-          access_token: token,
-          refresh_token: searchParams.get("refresh_token"),
+          newPassword: password,
+          token: token,
         }),
       });
 

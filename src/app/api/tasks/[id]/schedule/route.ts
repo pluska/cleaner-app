@@ -1,29 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/libs/supabase-server";
+import { auth } from "@/auth";
+import { db } from "@/db";
+import { taskTemplates, taskInstances } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 
-// PATCH /api/tasks/[id]/schedule - Update task due date (for drag & drop)
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = await createServerSupabaseClient();
-
-    // Get authenticated user
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
+    const session = await auth();
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Parse request body
+    const { id } = await params;
     const body = await request.json();
     const { newDueDate, isRecurring } = body;
 
-    // Validate due date
     if (!newDueDate || !/^\d{4}-\d{2}-\d{2}$/.test(newDueDate)) {
       return NextResponse.json(
         { error: "Invalid due date format" },
@@ -32,49 +26,51 @@ export async function PATCH(
     }
 
     if (isRecurring) {
+      // Find template
+      const [template] = await db
+        .select()
+        .from(taskTemplates)
+        .where(and(eq(taskTemplates.id, id), eq(taskTemplates.userId, session.user.id)))
+        .limit(1);
+
+      if (!template) return NextResponse.json({ error: "Template not found" }, { status: 404 });
+
       // For recurring tasks, update the recurrence start date
-      const { data: task, error } = await supabase
-        .from("tasks")
-        .update({
-          recurrence_start_date: newDueDate,
-          last_generated_date: null, // Reset to regenerate instances
+      const [updated] = await db
+        .update(taskTemplates)
+        .set({
+          startDate: new Date(newDueDate),
+          nextOccurrence: new Date(newDueDate),
         })
-        .eq("id", (await params).id)
-        .eq("user_id", user.id)
-        .select()
-        .single();
+        .where(eq(taskTemplates.id, id))
+        .returning();
 
-      if (error) {
-        console.error("Error updating recurring task:", error);
-        return NextResponse.json(
-          { error: "Failed to update task" },
-          { status: 500 }
-        );
-      }
-
-      return NextResponse.json({ task });
+      return NextResponse.json({ task: updated });
     } else {
-      // For one-time tasks, update the due date
-      const { data: task, error } = await supabase
-        .from("tasks")
-        .update({ due_date: newDueDate })
-        .eq("id", (await params).id)
-        .eq("user_id", user.id)
+      // Find instance
+      const [instance] = await db.select().from(taskInstances).where(eq(taskInstances.id, id)).limit(1);
+      if (!instance) return NextResponse.json({ error: "Instance not found" }, { status: 404 });
+
+      // Check ownership via template
+      const [template] = await db
         .select()
-        .single();
+        .from(taskTemplates)
+        .where(and(eq(taskTemplates.id, instance.templateId), eq(taskTemplates.userId, session.user.id)))
+        .limit(1);
 
-      if (error) {
-        console.error("Error updating task due date:", error);
-        return NextResponse.json(
-          { error: "Failed to update task" },
-          { status: 500 }
-        );
-      }
+      if (!template) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-      return NextResponse.json({ task });
+      // Update the instance's due date
+      const [updated] = await db
+        .update(taskInstances)
+        .set({ dueDate: newDueDate })
+        .where(eq(taskInstances.id, id))
+        .returning();
+
+      return NextResponse.json({ task: updated });
     }
   } catch (error) {
-    console.error("API Error:", error);
+    console.error("API Error in schedule PATCH:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

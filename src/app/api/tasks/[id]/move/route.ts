@@ -1,46 +1,45 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/libs/supabase-server";
+import { auth } from "@/auth";
+import { db } from "@/db";
+import { taskInstances, taskTemplates } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 
 export async function PATCH(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = await createServerSupabaseClient();
-
-    // Get authenticated user
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
+    const session = await auth();
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const taskId = (await params).id;
+    const { id } = await params;
     const today = new Date().toISOString().split("T")[0];
 
-    // Update the task's due_date to today
-    const { data: task, error } = await supabase
-      .from("tasks")
-      .update({ due_date: today })
-      .eq("id", taskId)
-      .eq("user_id", user.id)
+    // Check if this is a task instance
+    const [instance] = await db.select().from(taskInstances).where(eq(taskInstances.id, id)).limit(1);
+    if (!instance) return NextResponse.json({ error: "Task not found" }, { status: 404 });
+
+    // Check ownership via template
+    const [template] = await db
       .select()
-      .single();
+      .from(taskTemplates)
+      .where(and(eq(taskTemplates.id, instance.templateId), eq(taskTemplates.userId, session.user.id)))
+      .limit(1);
 
-    if (error) {
-      console.error("Error updating task:", error);
-      return NextResponse.json(
-        { error: "Failed to update task" },
-        { status: 500 }
-      );
-    }
+    if (!template) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-    return NextResponse.json({ task });
+    // Update the instance's due_date to today
+    const [updatedInstance] = await db
+      .update(taskInstances)
+      .set({ dueDate: today })
+      .where(eq(taskInstances.id, id))
+      .returning();
+
+    return NextResponse.json({ task: updatedInstance });
   } catch (error) {
-    console.error("API Error:", error);
+    console.error("API Error in move PATCH:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

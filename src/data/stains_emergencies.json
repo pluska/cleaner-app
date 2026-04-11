@@ -1,0 +1,54 @@
+{
+  "emergencies": [
+    {
+      "keywords": ["wine", "vino", "red wine", "vino tinto"],
+      "en": "🍷 Wine emergency! Blot, don't rub! Mix equal parts dish soap and hydrogen peroxide, apply to the stain, let sit for 10 minutes, and blot away.",
+      "es": "🍷 ¡Emergencia de vino! ¡Seca, no frotes! Mezcla partes iguales de jabón para platos y agua oxigenada, aplícalo a la mancha, deja reposar 10 minutes y seca."
+    },
+    {
+      "keywords": ["blood", "sangre"],
+      "en": "🩸 Blood stain detected! Use cold water ONLY. Warm water sets the stain! Soak in cold water, then apply a paste of salt and water or enzyme cleaner.",
+      "es": "🩸 ¡Mancha de sangre detectada! Usa SÓLO agua fría. ¡El agua tibia fija la mancha! Remoja en agua fría, luego aplica una pasta de sal y agua o limpiador enzimático."
+    },
+    {
+      "keywords": ["oil", "aceite", "grease", "grasa"],
+      "en": "🍳 Greasy beast! Sprinkle baking soda or cornstarch over the oil to absorb it for 15 minutes. Vacuum it up, then scrub with dish soap and warm water.",
+      "es": "🍳 ¡Bestia grasienta! Espolvorea bicarbonato o maicena sobre el aceite para que lo absorba por 15 minutos. Aspira, luego frota con jabón para platos y agua tibia."
+    },
+    {
+      "keywords": ["coffee", "cafe", "café"],
+      "en": "☕ The dark brew spilled! Mix 1 tablespoon of liquid dish soap, 1 tablespoon of white vinegar, and 2 cups of warm water. Sponge the stain with this elixir.",
+      "es": "☕ ¡El brebaje oscuro se derramó! Mezcla 1 cucharada de jabón líquido para platos, 1 de vinagre blanco y 2 tazas de agua tibia. Pasa una esponja a la mancha con este elixir."
+    },
+    {
+      "keywords": ["ink", "tinta"],
+      "en": "🖋️ Ink attack! Rubbing alcohol is your best potion here. Dab it onto a cotton ball and press onto the stain until it transfers. Do not rub!",
+      "es": "🖋️ ¡Ataque de tinta! El alcohol isopropílico es tu mejor poción aquí. Aplícalo en una bola de algodón y presiona sobre la mancha hasta que se transfiera. ¡No frotes!"
+    },
+    {
+      "keywords": ["chocolate", "cacao"],
+      "en": "🍫 Dark cocoa corruption! Scrape off excess with a dull knife. Soak in cold water with heavy-duty detergent for 30 minutes, then wash normally.",
+      "es": "🍫 ¡Corrupción de cacao! Raspa el exceso con un cuchillo sin filo. Remoja en agua fría con detergente fuerte por 30 minutos, luego lava normalmente."
+    },
+    {
+      "keywords": ["mud", "barro", "lodo"],
+      "en": "🛡️ Earth elemental strike! Let the mud dry completely first! Brush off the crust, then treat the remaining shadow with dish soap and water.",
+      "es": "🛡️ ¡Ataque elemental de tierra! ¡Deja que el barro se seque completamente primero! Cepilla la costra y luego trata la sombra restante con jabón y agua."
+    },
+    {
+      "keywords": ["gum", "chicle"],
+      "en": "❄️ Sticky trap! Use ice to freeze the gum until it’s hard as a crystal. Shatter or scrape it off, then use a solvent for the residue.",
+      "es": "❄️ ¡Trampa pegajosa! Usa hielo para congelar el chicle hasta que esté duro como un cristal. Rómpelo o ráspalo, luego usa un solvente para el residuo."
+    },
+    {
+      "keywords": ["wax", "cera", "vela"],
+      "en": "🕯️ Frozen mana! Let it harden, scrape off the bulk. Place a brown paper bag over the rest and use a warm iron to absorb the wax into the paper.",
+      "es": "🕯️ ¡Maná congelado! Deja que se endurezca, raspa lo más grueso. Pon una bolsa de papel marrón encima y usa una plancha tibia para que el papel absorba la cera."
+    },
+    {
+      "keywords": ["pet", "mascota", "urine", "orina", "pipi", "perro", "gato", "dog", "cat", "orino", "orinó"],
+      "en": "🐾 Animal mischief! Blot immediately. Use an enzymatic cleaner to break down the organic spell, or the 'Phantom Scent' will return!",
+      "es": "🐾 ¡Travesura animal! Seca de inmediato. ¡Usa un limpiador enzimático para romper el hechizo orgánico, o el 'Olor Fantasma' regresará!"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Home, Calendar, Sparkles, LayoutDashboard } from "lucide-react";
+import { Home, Calendar, ShoppingBag, Crown } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export function BottomNav() {
@@ -21,12 +21,12 @@ export function BottomNav() {
     {
       label: "Store",
       href: "/store",
-      icon: Sparkles,
+      icon: ShoppingBag,
     },
     {
-      label: "Stats",
-      href: "/stats",
-      icon: LayoutDashboard,
+      label: "Kingdom",
+      href: "/kingdom",
+      icon: Crown,
     },
   ];
 

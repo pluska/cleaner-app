@@ -1,77 +1,45 @@
-import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/db";
+import { users, verificationTokens } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { password, access_token } = body;
+    const { token, newPassword } = await request.json();
 
-    if (!password || !access_token) {
-      return NextResponse.json(
-        { error: "Password and access token are required" },
-        { status: 400 }
-      );
+    if (!token || !newPassword) {
+      return NextResponse.json({ error: "Token and new password are required" }, { status: 400 });
     }
 
-    if (password.length < 6) {
-      return NextResponse.json(
-        { error: "Password must be at least 6 characters" },
-        { status: 400 }
-      );
+    const [verificationToken] = await db
+      .select()
+      .from(verificationTokens)
+      .where(eq(verificationTokens.token, token));
+
+    if (!verificationToken) {
+      return NextResponse.json({ error: "Invalid or expired token" }, { status: 400 });
     }
 
-    // Create Supabase client with the access token
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        global: {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
-          },
-        },
-      }
-    );
-
-    // First, we need to set the session using the access token
-    const { data: sessionData, error: sessionError } =
-      await supabase.auth.setSession({
-        access_token: access_token,
-        refresh_token: body.refresh_token || "",
-      });
-
-    if (sessionError) {
-      console.error("Session error:", sessionError);
-      return NextResponse.json(
-        { error: "Invalid or expired token" },
-        { status: 400 }
-      );
+    if (new Date() > new Date(verificationToken.expires)) {
+      await db
+        .delete(verificationTokens)
+        .where(eq(verificationTokens.token, token));
+      return NextResponse.json({ error: "Token has expired" }, { status: 400 });
     }
 
-    if (!sessionData.session) {
-      console.error("No session created");
-      return NextResponse.json(
-        { error: "Could not create session" },
-        { status: 400 }
-      );
-    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    // Now update the user's password
-    const { error } = await supabase.auth.updateUser({
-      password: password,
-    });
+    await db
+      .update(users)
+      .set({ hashedPassword: hashedPassword })
+      .where(eq(users.email, verificationToken.identifier));
 
-    if (error) {
-      console.error("Password update error:", error);
-      return NextResponse.json(
-        { error: "Failed to update password" },
-        { status: 500 }
-      );
-    }
+    await db
+      .delete(verificationTokens)
+      .where(eq(verificationTokens.token, token));
 
-    return NextResponse.json({
-      message: "Password updated successfully",
-    });
+    return NextResponse.json({ message: "Password successfully reset" });
   } catch (error) {
     console.error("Error in reset-password route:", error);
     return NextResponse.json(

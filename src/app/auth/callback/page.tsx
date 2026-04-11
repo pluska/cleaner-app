@@ -1,13 +1,20 @@
 "use client";
 
-import { AuthCallback } from "@/components/auth/AuthCallback";
-
-import { Suspense } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CallbackPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // If they hit this page, just bump them to dashboard
+    // NextAuth handles its own callbacks at /api/auth/callback
+    router.push("/dashboard");
+  }, [router]);
+
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <AuthCallback />
-    </Suspense>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    </div>
   );
 }

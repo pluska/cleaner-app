@@ -1,36 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/libs/supabase-server";
+import { auth } from "@/auth";
+import { db } from "@/db";
+import { homeAssessments } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const supabase = await createServerSupabaseClient();
-
-    // Get authenticated user
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
+    const session = await auth();
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Get the user's home assessment
-    const { data: assessment, error: assessmentError } = await supabase
-      .from("home_assessments")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
+    const [assessment] = await db
+      .select()
+      .from(homeAssessments)
+      .where(eq(homeAssessments.userId, session.user.id))
+      .limit(1);
 
-    if (assessmentError) {
-      if (assessmentError.code === "PGRST116") {
-        // No assessment found
-        return NextResponse.json({ assessment: null });
-      }
-      throw assessmentError;
-    }
-
-    return NextResponse.json({ assessment });
+    return NextResponse.json({ assessment: assessment || null });
   } catch (error) {
     console.error("Error fetching home assessment:", error);
     return NextResponse.json(
@@ -42,15 +30,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient();
-
-    // Get authenticated user
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
+    const session = await auth();
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -73,54 +54,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if assessment already exists
-    const { data: existingAssessment } = await supabase
-      .from("home_assessments")
-      .select("id")
-      .eq("user_id", user.id)
-      .single();
-
-    let assessment;
-    if (existingAssessment) {
-      // Update existing assessment
-      const { data, error } = await supabase
-        .from("home_assessments")
-        .update({
-          home_type,
+    // Update or insert (upsert)
+    const [assessment] = await db
+      .insert(homeAssessments)
+      .values({
+        userId: session.user.id,
+        homeType: home_type,
+        lifestyle,
+        cleaningPreferences: cleaning_preferences,
+        pets,
+        children,
+        allergies,
+        rooms,
+        updatedAt: new Date().toISOString(),
+      })
+      .onConflictDoUpdate({
+        target: homeAssessments.userId,
+        set: {
+          homeType: home_type,
           lifestyle,
-          cleaning_preferences,
+          cleaningPreferences: cleaning_preferences,
           pets,
           children,
           allergies,
           rooms,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("user_id", user.id)
-        .select()
-        .single();
-
-      if (error) throw error;
-      assessment = data;
-    } else {
-      // Create new assessment
-      const { data, error } = await supabase
-        .from("home_assessments")
-        .insert({
-          user_id: user.id,
-          home_type,
-          lifestyle,
-          cleaning_preferences,
-          pets,
-          children,
-          allergies,
-          rooms,
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-      assessment = data;
-    }
+          updatedAt: new Date().toISOString(),
+        },
+      })
+      .returning();
 
     return NextResponse.json({ assessment }, { status: 201 });
   } catch (error) {

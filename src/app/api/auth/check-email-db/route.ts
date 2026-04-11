@@ -1,4 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -9,35 +11,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
 
-    // Use service role key to access database directly
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
-        },
-      }
-    );
+    const [existingUser] = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
 
-    // Query the auth.users table directly
-    const { data, error } = await supabaseAdmin
-      .from("auth.users")
-      .select("email")
-      .eq("email", email)
-      .single();
-
-    if (error && error.code !== "PGRST116") {
-      // PGRST116 = no rows returned
-      console.error("Database error:", error);
-      return NextResponse.json(
-        { error: "Failed to check email" },
-        { status: 500 }
-      );
-    }
-
-    const userExists = !!data;
+    const userExists = !!existingUser;
 
     return NextResponse.json({
       exists: userExists,

@@ -55,7 +55,7 @@ export interface HomeArea extends BaseEntity {
   has_carpet: boolean;
   has_hardwood: boolean;
   has_tile: boolean;
-  special_features: Record<string, any>;
+  special_features: Record<string, unknown>;
   last_cleaned_at?: string;
 }
 
@@ -299,7 +299,7 @@ export interface TaskInstanceView {
   completed_at?: string;
   exp_earned?: number;
   area_health_restored?: number;
-  tools_used: Record<string, any>;
+  tools_used: Record<string, unknown>;
   instance_created_at: string;
   user_id: string;
   task_name: string;
@@ -404,26 +404,23 @@ export interface ApiResponse<T> {
   message?: string;
 }
 
-export interface TaskTemplateResponse extends ApiResponse<TaskTemplate> {}
-export interface TaskSubtaskResponse extends ApiResponse<TaskSubtask> {}
-export interface UserTaskResponse extends ApiResponse<UserTask> {}
-export interface TaskInstanceResponse extends ApiResponse<TaskInstance> {}
-export interface TaskInstanceSubtaskResponse
-  extends ApiResponse<TaskInstanceSubtask> {}
-export interface HomeAssessmentResponse extends ApiResponse<HomeAssessment> {}
-export interface UserProfileResponse extends ApiResponse<UserProfile> {}
-export interface UserToolResponse extends ApiResponse<UserTool> {}
-export interface HomeAreaResponse extends ApiResponse<HomeArea> {}
+export type TaskTemplateResponse = ApiResponse<TaskTemplate>;
+export type TaskSubtaskResponse = ApiResponse<TaskSubtask>;
+export type UserTaskResponse = ApiResponse<UserTask>;
+export type TaskInstanceResponse = ApiResponse<TaskInstance>;
+export type TaskInstanceSubtaskResponse = ApiResponse<TaskInstanceSubtask>;
+export type HomeAssessmentResponse = ApiResponse<HomeAssessment>;
+export type UserProfileResponse = ApiResponse<UserProfile>;
+export type UserToolResponse = ApiResponse<UserTool>;
+export type HomeAreaResponse = ApiResponse<HomeArea>;
 
-export interface TaskTemplatesResponse extends ApiResponse<TaskTemplate[]> {}
-export interface TaskSubtasksResponse extends ApiResponse<TaskSubtask[]> {}
-export interface UserTasksResponse extends ApiResponse<UserTaskView[]> {}
-export interface TaskInstancesResponse
-  extends ApiResponse<TaskInstanceView[]> {}
-export interface TaskInstanceSubtasksResponse
-  extends ApiResponse<TaskInstanceSubtask[]> {}
-export interface UserToolsResponse extends ApiResponse<UserTool[]> {}
-export interface HomeAreasResponse extends ApiResponse<HomeArea[]> {}
+export type TaskTemplatesResponse = ApiResponse<TaskTemplate[]>;
+export type TaskSubtasksResponse = ApiResponse<TaskSubtask[]>;
+export type UserTasksResponse = ApiResponse<UserTaskView[]>;
+export type TaskInstancesResponse = ApiResponse<TaskInstanceView[]>;
+export type TaskInstanceSubtasksResponse = ApiResponse<TaskInstanceSubtask[]>;
+export type UserToolsResponse = ApiResponse<UserTool[]>;
+export type HomeAreasResponse = ApiResponse<HomeArea[]>;
 
 // =====================================================
 // LEGACY TYPES (for migration compatibility)

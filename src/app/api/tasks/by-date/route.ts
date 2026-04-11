@@ -1,14 +1,13 @@
-import { createServerSupabaseClient } from "@/libs/supabase-server";
+import { auth } from "@/auth";
+import { db } from "@/db";
+import { taskTemplates, taskInstances } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
+    const session = await auth();
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -23,52 +22,41 @@ export async function GET(request: NextRequest) {
     }
 
     // Get task instances for the specified date with template information
-    const { data: taskInstances, error: taskInstancesError } = await supabase
-      .from("task_instances")
-      .select(
-        `
-        *,
-        user_tasks!inner(
-          *,
-          task_templates(*)
+    const tInstances = await db
+      .select({
+        id: taskInstances.id,
+        templateId: taskInstances.templateId,
+        dueDate: taskInstances.dueDate,
+        status: taskInstances.status,
+        completedAt: taskInstances.completedAt,
+        template: {
+          id: taskTemplates.id,
+          title: taskTemplates.title,
+          description: taskTemplates.description,
+          importanceLevel: taskTemplates.importanceLevel,
+          expReward: taskTemplates.expReward,
+          roomId: taskTemplates.roomId,
+        }
+      })
+      .from(taskInstances)
+      .innerJoin(taskTemplates, eq(taskInstances.templateId, taskTemplates.id))
+      .where(
+        and(
+          eq(taskTemplates.userId, session.user.id),
+          eq(taskInstances.dueDate, date)
         )
-      `
       )
-      .eq("user_tasks.user_id", user.id)
-      .eq("due_date", date)
-      .order("created_at", { ascending: true });
+      .orderBy(taskInstances.id);
 
-    if (taskInstancesError) {
-      console.error("Error fetching task instances:", taskInstancesError);
-      return NextResponse.json(
-        { error: "Failed to fetch tasks" },
-        { status: 500 }
-      );
-    }
-
-    // Get user tasks that don't have instances yet (for display purposes)
-    const { data: userTasks, error: userTasksError } = await supabase
-      .from("user_tasks")
-      .select(
-        `
-        *,
-        task_templates(*)
-      `
-      )
-      .eq("user_id", user.id)
-      .eq("is_active", true);
-
-    if (userTasksError) {
-      console.error("Error fetching user tasks:", userTasksError);
-      return NextResponse.json(
-        { error: "Failed to fetch tasks" },
-        { status: 500 }
-      );
-    }
+    // Get all user task templates (as fallback/context)
+    const tTemplates = await db
+      .select()
+      .from(taskTemplates)
+      .where(eq(taskTemplates.userId, session.user.id));
 
     return NextResponse.json({
-      taskInstances,
-      userTasks,
+      taskInstances: tInstances || [],
+      userTasks: tTemplates || [], // frontend might use this for templates
       date,
     });
   } catch (error) {

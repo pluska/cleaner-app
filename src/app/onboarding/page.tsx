@@ -13,7 +13,6 @@ import {
   Users,
   Baby,
   Dog,
-  Clock,
   Star,
   ChevronRight,
   ChevronLeft,
@@ -31,6 +30,9 @@ import {
   HomeAssessmentInput,
   Room,
   RoomType,
+  HomeType,
+  Lifestyle,
+  CleaningPreference,
 } from "@/types";
 
 interface OnboardingStep {
@@ -100,6 +102,7 @@ export default function OnboardingPage() {
     cleaning_preferences: "standard",
   });
 
+  const [heroName, setHeroName] = useState("");
   const [selectedRooms, setSelectedRooms] = useState<string[]>(["kitchen", "bathroom", "bedroom", "living_room"]);
 
   // Processing State
@@ -186,7 +189,7 @@ export default function OnboardingPage() {
     }
   };
 
-  const generateSuggestedTasks = async (assessment: HomeAssessmentInput): Promise<any[]> => {
+  const generateSuggestedTasks = async (assessment: HomeAssessmentInput): Promise<{ id: string }[]> => {
     await new Promise(resolve => setTimeout(resolve, 2000));
     try {
       const roomTypes = assessment.rooms.map(room => room.type);
@@ -216,13 +219,15 @@ export default function OnboardingPage() {
     await new Promise(resolve => setTimeout(resolve, 1000));
   };
 
-  const handleNextForm = () => {
-    if (formStep < 4) {
+  const handleNextForm = async () => {
+    if (formStep === 0 && heroName.trim() === "") return;
+
+    if (formStep < 5) {
       setFormStep(prev => prev + 1);
     } else {
       // Build final rooms based on selection
       const mappedRooms: Room[] = selectedRooms.map((roomCode) => {
-        let name = roomCode.charAt(0).toUpperCase() + roomCode.slice(1).replace('_', ' ');
+        const name = roomCode.charAt(0).toUpperCase() + roomCode.slice(1).replace('_', ' ');
         return {
           name,
           type: roomCode as RoomType,
@@ -232,6 +237,19 @@ export default function OnboardingPage() {
           has_tile: roomCode === "bathroom" || roomCode === "kitchen",
         };
       });
+
+      // Update name on server via our new API
+      if (heroName.trim() !== "") {
+        try {
+          await fetch("/api/user/hero-name", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: heroName }),
+          });
+        } catch (err) {
+          console.error("Failed to update hero name", err);
+        }
+      }
 
       const finalData = { ...formData, rooms: mappedRooms } as HomeAssessmentInput;
       localStorage.setItem("pendingHomeAssessment", JSON.stringify(finalData));
@@ -243,7 +261,7 @@ export default function OnboardingPage() {
     if (formStep > 0) setFormStep(prev => prev - 1);
   };
 
-  const updateFormData = (key: keyof HomeAssessmentInput, value: any) => {
+  const updateFormData = <K extends keyof HomeAssessmentInput>(key: K, value: HomeAssessmentInput[K]) => {
     setFormData(prev => ({ ...prev, [key]: value }));
   };
 
@@ -269,14 +287,35 @@ export default function OnboardingPage() {
             <span className="text-2xl font-bold text-gray-900">SparkClean</span>
           </div>
           <div className="text-sm font-medium text-gray-500 bg-white px-3 py-1 rounded-full shadow-sm border border-gray-100">
-            {formStep + 1} / 5
+            {formStep + 1} / 6
           </div>
         </div>
 
         <Card className="p-8 max-w-2xl mx-auto w-full border-t-4 border-t-primary shadow-xl">
           <div className="min-h-[350px]">
-            {/* Step 0: Home Type */}
+            {/* Step 0: Hero Name */}
             {formStep === 0 && (
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                  {isEs ? "¿Cómo te conocen en el reino?" : "How are you known in the realm?"}
+                </h2>
+                <p className="text-gray-500 mb-8">
+                  {isEs ? "Elige tu nombre o título (ej: Sir Nicolás, Andrés)." : "Choose your name or title (e.g., Sir Nicolas, Andres)."}
+                </p>
+                <div className="space-y-4">
+                  <input
+                    type="text"
+                    value={heroName}
+                    onChange={(e) => setHeroName(e.target.value)}
+                    placeholder={isEs ? "Tu nombre de héroe" : "Your hero name"}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Step 1: Home Type */}
+            {formStep === 1 && (
               <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
                   {isEs ? "¿Qué tipo de hogar tienes?" : "What type of home do you have?"}
@@ -292,7 +331,7 @@ export default function OnboardingPage() {
                   ].map(ht => (
                     <button
                       key={ht.id}
-                      onClick={() => updateFormData("home_type", ht.id)}
+                      onClick={() => updateFormData("home_type", ht.id as HomeType)}
                       className={`flex flex-col items-center p-6 rounded-2xl border-2 transition-all ${
                         formData.home_type === ht.id 
                           ? "border-primary bg-primary/5 text-primary shadow-md transform scale-105" 
@@ -307,8 +346,8 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            {/* Step 1: Rooms */}
-            {formStep === 1 && (
+            {/* Step 2: Rooms */}
+            {formStep === 2 && (
               <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
                   {isEs ? "¿Qué habitaciones debemos limpiar?" : "Which rooms should we clean?"}
@@ -342,8 +381,8 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            {/* Step 2: Occupants */}
-            {formStep === 2 && (
+            {/* Step 3: Occupants */}
+            {formStep === 3 && (
               <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
                   {isEs ? "¿Quién vive aquí?" : "Who lives here?"}
@@ -383,8 +422,8 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            {/* Step 3: Lifestyle */}
-            {formStep === 3 && (
+            {/* Step 4: Lifestyle */}
+            {formStep === 4 && (
               <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
                   {isEs ? "¿Cómo es tu ritmo de vida?" : "What's your lifestyle like?"}
@@ -400,7 +439,7 @@ export default function OnboardingPage() {
                   ].map(ls => (
                     <button
                       key={ls.id}
-                      onClick={() => updateFormData("lifestyle", ls.id)}
+                      onClick={() => updateFormData("lifestyle", ls.id as Lifestyle)}
                       className={`flex flex-col items-center text-center p-6 rounded-2xl border-2 transition-all ${
                         formData.lifestyle === ls.id 
                           ? "border-primary bg-primary/5 text-primary shadow-md transform scale-105" 
@@ -416,8 +455,8 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            {/* Step 4: Cleaning Preferences */}
-            {formStep === 4 && (
+            {/* Step 5: Cleaning Preferences */}
+            {formStep === 5 && (
               <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
                   {isEs ? "¿Qué tan limpio quieres todo?" : "How clean do you want everything?"}
@@ -433,7 +472,7 @@ export default function OnboardingPage() {
                   ].map(pref => (
                     <button
                       key={pref.id}
-                      onClick={() => updateFormData("cleaning_preferences", pref.id)}
+                      onClick={() => updateFormData("cleaning_preferences", pref.id as CleaningPreference)}
                       className={`w-full flex items-center p-5 rounded-2xl border-2 transition-all text-left ${
                         formData.cleaning_preferences === pref.id
                           ? "border-primary bg-primary/5 shadow-sm"
@@ -471,9 +510,10 @@ export default function OnboardingPage() {
             
             <Button
               onClick={handleNextForm}
+              disabled={formStep === 0 && heroName.trim() === ""}
               className="flex items-center pr-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md hover:shadow-lg transition-all"
             >
-              {formStep === 4 ? (isEs ? "Finalizar" : "Finish") : (isEs ? "Siguiente" : "Next")}
+              {formStep === 5 ? (isEs ? "Finalizar" : "Finish") : (isEs ? "Siguiente" : "Next")}
               <ChevronRight className="w-5 h-5 ml-1" />
             </Button>
           </div>

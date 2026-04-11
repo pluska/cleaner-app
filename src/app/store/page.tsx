@@ -1,34 +1,63 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { t } from "@/libs/translations";
 import { Coins, Gamepad2, Ticket, IceCream, BookOpen, Gift, PartyPopper, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SettingsMenu } from "@/components/ui/layout/SettingsMenu";
 
-const MOCK_REWARDS = [
-  { id: 1, title: "1 Hour Video Games", cost: 50, icon: Gamepad2, color: "text-blue-500", bg: "bg-blue-50" },
-  { id: 2, title: "Movie Night Choice", cost: 150, icon: Ticket, color: "text-purple-500", bg: "bg-purple-50" },
-  { id: 3, title: "Ice Cream Trip", cost: 200, icon: IceCream, color: "text-pink-500", bg: "bg-pink-50" },
-  { id: 4, title: "New Book", cost: 300, icon: BookOpen, color: "text-green-500", bg: "bg-green-50" },
-  { id: 5, title: "Mystery Gift", cost: 500, icon: Gift, color: "text-yellow-500", bg: "bg-yellow-50" },
-  { id: 6, title: "Pizza Party", cost: 1000, icon: PartyPopper, color: "text-red-500", bg: "bg-red-50" },
-];
+const iconMap: Record<string, React.ElementType> = {
+  Gamepad2, Ticket, IceCream, BookOpen, Gift, PartyPopper
+};
+
+interface Reward {
+  id: string;
+  title: string;
+  cost: number;
+  iconType: string;
+  bg: string;
+  color: string;
+  isPurchased?: boolean;
+}
 
 export default function StorePage() {
   const { language } = useLanguage();
-  const [balance, setBalance] = useState(450);
+  const [balance, setBalance] = useState(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [rewards, setRewards] = useState<Reward[]>([]);
 
-  const handlePurchase = (reward: any) => {
-    if (balance >= reward.cost) {
-      setBalance(b => b - reward.cost);
-      setToastMessage(
-        language === "es" 
-          ? `¡Comprado: ${reward.title}!` 
-          : `Purchased: ${reward.title}!`
-      );
-      setTimeout(() => setToastMessage(null), 3000);
+  useEffect(() => {
+    fetch("/api/store/rewards")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.rewards) setRewards(data.rewards);
+        if (data.balance !== undefined) setBalance(data.balance);
+      });
+  }, []);
+
+  const handlePurchase = async (reward: Reward) => {
+
+    if (balance >= reward.cost && !reward.isPurchased) {
+      try {
+        const res = await fetch("/api/store/purchase", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ rewardId: reward.id }),
+        });
+        const json = await res.json();
+        
+        if (json.success) {
+          setBalance(json.newBalance);
+          setRewards(prev => prev.map(r => r.id === reward.id ? {...r, isPurchased: true} : r));
+          setToastMessage(
+            language === "es" 
+              ? `¡Comprado: ${reward.title}!` 
+              : `Purchased: ${reward.title}!`
+          );
+          setTimeout(() => setToastMessage(null), 3000);
+        }
+      } catch (e) {
+        console.error("Purchase failed", e);
+      }
     }
   };
 
@@ -70,27 +99,32 @@ export default function StorePage() {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        {MOCK_REWARDS.map((reward) => (
-          <div key={reward.id} className="bg-white rounded-[24px] p-5 shadow-sm border border-gray-100 flex flex-col justify-between items-center text-center">
-            <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-3 ${reward.bg}`}>
-               <reward.icon className={`w-7 h-7 ${reward.color}`} />
+        {rewards.map((reward) => {
+          const IconComponent = iconMap[reward.iconType] || Gift;
+          return (
+            <div key={reward.id} className={`bg-white rounded-[24px] p-5 shadow-sm border border-gray-100 flex flex-col justify-between items-center text-center ${reward.isPurchased ? "opacity-50" : ""}`}>
+              <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-3 ${reward.bg}`}>
+                 <IconComponent className={`w-7 h-7 ${reward.color}`} />
+              </div>
+              <h3 className="font-bold text-dark text-sm mb-4 h-10 flex items-center">{reward.title}</h3>
+              
+              <button 
+                onClick={() => handlePurchase(reward)}
+                disabled={balance < reward.cost || reward.isPurchased}
+                className={`w-full py-2.5 rounded-full flex items-center justify-center space-x-1.5 font-bold text-sm transition-colors ${
+                  reward.isPurchased
+                    ? "bg-green-100 text-green-600"
+                    : balance >= reward.cost 
+                    ? "bg-primary text-white hover:brightness-110 shadow-sm"
+                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                }`}
+              >
+                {!reward.isPurchased && <Coins className={`w-4 h-4 ${balance >= reward.cost ? "text-yellow-300" : "text-gray-300"}`} />}
+                <span>{reward.isPurchased ? (language === "es" ? "Comprado" : "Purchased") : reward.cost}</span>
+              </button>
             </div>
-            <h3 className="font-bold text-dark text-sm mb-4 h-10 flex items-center">{reward.title}</h3>
-            
-            <button 
-              onClick={() => handlePurchase(reward)}
-              disabled={balance < reward.cost}
-              className={`w-full py-2.5 rounded-full flex items-center justify-center space-x-1.5 font-bold text-sm transition-colors ${
-                balance >= reward.cost 
-                  ? "bg-primary text-white hover:brightness-110 shadow-sm"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
-              }`}
-            >
-              <Coins className={`w-4 h-4 ${balance >= reward.cost ? "text-yellow-300" : "text-gray-300"}`} />
-              <span>{reward.cost}</span>
-            </button>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

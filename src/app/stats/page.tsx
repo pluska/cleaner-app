@@ -1,22 +1,34 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { t } from "@/libs/translations";
-import { Award, Target, Zap, Clock, Calendar as CalendarIcon, Trophy, CheckCircle2 } from "lucide-react";
+import { Target, Zap, Clock, Trophy, CheckCircle2 } from "lucide-react";
 import { SettingsMenu } from "@/components/ui/layout/SettingsMenu";
 
 export default function StatsPage() {
   const { language } = useLanguage();
 
-  const mockWeeklyData = [
-    { day: "Mon", score: 60, isToday: false },
-    { day: "Tue", score: 85, isToday: false },
-    { day: "Wed", score: 40, isToday: false },
-    { day: "Thu", score: 90, isToday: false },
-    { day: "Fri", score: 100, isToday: false },
-    { day: "Sat", score: 0, isToday: false },
-    { day: "Sun", score: 75, isToday: true },
-  ];
+  const [weeklyData, setWeeklyData] = useState<{day: string, score: number, isToday: boolean}[]>([]);
+
+  useEffect(() => {
+    fetch("/api/user/weekly-activity")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.activities && data.activities.length > 0) {
+          setWeeklyData(data.activities);
+        } else {
+          setWeeklyData([
+            { day: "Mon", score: 0, isToday: false },
+            { day: "Tue", score: 0, isToday: false },
+            { day: "Wed", score: 0, isToday: false },
+            { day: "Thu", score: 0, isToday: false },
+            { day: "Fri", score: 0, isToday: false },
+            { day: "Sat", score: 0, isToday: false },
+            { day: "Sun", score: 0, isToday: false },
+          ]);
+        }
+      });
+  }, []);
 
   return (
     <div className="w-full max-w-md md:max-w-xl lg:max-w-2xl mx-auto min-h-screen bg-[#F8F9FA] px-6 md:px-8 pt-12 md:pt-16 pb-32">
@@ -72,7 +84,7 @@ export default function StatsPage() {
         </div>
 
         <div className="flex items-end justify-between h-40 mt-6 relative z-10">
-          {mockWeeklyData.map((data, i) => (
+          {weeklyData.map((data, i) => (
             <div key={i} className="flex flex-col items-center flex-1">
               <div className="w-full relative px-1 flex justify-center group h-32 flex-col justify-end">
                 {data.score > 0 ? (

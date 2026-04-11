@@ -1,24 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/libs/supabase-server";
+import { auth } from "@/auth";
+import { db } from "@/db";
+import { taskInstances, taskTemplates } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = await createServerSupabaseClient();
-
-    // Get authenticated user
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
+    const session = await auth();
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const taskId = (await params).id;
+    const { id } = await params;
     const { due_date } = await request.json();
 
     if (!due_date) {
@@ -28,35 +24,38 @@ export async function PATCH(
       );
     }
 
-    // Validate that the date is in the future
+    // Validate that the date is in the future/today
     const today = new Date().toISOString().split("T")[0];
-    if (due_date <= today) {
-      return NextResponse.json(
-        { error: "Due date must be in the future" },
-        { status: 400 }
-      );
+    if (due_date < today) {
+        return NextResponse.json(
+          { error: "Due date cannot be in the past" },
+          { status: 400 }
+        );
     }
 
-    // Update the task's due_date
-    const { data: task, error } = await supabase
-      .from("tasks")
-      .update({ due_date })
-      .eq("id", taskId)
-      .eq("user_id", user.id)
+    // Check if this is a task instance
+    const [instance] = await db.select().from(taskInstances).where(eq(taskInstances.id, id)).limit(1);
+    if (!instance) return NextResponse.json({ error: "Task not found" }, { status: 404 });
+
+    // Check ownership via template
+    const [template] = await db
       .select()
-      .single();
+      .from(taskTemplates)
+      .where(and(eq(taskTemplates.id, instance.templateId), eq(taskTemplates.userId, session.user.id)))
+      .limit(1);
 
-    if (error) {
-      console.error("Error updating task:", error);
-      return NextResponse.json(
-        { error: "Failed to update task" },
-        { status: 500 }
-      );
-    }
+    if (!template) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-    return NextResponse.json({ task });
+    // Update the instance's due_date
+    const [updatedInstance] = await db
+      .update(taskInstances)
+      .set({ dueDate: due_date })
+      .where(eq(taskInstances.id, id))
+      .returning();
+
+    return NextResponse.json({ task: updatedInstance });
   } catch (error) {
-    console.error("API Error:", error);
+    console.error("API Error in reschedule PATCH:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

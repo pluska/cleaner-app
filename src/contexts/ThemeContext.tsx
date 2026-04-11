@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Theme, themes, ThemeType, getTheme } from "@/libs/themes";
+import { Theme, ThemeType, getTheme } from "@/libs/themes";
 
 interface ThemeContextType {
   theme: Theme;
@@ -13,10 +13,8 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [currentThemeId, setCurrentThemeId] = useState<ThemeType>("brand");
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     // Force the brand theme for now as there is no UI to switch Gamification themes
     setCurrentThemeId("brand");
     localStorage.setItem("gamification_theme", "brand");

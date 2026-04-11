@@ -1,90 +1,71 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/libs/supabase-server";
-import { HomeAssessment, AIRecommendation } from "@/types";
+import { auth } from "@/auth";
+import { db } from "@/db";
+import { homeAssessments } from "@/db/schema";
 import { generateCleaningTasks } from "@/libs/gemini";
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createServerSupabaseClient();
-
-    // Get authenticated user
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
+    const session = await auth();
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Parse request body
     const body = await request.json();
-    const assessment: HomeAssessment = body;
+    const assessment = body;
     const language = body.language || "en";
 
-    // Validate required fields
-    if (
-      !assessment.home_type ||
-      !assessment.lifestyle ||
-      !assessment.cleaning_preferences
-    ) {
+    if (!assessment.home_type || !assessment.lifestyle || assessment.cleaning_preferences === undefined) {
       return NextResponse.json(
         { error: "Missing required assessment fields" },
         { status: 400 }
       );
     }
 
-    // Store the home assessment (upsert to handle existing assessments)
-    const { data: storedAssessment, error: assessmentError } = await supabase
-      .from("home_assessments")
-      .upsert(
-        [
-          {
-            ...assessment,
-            user_id: user.id,
-            language,
-          },
-        ],
-        {
-          onConflict: "user_id",
-          ignoreDuplicates: false,
+    // Store the assessment
+    const [stored] = await db
+      .insert(homeAssessments)
+      .values({
+        userId: session.user.id,
+        homeType: assessment.home_type,
+        lifestyle: assessment.lifestyle,
+        cleaningPreferences: assessment.cleaning_preferences,
+        pets: assessment.pets ? JSON.stringify(assessment.pets) : null,
+        children: assessment.children ? JSON.stringify(assessment.children) : null,
+        allergies: assessment.allergies ? JSON.stringify(assessment.allergies) : null,
+        rooms: assessment.rooms, // Assuming it's already a JSON-compatible array
+        updatedAt: new Date().toISOString(),
+      })
+      .onConflictDoUpdate({
+        target: homeAssessments.userId,
+        set: {
+          homeType: assessment.home_type,
+          lifestyle: assessment.lifestyle,
+          cleaningPreferences: assessment.cleaning_preferences,
+          pets: assessment.pets ? JSON.stringify(assessment.pets) : null,
+          children: assessment.children ? JSON.stringify(assessment.children) : null,
+          allergies: assessment.allergies ? JSON.stringify(assessment.allergies) : null,
+          rooms: assessment.rooms,
+          updatedAt: new Date().toISOString(),
         }
-      )
-      .select()
-      .single();
+      })
+      .returning();
 
-    if (assessmentError) {
-      console.error("Error storing assessment:", assessmentError);
-      return NextResponse.json(
-        { error: "Failed to store assessment" },
-        { status: 500 }
-      );
-    }
-
-    // Generate recommendations using Gemini AI
+    // Generate recommendations via Gemini
     const recommendations = await generateCleaningTasks(
-      assessment,
+      {
+        ...assessment,
+        home_type: assessment.home_type,
+        cleaning_preferences: assessment.cleaning_preferences,
+      },
       language as "en" | "es"
     );
 
-    // Determine the source of recommendations
-    const source =
-      recommendations.length > 0 ? recommendations[0].source : "unknown";
-    const sourceCount = recommendations.filter(
-      (r) => r.source === "gemini"
-    ).length;
-    const fallbackCount = recommendations.filter(
-      (r) => r.source === "fallback"
-    ).length;
-
     return NextResponse.json({
-      assessment: storedAssessment,
+      assessment: stored,
       recommendations,
       metadata: {
         total_tasks: recommendations.length,
-        source: source,
-        gemini_tasks: sourceCount,
-        fallback_tasks: fallbackCount,
         generated_at: new Date().toISOString(),
       },
     });

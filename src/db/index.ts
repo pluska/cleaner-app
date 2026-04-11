@@ -10,7 +10,7 @@ if (typeof process !== "undefined" && process.env.DATABASE_URL) {
 } else {
   // Fallback for local development if standard binding isn't injected
   client = createClient({
-    url: "file:.wrangler/state/v3/d1/miniflare-D1DatabaseObject/9ba2b04bf514d9facfd57ed57d849e77241a7adc99d1c1545d06688b43d84248.sqlite",
+    url: "file:.wrangler/state/v3/d1/miniflare-D1DatabaseObject/6bad73e71aaadefb3e43693c832d8c11be6d95047849063b99f190f8786a53ca.sqlite",
   });
 }
 
