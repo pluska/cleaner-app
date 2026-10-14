@@ -12,19 +12,19 @@ export async function GET() {
     }
 
     // Get available rewards
-    let allRewards = await db.select().from(rewardsStore);
+    let allRewards = await db.select().from(rewardsStore).where(eq(rewardsStore.isPurchasable,true));
 
     if (allRewards.length === 0) {
       const MOCK_REWARDS = [
-        { title: "1 Hour Video Games", cost: 50, icon: "Gamepad2", color: "text-blue-500", bg: "bg-blue-50" },
-        { title: "Movie Night Choice", cost: 150, icon: "Ticket", color: "text-purple-500", bg: "bg-purple-50" },
-        { title: "Ice Cream Trip", cost: 200, icon: "IceCream", color: "text-pink-500", bg: "bg-pink-50" },
-        { title: "New Book", cost: 300, icon: "BookOpen", color: "text-green-500", bg: "bg-green-50" },
-        { title: "Mystery Gift", cost: 500, icon: "Gift", color: "text-yellow-500", bg: "bg-yellow-50" },
-        { title: "Pizza Party", cost: 1000, icon: "PartyPopper", color: "text-red-500", bg: "bg-red-50" },
+        { id: "reward:video-games", title: "1 Hour Video Games", cost: 50, icon: "Gamepad2", color: "text-blue-500", bg: "bg-blue-50" },
+        { id: "reward:movie-night", title: "Movie Night Choice", cost: 150, icon: "Ticket", color: "text-purple-500", bg: "bg-purple-50" },
+        { id: "reward:ice-cream", title: "Ice Cream Trip", cost: 200, icon: "IceCream", color: "text-pink-500", bg: "bg-pink-50" },
+        { id: "reward:book", title: "New Book", cost: 300, icon: "BookOpen", color: "text-green-500", bg: "bg-green-50" },
+        { id: "reward:mystery", title: "Mystery Gift", cost: 500, icon: "Gift", color: "text-yellow-500", bg: "bg-yellow-50" },
+        { id: "reward:pizza", title: "Pizza Party", cost: 1000, icon: "PartyPopper", color: "text-red-500", bg: "bg-red-50" },
       ];
-      await db.insert(rewardsStore).values(MOCK_REWARDS);
-      allRewards = await db.select().from(rewardsStore);
+      await db.insert(rewardsStore).values(MOCK_REWARDS).onConflictDoNothing();
+      allRewards = await db.select().from(rewardsStore).where(eq(rewardsStore.isPurchasable,true));
     }
 
     // Get user purchased rewards
@@ -48,9 +48,9 @@ export async function GET() {
       iconType: reward.icon || "Gift",
     }));
 
-    return NextResponse.json({ 
-      rewards: rewardsWithStatus, 
-      balance: profile?.coins || 0 
+    return NextResponse.json({
+      rewards: rewardsWithStatus,
+      balance: profile?.coins || 0
     });
   } catch (error) {
     console.error("Error fetching rewards:", error);

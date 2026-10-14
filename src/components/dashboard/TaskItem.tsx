@@ -1,6 +1,15 @@
-import { Check, Sofa, Bath, Utensils, Bed, MoreHorizontal } from "lucide-react";
+import { Check, Sofa, Bath, Utensils, Bed, Home, MoreHorizontal, type LucideIcon } from "lucide-react";
 
-export type RoomType = "LIVING ROOM" | "BATHROOM" | "KITCHEN" | "BEDROOM";
+export type RoomType = "LIVING ROOM" | "BATHROOM" | "KITCHEN" | "BEDROOM" | "GENERAL" | string;
+
+type RoomConfig = {
+  icon: LucideIcon;
+  bg: string;
+  border: string;
+  tagBg: string;
+  tagText: string;
+  iconColor: string;
+};
 
 export interface TaskType {
   id: string;
@@ -17,7 +26,7 @@ export interface TaskType {
   subtasks?: { id: string; title: string; duration: number; completed: boolean }[];
 }
 
-const roomConfig = {
+const roomConfig: Record<string, RoomConfig> = {
   "LIVING ROOM": {
     icon: Sofa,
     bg: "bg-blue-50/50",
@@ -50,6 +59,14 @@ const roomConfig = {
     tagText: "text-emerald-700",
     iconColor: "text-emerald-600",
   },
+  "GENERAL": {
+    icon: Home,
+    bg: "bg-slate-50/50",
+    border: "border-slate-100",
+    tagBg: "bg-slate-100",
+    tagText: "text-slate-700",
+    iconColor: "text-slate-600",
+  },
 };
 
 export function TaskItem({
@@ -61,7 +78,7 @@ export function TaskItem({
   onToggle: (task: TaskType) => void;
   onViewDetails?: (task: TaskType) => void;
 }) {
-  const config = roomConfig[task.room];
+  const config = roomConfig[task.room] ?? roomConfig.GENERAL;
   const Icon = config.icon;
 
   const difficultyColors = {
@@ -75,7 +92,10 @@ export function TaskItem({
       className={`p-4 rounded-[24px] border ${config.bg} ${config.border} flex items-center space-x-4 transition-all pr-2`}
     >
       <button
+        aria-label={`Complete ${task.title}`}
         onClick={() => onToggle(task)}
+        disabled={task.completed}
+        title={task.completed ? "Completed quests cannot be undone / Las misiones completadas no se pueden deshacer" : undefined}
         className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors shrink-0 ${
           task.completed
             ? "bg-dark border-dark"
@@ -120,7 +140,7 @@ export function TaskItem({
       </div>
 
       {onViewDetails && (
-        <button 
+        <button
           onClick={() => onViewDetails(task)}
           className="p-2 text-gray-400 hover:text-dark hover:bg-white/50 rounded-full transition-colors shrink-0"
           title="Ver detalles"

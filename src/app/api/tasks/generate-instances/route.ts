@@ -3,7 +3,9 @@ import { db } from "@/db";
 import { taskTemplates, taskInstances } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { getTodayDate } from "@/libs/date-utils";
+import { localDay } from "@/libs/kingdom-rules";
+import { scheduledOn } from "@/libs/task-schedule";
+import { userTimezone } from "@/services/rescheduleService";
 
 export async function POST() {
   try {
@@ -12,13 +14,14 @@ export async function POST() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const today = getTodayDate();
+    const timezone = await userTimezone(session.user.id);
+    const today = localDay(new Date(),timezone);
 
     // Get all active user tasks (Templates in new schema)
     const tTemplates = await db
       .select()
       .from(taskTemplates)
-      .where(eq(taskTemplates.userId, session.user.id));
+      .where(and(eq(taskTemplates.userId, session.user.id),eq(taskTemplates.isArchived,false)));
 
     const createdInstances = [];
     const errors = [];
@@ -26,6 +29,7 @@ export async function POST() {
     // Create instances for each task template
     for (const template of tTemplates || []) {
       try {
+        if (!scheduledOn(template,today,timezone)) continue;
         // Check if instance already exists for today
         const [existingInstance] = await db
           .select()
@@ -39,7 +43,6 @@ export async function POST() {
           .limit(1);
 
         if (existingInstance) {
-          console.log(`Instance already exists for task ${template.title} on ${today}`);
           continue;
         }
 
@@ -52,18 +55,19 @@ export async function POST() {
             dueDate: today,
             status: "pending",
           })
+          .onConflictDoNothing()
           .returning();
+        if (!newInstance) continue;
 
         createdInstances.push({
           task_name: template.title,
           instance_id: newInstance.id,
         });
-        console.log(`Created instance for task: ${template.title}`);
       } catch (error) {
         console.error("Error processing task:", error);
         errors.push({
           task: template.title,
-          error: error instanceof Error ? error.message : "Unknown error",
+          error: "Could not create occurrence",
         });
       }
     }

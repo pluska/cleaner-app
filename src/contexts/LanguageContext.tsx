@@ -1,5 +1,6 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 interface LanguageContextType {
@@ -23,10 +24,12 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const savedLanguage = localStorage.getItem("language") as "en" | "es";
-    if (savedLanguage) {
+    if (savedLanguage === "en" || savedLanguage === "es") {
       setLanguage(savedLanguage);
     }
   }, []);
+
+  useEffect(() => {document.documentElement.lang = language;}, [language]);
 
   const handleLanguageChange = (lang: "en" | "es") => {
     setLanguage(lang);
@@ -43,6 +46,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function AppStatusProvider({ children }: { children: React.ReactNode }) {
+  const { status } = useSession();
   const [isSessionExpired, setIsSessionExpired] = useState(false);
 
   const setSessionExpired = (expired: boolean) => {
@@ -54,34 +58,18 @@ export function AppStatusProvider({ children }: { children: React.ReactNode }) {
 
   const redirectToLogin = () => {
     // Clear any stored auth data
-    localStorage.removeItem("supabase.auth.token");
     sessionStorage.clear();
 
     // Redirect to login
     window.location.href = "/auth/login";
   };
 
-  // Listen for storage events (when other tabs log out)
   useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "supabase.auth.token" && e.newValue === null) {
-        // Another tab logged out, expire this session too
-        setSessionExpired(true);
-      }
-    };
-
-    const handleSessionExpired = () => {
-      setSessionExpired(true);
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("session-expired", handleSessionExpired);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("session-expired", handleSessionExpired);
-    };
+    const handleSessionExpired = () => setIsSessionExpired(true);
+    window.addEventListener('session-expired',handleSessionExpired);
+    return () => window.removeEventListener('session-expired',handleSessionExpired);
   }, []);
+  useEffect(() => {if (status === 'authenticated') setIsSessionExpired(false);}, [status]);
 
   // Listen for 401 responses globally
   useEffect(() => {
@@ -91,7 +79,7 @@ export function AppStatusProvider({ children }: { children: React.ReactNode }) {
       const response = await originalFetch(...args);
 
       // Check if response is 401 Unauthorized
-      if (response.status === 401) {
+      if (response.status === 401 && status === "authenticated") {
         // Set session expired but don't redirect immediately
         // Let the notification handle the user experience
         setIsSessionExpired(true);
@@ -103,7 +91,7 @@ export function AppStatusProvider({ children }: { children: React.ReactNode }) {
     return () => {
       window.fetch = originalFetch;
     };
-  }, []);
+  }, [status]);
 
   return (
     <AppStatusContext.Provider

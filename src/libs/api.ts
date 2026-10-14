@@ -24,7 +24,7 @@ export async function fetchTasks(filters?: {
   if (filters?.frequency) params.append("frequency", filters.frequency);
   if (filters?.completed !== undefined)
     params.append("completed", filters.completed.toString());
-  if (filters?.dueDate) params.append("dueDate", filters.dueDate);
+  if (filters?.dueDate) params.append("date", filters.dueDate);
 
   const response = await fetch(`/api/tasks?${params.toString()}`, {
     credentials: "include",
@@ -74,7 +74,7 @@ export async function updateTask(
   updates: Partial<TaskFormData>
 ): Promise<{ task: Task }> {
   const response = await fetch(`/api/tasks/${taskId}`, {
-    method: "PUT",
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },

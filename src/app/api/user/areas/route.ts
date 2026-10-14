@@ -1,3 +1,5 @@
+import { digest } from "@/libs/server/security";
+import { errorResponse, readJson, textField } from "@/libs/server/http";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/db";
@@ -36,11 +38,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json();
-    const {
-      area_name,
-      area_type,
-    } = body;
+    const body = await readJson(request);
+    const area_name = textField(body.area_name, 'area_name', 100);
+    const area_type = textField(body.area_type, 'area_type', 50);
 
     // Validate input
     if (!area_name || !area_type) {
@@ -62,13 +62,13 @@ export async function POST(request: NextRequest) {
         userId: session.user.id,
         level: 1,
         xp: 0,
-        coins: 100,
-      });
+        coins: 0,
+      }).onConflictDoNothing();
     }
 
     // Check if area already exists
     const [existingArea] = await db
-      .select({ id: rooms.id })
+      .select()
       .from(rooms)
       .where(
         and(
@@ -79,30 +79,26 @@ export async function POST(request: NextRequest) {
       .limit(1);
 
     if (existingArea) {
-      return NextResponse.json(
-        { error: "Area already exists" },
-        { status: 400 }
-      );
+      return NextResponse.json({ area: existingArea });
     }
 
     // Add area to user's home
     const [newRoom] = await db
       .insert(rooms)
       .values({
-        id: crypto.randomUUID(),
+        id: `area:${await digest(JSON.stringify([session.user.id,area_name.toLowerCase()]))}`,
         userId: session.user.id,
         name: area_name,
         icon: area_type === "kitchen" ? "Utensils" : area_type === "bathroom" ? "Bath" : "Home",
         isCustom: true,
       })
+      .onConflictDoNothing()
       .returning();
 
-    return NextResponse.json({ area: newRoom }, { status: 201 });
+    if (newRoom) return NextResponse.json({ area: newRoom }, { status: 201 });
+    const [existing] = await db.select().from(rooms).where(and(eq(rooms.userId, session.user.id),eq(rooms.name,area_name)));
+    return NextResponse.json({area:existing});
   } catch (error) {
-    console.error("Unexpected error in areas POST:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return errorResponse(error);
   }
 }

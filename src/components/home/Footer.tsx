@@ -2,7 +2,6 @@
 
 import { Sparkles } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { t } from "@/libs/translations";
 
 export function Footer() {
   const { language } = useLanguage();
@@ -14,8 +13,8 @@ export function Footer() {
           <Sparkles className="h-6 w-6 text-secondary" />
           <span className="text-xl font-bold">SparkClean</span>
         </div>
-        <p className="text-dark/40">
-          {t("© 2024 SparkClean. All rights reserved.", language)}
+        <p className="text-white/70">
+          © {new Date().getFullYear()} SparkClean. {language === "es" ? "Todos los derechos reservados." : "All rights reserved."}
         </p>
       </div>
     </footer>

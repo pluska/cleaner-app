@@ -1,4 +1,5 @@
-import { sqliteTable, text, integer, primaryKey, index } from "drizzle-orm/sqlite-core";
+import { sql } from "drizzle-orm";
+import { sqliteTable, text, integer, primaryKey, index, check, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 // 1. Core Users and Profiles (Auth.js & Gamification)
 export const users = sqliteTable("users", {
@@ -8,6 +9,7 @@ export const users = sqliteTable("users", {
   emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
   image: text("image"),
   hashedPassword: text("hashedPassword"),
+  sessionVersion: integer("sessionVersion").notNull().default(0),
 });
 
 export const accounts = sqliteTable(
@@ -62,6 +64,9 @@ export const userProfiles = sqliteTable("userProfiles", {
   currentStreak: integer("currentStreak").notNull().default(0),
   maxStreak: integer("maxStreak").notNull().default(0),
   lastActivityDate: text("lastActivityDate"), // YYYY-MM-DD
+  timezone: text("timezone").notNull().default("UTC"),
+  resting: integer("resting", { mode: "boolean" }).notNull().default(false),
+  restStartedAt: integer("restStartedAt"),
 });
 
 // Activity Log for XP and Coins (The Paper Trail)
@@ -148,14 +153,14 @@ export const taskTemplates = sqliteTable("taskTemplates", {
     .references(() => rooms.id),
   title: text("title").notNull(),
   description: text("description"),
-  
+
   // Gamification Base
   importanceLevel: integer("importanceLevel").notNull().default(3),
   expReward: integer("expReward").notNull().default(10),
   healthImpact: text("healthImpact"),
   scientificSource: text("scientificSource"),
   aiExplanation: text("aiExplanation"),
-  
+
   // Recurrence (The DNA)
   rrule: text("rrule").notNull(), // e.g., FREQ=DAILY;INTERVAL=1
   startDate: integer("startDate", { mode: "timestamp_ms" }).notNull(),
@@ -192,7 +197,7 @@ export const taskTemplateTools = sqliteTable("taskTemplateTools", {
   toolId: text("toolId")
     .notNull()
     .references(() => tools.id, { onDelete: "cascade" }),
-  durabilityLossOverride: integer("durabilityLossOverride"), 
+  durabilityLossOverride: integer("durabilityLossOverride"),
 });
 
 // 6. The Execution: Instances mapped to Specific Days
@@ -210,6 +215,7 @@ export const taskInstances = sqliteTable(
     completedAt: integer("completedAt", { mode: "timestamp_ms" }),
   },
   (table) => ({
+    occurrenceUnique: uniqueIndex("task_occurrence_unique").on(table.templateId,table.dueDate),
     dueDateIdx: index("task_instances_due_date_idx").on(table.dueDate),
     statusIdx: index("task_instances_status_idx").on(table.status),
     templateIdx: index("task_instances_template_idx").on(table.templateId),
@@ -315,6 +321,34 @@ export const homeAssessments = sqliteTable("homeAssessments", {
   updatedAt: text("updatedAt"), // ISO String
 });
 
+export const kingdomState = sqliteTable("kingdomState", {
+  userId: text("userId").primaryKey().references(() => users.id, { onDelete: "cascade" }),
+  version: integer("version").notNull().default(0),
+});
+export const kingdomBuildings = sqliteTable("kingdomBuildings", {
+  id: text("id").primaryKey(),
+  userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  kind: text("kind").notNull(),
+  level: integer("level").notNull().default(1),
+  x: integer("x").notNull(),
+  y: integer("y").notNull(),
+  restoredAt: integer("restoredAt").notNull(),
+}, table => [uniqueIndex("kingdom_kind_unique").on(table.userId,table.kind)]);
+export const kingdomRoomLinks = sqliteTable("kingdomRoomLinks", {
+  roomId: text("roomId").primaryKey().references(() => rooms.id, { onDelete: "cascade" }),
+  buildingId: text("buildingId").notNull().references(() => kingdomBuildings.id, { onDelete: "cascade" }),
+});
+export const rewardEvents = sqliteTable("rewardEvents", {
+  id: text("id").primaryKey(),
+  userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  templateId: text("templateId").references(() => taskTemplates.id),
+  dueDate: text("dueDate"),
+  activityDate: text("activityDate").notNull(),
+  xp: integer("xp").notNull(),
+  coins: integer("coins").notNull(),
+  createdAt: integer("createdAt").notNull(),
+}, table => [index("reward_events_user_day").on(table.userId,table.activityDate)]);
+
 // 13. Kingdom Buildings
 export const buildings = sqliteTable("buildings", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -330,3 +364,14 @@ export const buildings = sqliteTable("buildings", {
   updatedAt: integer("updatedAt", { mode: "timestamp_ms" }).notNull().$defaultFn(() => new Date()),
 });
 
+export const passwordResetTokens = sqliteTable("passwordResetTokens", {
+  tokenHash: text("tokenHash").primaryKey(),
+  userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  expires: integer("expires").notNull(),
+}, table => [index("password_reset_user").on(table.userId)]);
+export const usageCounters = sqliteTable("usageCounters", {
+  key: text("key").primaryKey(),
+  count: integer("count").notNull(),
+  ceiling: integer("ceiling").notNull(),
+  expires: integer("expires").notNull(),
+}, table => [index("usage_expiry").on(table.expires),check("usage_limit",sql`${table.count} <= ${table.ceiling}`)]);

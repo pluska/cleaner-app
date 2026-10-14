@@ -1,105 +1,62 @@
-import { rrulestr } from "rrule";
-import { db } from "../db";
-import { taskTemplates, taskInstances, taskSubtemplates } from "../db/schema";
-import { eq, and } from "drizzle-orm";
-import { format, startOfDay, endOfDay } from "date-fns";
+import { scheduledDays } from '@/libs/task-schedule';
+import { db } from '../db';
+import { taskTemplates, taskInstances, taskSubtemplates, rooms } from '../db/schema';
+import { eq, and, gte, lte, getTableColumns } from 'drizzle-orm';
 
-/**
- * Helper to generate virtual tasks and merge them with actual DB instances.
- */
 export class TaskService {
-  /**
-   * Get all tasks (virtual or realized) for a given specific date and user.
-   */
-  static async getTasksForDate(userId: string, targetDate: Date) {
-    const targetDateStr = format(targetDate, "yyyy-MM-dd");
-    const dayStart = startOfDay(targetDate);
-    const dayEnd = endOfDay(targetDate);
+  static async getTasksForDate(userId: string, targetDate: Date, timezone = 'UTC') {
+    const day = targetDate.toISOString().slice(0, 10);
+    return (await this.getTasksForRange(userId, day, day, timezone))[day];
+  }
 
-    // 1. Fetch all templates for the user
-    // In a real app with many templates, you'd filter by startDate/endDate overlap in SQL first.
-    const allTemplates = await db
-      .select()
-      .from(taskTemplates)
-      .where(
-        and(
-          eq(taskTemplates.userId, userId),
-          eq(taskTemplates.isArchived, false)
-        )
-      );
-
-    // 2. Fetch actually materialized instances for this specific day
-    const materializedInstances = await db
-      .select()
-      .from(taskInstances)
-      .where(eq(taskInstances.dueDate, targetDateStr));
-
-    // Map materialized by templateId for quick O(1) lookups
-    const instanceMap = new Map(
-      materializedInstances.map((inst) => [inst.templateId, inst])
-    );
-
-    const resultingTasks = [];
-
-    // 3. Process the Mathematical Rules
-    for (const template of allTemplates) {
-      let isScheduledForToday = false;
-
-      // Parse the RRULE (e.g., 'FREQ=DAILY;INTERVAL=1')
-      try {
-        // RRule logic relies on Date parsing, handling boundaries relative to the template's startDate
-        const rule = rrulestr(template.rrule, {
-          dtstart: new Date(template.startDate),
-        });
-
-        // Does this rule yield any occurrences exactly on our target day?
-        const occurrencesToday = rule.between(dayStart, dayEnd, true); // true = inclusive
-        if (occurrencesToday.length > 0) {
-          isScheduledForToday = true;
-        }
-      } catch (err) {
-        console.error(`Invalid rrule for template: ${template.id}`, err);
-        continue;
-      }
-
-      if (isScheduledForToday) {
-        const existingInstance = instanceMap.get(template.id);
-        
-        // Let's grab subtasks for the template to enrich the return object
-        const subtasks = await db
-          .select()
-          .from(taskSubtemplates)
-          .where(eq(taskSubtemplates.templateId, template.id));
-
-        const baseTask = {
-          ...template, // gamification stats
-          id: template.id,
-          title: template.title,
-          description: template.description || undefined,
-          room: template.roomId.toUpperCase().replace("_", " "),
-          duration: subtasks.reduce((sum, s) => sum + (s.estimatedMinutes || 0), 0) || 15, // Default to 15m if no subtasks
-          healthReason: template.healthImpact || undefined,
-          sourceLink: template.scientificSource || undefined,
-          difficulty: template.importanceLevel >= 4 ? "HIGH" : template.importanceLevel === 3 ? "MEDIUM" : "LOW",
-          subtasks,
-        };
-
-        if (existingInstance) {
-          resultingTasks.push({
-            ...baseTask,
-            instanceId: existingInstance.id,
-            completed: existingInstance.status === "completed",
-          });
-        } else {
-          resultingTasks.push({
-            ...baseTask,
-            instanceId: null,
-            completed: false,
-          });
-        }
-      }
+  // Four scoped queries regardless of task count or number of calendar days.
+  // Joins avoid D1's 100-bind limit and per-task subquery overhead.
+  static async getTasksForRange(userId: string, start: string, end: string, timezone = 'UTC') {
+    const templates = await db.select().from(taskTemplates)
+      .where(and(eq(taskTemplates.userId, userId), eq(taskTemplates.isArchived, false)));
+    const userRooms = await db.select().from(rooms).where(eq(rooms.userId, userId));
+    const instances = await db.select(getTableColumns(taskInstances)).from(taskInstances)
+      .innerJoin(taskTemplates, eq(taskInstances.templateId, taskTemplates.id))
+      .where(and(eq(taskTemplates.userId, userId), gte(taskInstances.dueDate, start), lte(taskInstances.dueDate, end)));
+    const steps = await db.select(getTableColumns(taskSubtemplates)).from(taskSubtemplates)
+      .innerJoin(taskTemplates, eq(taskSubtemplates.templateId, taskTemplates.id))
+      .where(and(eq(taskTemplates.userId, userId), eq(taskTemplates.isArchived, false)));
+    const roomNames = new Map(userRooms.map(r => [r.id, r.name]));
+    const instanceMap = new Map(instances.map(i => [`${i.templateId}:${i.dueDate}`, i]));
+    const stepsByTemplate = new Map<string, typeof steps>();
+    for (const step of steps) {
+      const group = stepsByTemplate.get(step.templateId) ?? [];
+      group.push(step);
+      stepsByTemplate.set(step.templateId, group);
     }
-
-    return resultingTasks;
+    const baseTasks = templates.map(template => {
+      const subtasks = (stepsByTemplate.get(template.id) ?? []).sort((a, b) => a.orderIndex - b.orderIndex);
+      return {
+        ...template,
+        description: template.description || undefined,
+        room: (roomNames.get(template.roomId) ?? template.roomId).replace(/_/g, ' ').trim().toUpperCase(),
+        duration: subtasks.reduce((sum, s) => sum + s.estimatedMinutes, 0) || 15,
+        healthReason: template.healthImpact || undefined,
+        sourceLink: template.scientificSource || undefined,
+        difficulty: (template.importanceLevel >= 4 ? 'HIGH' : template.importanceLevel === 3 ? 'MEDIUM' : 'LOW') as 'HIGH' | 'MEDIUM' | 'LOW',
+        subtasks: subtasks.map(s => ({ ...s, duration: s.estimatedMinutes })),
+      };
+    });
+    const schedules = new Map(baseTasks.map(task => {
+      try { return [task.id, scheduledDays(task,start,end,timezone)] as const; }
+      catch { return [task.id,new Set<string>()] as const; }
+    }));
+    const result: Record<string, (Omit<typeof baseTasks[number], "subtasks"> & { instanceId: string | null; completed: boolean; subtasks: (typeof baseTasks[number]['subtasks'][number] & {completed: boolean})[] })[]> = {};
+    for (let date = Date.parse(start); date <= Date.parse(end); date += 86_400_000) {
+      const day = new Date(date).toISOString().slice(0, 10);
+      result[day] = baseTasks.flatMap(task => {
+        const instance = instanceMap.get(`${task.id}:${day}`);
+        if (instance?.status === 'skipped') return [];
+        if (!instance && !schedules.get(task.id)?.has(day)) return [];
+        const completed = instance?.status === 'completed';
+        return [{ ...task, instanceId: instance?.id ?? null, completed, subtasks: task.subtasks.map(s => ({ ...s, completed })) }];
+      });
+    }
+    return result;
   }
 }

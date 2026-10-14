@@ -16,7 +16,7 @@ interface TaskListProps {
 
 export function TaskList({ tasks: initialTasks, onToggleTask }: TaskListProps) {
   const { language } = useLanguage();
-  
+
   // Setup infinite scrolling state
   const [displayedTasks, setDisplayedTasks] = useState<TaskType[]>([]);
   const [page, setPage] = useState(1);
@@ -24,7 +24,7 @@ export function TaskList({ tasks: initialTasks, onToggleTask }: TaskListProps) {
 
   // Selected Task State for Modal
   const [selectedTask, setSelectedTask] = useState<TaskType | null>(null);
-  
+
   const { ref, inView } = useInView({
     threshold: 0,
   });
@@ -49,8 +49,8 @@ export function TaskList({ tasks: initialTasks, onToggleTask }: TaskListProps) {
     }
   }, [inView, initialTasks, page, displayedTasks.length]);
 
-  const priorityTasks = displayedTasks.filter((t) => t.id.startsWith("p"));
-  const scheduledTasks = displayedTasks.filter((t) => !t.id.startsWith("p"));
+  const priorityTasks = displayedTasks.filter((t) => t.difficulty === "HIGH");
+  const scheduledTasks = displayedTasks.filter((t) => t.difficulty !== "HIGH");
 
   const renderGroup = (title: string, groupTasks: TaskType[]) => (
     <div className="relative mb-8">
@@ -66,11 +66,11 @@ export function TaskList({ tasks: initialTasks, onToggleTask }: TaskListProps) {
 
       <div className="pl-[30px] space-y-3 relative z-10">
         {groupTasks.map((task) => (
-          <TaskItem 
-            key={task.id} 
-            task={task} 
-            onToggle={onToggleTask} 
-            onViewDetails={setSelectedTask} 
+          <TaskItem
+            key={task.id}
+            task={task}
+            onToggle={onToggleTask}
+            onViewDetails={setSelectedTask}
           />
         ))}
       </div>
@@ -83,7 +83,7 @@ export function TaskList({ tasks: initialTasks, onToggleTask }: TaskListProps) {
         <h2 className="text-xl font-bold text-dark">
           {t("Today's Strategy", language) || "Today's Strategy"}
         </h2>
-        <Link 
+        <Link
           href="/dashboard/add-task"
           className="flex items-center space-x-1.5 bg-primary border text-white px-4 py-2 rounded-full shadow-sm hover:brightness-110 transition-colors"
         >
@@ -97,7 +97,7 @@ export function TaskList({ tasks: initialTasks, onToggleTask }: TaskListProps) {
       <div className="relative">
         {priorityTasks.length > 0 && renderGroup((t("Priority", language) || "PRIORITY").toUpperCase(), priorityTasks)}
         {scheduledTasks.length > 0 && renderGroup((t("Schedule", language) || "SCHEDULED").toUpperCase(), scheduledTasks)}
-        
+
         {/* Infinite Scroll trigger element */}
         {displayedTasks.length < initialTasks.length && (
           <div ref={ref} className="h-20 flex items-center justify-center w-full">
@@ -108,9 +108,9 @@ export function TaskList({ tasks: initialTasks, onToggleTask }: TaskListProps) {
 
       {/* Task Details Modal */}
       {selectedTask && (
-        <TaskDetailModal 
-          task={selectedTask} 
-          onClose={() => setSelectedTask(null)} 
+        <TaskDetailModal
+          task={selectedTask}
+          onClose={() => setSelectedTask(null)}
         />
       )}
     </div>

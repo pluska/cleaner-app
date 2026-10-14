@@ -1,8 +1,10 @@
+import { assessmentSchema } from "@/libs/ai/schemas";
+import { readJson, errorResponse, HttpError } from "@/libs/server/http";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { homeAssessments } from "@/db/schema";
-import { generateCleaningTasks } from "@/libs/gemini";
+import { generateCleaningTasks } from "@/libs/ai/cleaning";
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,16 +13,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json();
-    const assessment = body;
-    const language = body.language || "en";
-
-    if (!assessment.home_type || !assessment.lifestyle || assessment.cleaning_preferences === undefined) {
-      return NextResponse.json(
-        { error: "Missing required assessment fields" },
-        { status: 400 }
-      );
-    }
+    const parsed = assessmentSchema.safeParse(await readJson(request));
+    if (!parsed.success) throw new HttpError(400,"Invalid home assessment");
+    const assessment = parsed.data;
+    const language = assessment.language;
 
     // Store the assessment
     const [stored] = await db
@@ -29,7 +25,7 @@ export async function POST(request: NextRequest) {
         userId: session.user.id,
         homeType: assessment.home_type,
         lifestyle: assessment.lifestyle,
-        cleaningPreferences: assessment.cleaning_preferences,
+        cleaningPreferences: {minimal:1,standard:2,thorough:3}[assessment.cleaning_preferences],
         pets: assessment.pets ? JSON.stringify(assessment.pets) : null,
         children: assessment.children ? JSON.stringify(assessment.children) : null,
         allergies: assessment.allergies ? JSON.stringify(assessment.allergies) : null,
@@ -41,7 +37,7 @@ export async function POST(request: NextRequest) {
         set: {
           homeType: assessment.home_type,
           lifestyle: assessment.lifestyle,
-          cleaningPreferences: assessment.cleaning_preferences,
+          cleaningPreferences: {minimal:1,standard:2,thorough:3}[assessment.cleaning_preferences],
           pets: assessment.pets ? JSON.stringify(assessment.pets) : null,
           children: assessment.children ? JSON.stringify(assessment.children) : null,
           allergies: assessment.allergies ? JSON.stringify(assessment.allergies) : null,
@@ -51,14 +47,15 @@ export async function POST(request: NextRequest) {
       })
       .returning();
 
-    // Generate recommendations via Gemini
+    // Generate validated recommendations or curated fallback content
     const recommendations = await generateCleaningTasks(
       {
         ...assessment,
+        id: session.user.id, user_id: session.user.id, created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
         home_type: assessment.home_type,
         cleaning_preferences: assessment.cleaning_preferences,
       },
-      language as "en" | "es"
+      language, session.user.id
     );
 
     return NextResponse.json({
@@ -70,10 +67,6 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("AI Task Generation Error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return errorResponse(error);
   }
 }

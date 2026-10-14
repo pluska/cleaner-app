@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Typecheck, test, and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm test
+      - name: Build Cloudflare artifact (includes Next.js build)
+        run: npm run pages:build
+      - name: Install test browser
+        run: npx playwright install --with-deps chromium
+      - name: Apply migrations to local test database
+        run: npm run db:migrate:local
+      - name: Browser end-to-end tests (local D1)
+        run: npm run test:e2e
+        env:
+          AUTH_SECRET: ci-only-synthetic-auth-secret-at-least-32-characters
+          AUTH_TRUST_HOST: 'true'
+          AUTH_URL: http://127.0.0.1:3100
+      - name: Preserve browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-evidence
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7

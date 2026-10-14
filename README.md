@@ -1,219 +1,75 @@
-# SparkClean - Home Cleaning Task Manager
+# Cleaner Planner - Medieval Cleaning Kingdom
 
-A modern web application for managing home cleaning tasks with intelligent scheduling and progress tracking.
+Turn household cleaning into quests that grow a personal medieval kingdom. The intended experience combines recurring cleaning tasks with a PixiJS 2D kingdom and private progress tied to the signed-in user.
 
-## Features
+## Migration Status
 
-- **Beautiful Landing Page**: Inviting homepage with feature highlights and call-to-action
-- **User Authentication**: Secure login/signup with Supabase Auth
-- **Daily Task Management**: Main dashboard with today's tasks and quick actions
-- **Flexible Scheduling**: View tasks by daily, weekly, monthly, or yearly periods
-- **Progress Analytics**: Comprehensive statistics and completion tracking
-- **Task Categories**: Organize tasks by room (kitchen, bathroom, bedroom, living room, general)
-- **Priority Levels**: Set task priorities (low, medium, high)
-- **Responsive Design**: Works perfectly on desktop, tablet, and mobile
+This README describes the migration target, not a declaration that every feature or release gate is complete. The project is moving from `@cloudflare/next-on-pages` to `@opennextjs/cloudflare`, with Next.js 15.5.24 or newer within the supported Next.js 15 line. Package scripts, the lockfile, application code, and deployment configuration must agree before release.
 
-## Tech Stack
+The target stack is Next.js, React, TypeScript, Auth.js, Drizzle, Cloudflare D1 through the server-side `DB` binding, and PixiJS / `@pixi/react` for the kingdom. User tasks and kingdom progress must be scoped to the authenticated user on every server read and mutation. D1 does not inherit the old Supabase row-level security policies; authorization must be enforced by the application.
 
-- **Frontend**: Next.js 15, React 19, TypeScript
-- **Styling**: Tailwind CSS 4
-- **Authentication & Database**: Supabase
-- **Icons**: Lucide React
-- **Date Handling**: date-fns
+The former Supabase SQL setup and generic hosting instructions are superseded by this migration. Cloudflare's [Next.js guide](https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/) describes the OpenNext Workers runtime and preview workflow.
 
-## Project Structure
+## Local Development
 
-```
-src/
-├── app/                    # Next.js app router pages
-│   ├── auth/              # Authentication pages
-│   ├── dashboard/         # Protected dashboard pages
-│   ├── globals.css        # Global styles
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Landing page
-├── components/            # Reusable components
-│   ├── auth/              # Authentication components
-│   ├── dashboard/         # Dashboard-specific components
-│   └── ui/                # Base UI components
-├── libs/                  # Utility libraries
-│   └── supabase.ts        # Supabase client configuration
-└── types/                 # TypeScript type definitions
-    └── index.ts           # App-wide types
+Use Node.js 22 and npm, matching CI. From the repository root:
+
+```bash
+npm ci
+npm run db:migrate:local
+npm run dev
 ```
 
-## Getting Started
+Open [localhost:3000](http://localhost:3000). `db:migrate:local` applies checked-in migrations to local D1 state. It is not a production migration command.
 
-### Prerequisites
+Configure local authentication secrets and any enabled integrations using the variable names required by the current implementation. Keep secrets in ignored local files or the deployment environment, never in browser-visible variables or committed configuration. Configure a local `DB` binding and use a separate staging database for staging. Do not point local development or CI at production data.
 
-- Node.js 18+
-- npm or yarn
-- Supabase account
+If `npm ci` reports a package/lockfile mismatch, reconcile and commit the lockfile as part of the dependency migration before retrying. CI deliberately uses the committed dependency graph.
 
-### Installation
+## Verification and Cloudflare Preview
 
-1. **Clone the repository**
+```bash
+npm run typecheck
+npm test
+npm run build
+npm run pages:build
+npm run pages:preview
+```
 
-   ```bash
-   git clone <repository-url>
-   cd cleaner-planner
-   ```
+The historical `pages:*` command names are retained for compatibility:
 
-2. **Install dependencies**
+| Command | Purpose |
+| --- | --- |
+| `npm run pages:build` | Build the OpenNext Cloudflare artifact. |
+| `npm run pages:preview` | Build and preview using the Cloudflare runtime. |
+| `npm run pages:deploy` | Build and deploy manually, only after release approval. |
 
-   ```bash
-   npm install
-   ```
+The names do not imply deployment through the former next-on-pages adapter. Validate the OpenNext configuration, Worker entry point, assets, runtime compatibility settings, and D1 binding together. A successful `next build` alone does not prove the Cloudflare artifact works.
 
-3. **Set up Supabase**
+## CI and Releases
 
-   - Create a new project at [supabase.com](https://supabase.com)
-   - Go to Settings > API to get your project URL and anon key
-   - Create a `.env.local` file in the root directory:
+`.github/workflows/ci.yml` runs `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, and `npm run pages:build` (including the Next.js build) on pushes and pull requests. It does not deploy or apply remote migrations. Passing CI is only one release requirement.
 
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   ```
+Production release is blocked until all evidence in [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md) is recorded, including:
 
-4. **Set up the database**
-   Run the following SQL in your Supabase SQL editor:
+- Actual end-to-end tests against the staging Cloudflare runtime and staging D1 database.
+- Measured kingdom rendering at a sustained minimum of 30 FPS on representative physical mobile devices.
+- A configured SMTP or email API provider, verified sender/domain, and proven staging delivery for supported email flows.
+- A completed D1 backup and restore rehearsal with verified recovered user progress.
+- Verification that one user cannot read or change another user's tasks or kingdom progress.
 
-   ```sql
-   -- Create tasks table
-   CREATE TABLE tasks (
-     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-     title TEXT NOT NULL,
-     description TEXT,
-     frequency TEXT NOT NULL DEFAULT 'daily' CHECK (frequency IN ('daily', 'weekly', 'monthly', 'yearly')),
-     category TEXT NOT NULL DEFAULT 'general' CHECK (category IN ('kitchen', 'bathroom', 'bedroom', 'living_room', 'general')),
-     priority TEXT NOT NULL DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high')),
-     completed BOOLEAN NOT NULL DEFAULT false,
-     due_date DATE,
-     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-   );
+Deployment is a separate, explicit operator action after sign-off. Neither this documentation nor CI guarantees a bug-free release. Record known defects, residual risks, rollback ownership, and any missing evidence honestly.
 
-   -- Enable Row Level Security
-   ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
+## GPT and security configuration
 
-   -- Create policy to allow users to only see their own tasks
-   CREATE POLICY "Users can view own tasks" ON tasks
-     FOR ALL USING (auth.uid() = user_id);
+The active AI integration uses OpenAI with validated structured output and curated static fallbacks. See [OPENAI_SETUP.md](OPENAI_SETUP.md) for server secrets, quotas, password recovery through Resend, migration ordering and rollback. See [the security implementation report](docs/SECURITY_IMPLEMENTATION.md) for verification results, dependency exceptions and historical database exposure. Existing unversioned sessions must sign in again after migration 0004.
 
-   -- Create updated_at trigger
-   CREATE OR REPLACE FUNCTION update_updated_at_column()
-   RETURNS TRIGGER AS $$
-   BEGIN
-     NEW.updated_at = NOW();
-     RETURN NEW;
-   END;
-   $$ language 'plpgsql';
+## Code and functionality review (2026-10-14)
 
-   CREATE TRIGGER update_tasks_updated_at BEFORE UPDATE ON tasks
-     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-   ```
+See [the latest review](docs/CODE_REVIEW_2026-10-14.md) for corrected defects, test evidence and remaining operational requirements. The planner now saves manual tasks, shows a real monthly calendar and derives statistics from persisted rewards. Onboarding retries preserve tasks and subtasks without duplication. Local browser tests cover desktop and mobile, and CI runs them with synthetic authentication secrets and local D1.
 
-5. **Run the development server**
+Playwright uses `.next-e2e` so its development server does not overwrite production build output. Run `npm run db:migrate:local` before `npm run test:e2e`.
 
-   ```bash
-   npm run dev
-   ```
+`worker.mjs` wraps the generated OpenNext HTTP worker and provides the scheduled handler used by the configured daily Cron Trigger. Set `CRON_SECRET` separately in each environment; an unset secret disables the job. Each invocation processes at most 15 recurrence cursors. An operator can repeat the authenticated `/api/cron/daily` call to drain backlog; size the schedule before scaling. Task reads evaluate virtual recurrence independently of materialization.
 
-6. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-## Usage
-
-### Landing Page
-
-- Visit the homepage to see the app overview
-- Click "Get Started" to create an account
-- Click "Sign In" if you already have an account
-
-### Dashboard
-
-- **Today's Tasks**: Main dashboard showing today's cleaning tasks
-- **Add Tasks**: Click "Add Task" to create new cleaning tasks
-- **Mark Complete**: Click the circle next to tasks to mark them complete
-- **Edit/Delete**: Use the edit and delete buttons to manage tasks
-
-### Schedule View
-
-- **Time Periods**: Switch between daily, weekly, monthly, and yearly views
-- **Calendar View**: Visual calendar showing tasks by date
-- **Filtering**: Filter tasks by category
-- **Navigation**: Use arrow buttons to navigate between periods
-
-### Analytics
-
-- **Overview Stats**: See total tasks, completion rate, and weekly progress
-- **Category Breakdown**: Visual breakdown of tasks by room
-- **Priority Analysis**: Distribution of task priorities
-- **Weekly Trends**: Track completion trends over the last 4 weeks
-- **Daily Progress**: Current week's daily completion rates
-
-## Features in Detail
-
-### Task Management
-
-- Create tasks with title, description, category, priority, and frequency
-- Mark tasks as complete/incomplete
-- Edit existing tasks
-- Delete tasks
-- Filter and sort tasks
-
-### Categories
-
-- **Kitchen**: Cooking, dishes, appliances, etc.
-- **Bathroom**: Cleaning, organizing, maintenance
-- **Bedroom**: Laundry, organizing, dusting
-- **Living Room**: General cleaning, organizing
-- **General**: Miscellaneous tasks
-
-### Priorities
-
-- **High**: Urgent tasks that need immediate attention
-- **Medium**: Regular maintenance tasks
-- **Low**: Optional or less critical tasks
-
-### Frequencies
-
-- **Daily**: Tasks that need to be done every day
-- **Weekly**: Weekly maintenance tasks
-- **Monthly**: Monthly deep cleaning tasks
-- **Yearly**: Annual maintenance or seasonal tasks
-
-## Deployment
-
-### Vercel (Recommended)
-
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Add your environment variables in Vercel dashboard
-4. Deploy!
-
-### Other Platforms
-
-The app can be deployed to any platform that supports Next.js:
-
-- Netlify
-- Railway
-- DigitalOcean App Platform
-- AWS Amplify
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-If you encounter any issues or have questions, please open an issue on GitHub.
+The former PWA service worker is retired at `/sw.js`; it deletes legacy caches and unregisters itself for previously installed clients. Private API responses are no longer served from those legacy caches.

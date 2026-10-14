@@ -3,6 +3,8 @@ import { auth } from "@/auth";
 import { db } from "@/db";
 import { taskTemplates, taskInstances } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
+import { readJson, errorResponse, textField, HttpError } from "@/libs/server/http";
+import { PATCH as toggleCompletion } from "./toggle/route";
 
 // GET /api/tasks/[id] - Get a specific task (Template or Instance)
 export async function GET(
@@ -50,8 +52,7 @@ export async function GET(
 
     return NextResponse.json({ error: "Task not found" }, { status: 404 });
   } catch (error) {
-    console.error("API Error in task GET:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return errorResponse(error);
   }
 }
 
@@ -67,7 +68,7 @@ export async function PATCH(
     }
 
     const { id } = await params;
-    const body = await request.json();
+    const body = await readJson(request);
 
     // Check if it's an instance
     const [instance] = await db.select().from(taskInstances).where(eq(taskInstances.id, id)).limit(1);
@@ -75,16 +76,8 @@ export async function PATCH(
       const [template] = await db.select().from(taskTemplates).where(and(eq(taskTemplates.id, instance.templateId), eq(taskTemplates.userId, session.user.id))).limit(1);
       if (!template) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-      const updated = await db
-        .update(taskInstances)
-        .set({
-          status: body.status || instance.status,
-          completedAt: body.status === "completed" ? new Date() : null,
-        })
-        .where(eq(taskInstances.id, id))
-        .returning();
-
-      return NextResponse.json({ task: updated[0] });
+      if (body.status === "completed") return toggleCompletion(request,{params:Promise.resolve({id})});
+      throw new HttpError(409,"Use the reschedule action; completion cannot be undone");
     }
 
     // Check if it's a template
@@ -93,9 +86,9 @@ export async function PATCH(
       const updated = await db
         .update(taskTemplates)
         .set({
-          title: body.title || template.title,
-          description: body.description ?? template.description,
-          importanceLevel: body.importanceLevel ?? template.importanceLevel,
+          title: body.title === undefined ? template.title : textField(body.title,"title",200),
+          description: body.description === undefined ? template.description : body.description === "" || body.description === null ? null : textField(body.description,"description",2000),
+          importanceLevel: template.importanceLevel,
         })
         .where(eq(taskTemplates.id, id))
         .returning();
@@ -105,8 +98,7 @@ export async function PATCH(
 
     return NextResponse.json({ error: "Task not found" }, { status: 404 });
   } catch (error) {
-    console.error("API Error in task PATCH:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return errorResponse(error);
   }
 }
 
@@ -126,20 +118,22 @@ export async function DELETE(
     // Try deleting instance
     const [instance] = await db.select().from(taskInstances).where(eq(taskInstances.id, id)).limit(1);
     if (instance) {
-      await db.delete(taskInstances).where(eq(taskInstances.id, id));
+      const [owner] = await db.select().from(taskTemplates).where(and(eq(taskTemplates.id,instance.templateId),eq(taskTemplates.userId,session.user.id)));
+      if (!owner) throw new HttpError(404,"Task not found");
+      if (instance.status !== "pending") throw new HttpError(409,"Only pending tasks can be removed");
+      await db.update(taskInstances).set({status:"skipped"}).where(eq(taskInstances.id,id));
       return NextResponse.json({ success: true });
     }
 
     // Try deleting template
     const [template] = await db.select().from(taskTemplates).where(and(eq(taskTemplates.id, id), eq(taskTemplates.userId, session.user.id))).limit(1);
     if (template) {
-      await db.delete(taskTemplates).where(eq(taskTemplates.id, id));
+      await db.update(taskTemplates).set({isArchived:true}).where(eq(taskTemplates.id, id));
       return NextResponse.json({ success: true });
     }
 
     return NextResponse.json({ error: "Task not found" }, { status: 404 });
   } catch (error) {
-    console.error("API Error in task DELETE:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return errorResponse(error);
   }
 }

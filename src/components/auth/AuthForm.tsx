@@ -28,14 +28,14 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
   const getPasswordStrength = (pass: string) => {
     let score = 0;
     if (!pass) return score;
-    if (pass.length >= 8) score += 1; // Base length
-    if (/(?=.*[A-Z])/.test(pass)) score += 1; // Uppercase
-    if (/(?=.*\d)/.test(pass) || /(?=.*[!@#$%^&*])/.test(pass)) score += 1; // Number or Symbol
+    if (pass.length >= 8 && new TextEncoder().encode(pass).length <= 72) score += 1; // Base length
+    if (/(?=.*[A-Z])(?=.*[a-z])/.test(pass)) score += 1; // Uppercase
+    if (/(?=.*\d)/.test(pass)) score += 1; // Number or Symbol
     return score;
   };
 
   const strengthScore = getPasswordStrength(password);
-  
+
   const getStrengthColor = () => {
     switch (strengthScore) {
       case 0: return "bg-gray-200";
@@ -45,7 +45,7 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
       default: return "bg-gray-200";
     }
   };
-  
+
   const getStrengthText = () => {
     switch (strengthScore) {
       case 0: return "";
@@ -119,7 +119,6 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
           throw new Error(data.error || "Signup failed");
         }
 
-        setSuccess(true);
         // Automatically sign in after signup
         const result = await signIn("credentials", {
           redirect: false,
@@ -128,13 +127,12 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
         });
 
         if (result?.error) {
-          setError(t("Account created, but automatic sign in failed. Please sign in manually.", language));
+          setError((language === "es" ? "Inicia sesión con tu contraseña existente o recupera tu contraseña." : "Please sign in with your existing password, or use password recovery."));
           return;
         }
 
-        setTimeout(() => {
-          onSuccess?.();
-        }, 2000);
+        setSuccess(true);
+        onSuccess?.();
       } else {
         const result = await signIn("credentials", {
           redirect: false,
@@ -147,9 +145,7 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
         }
 
         setSuccess(true);
-        setTimeout(() => {
-          onSuccess?.();
-        }, 1000);
+        onSuccess?.();
       }
     } catch (error: unknown) {
       const errorMessage =
@@ -188,7 +184,7 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
           disabled={loading || success}
           required={mode === "login"}
         />
-        
+
         {/* RPG Password Strength Meter */}
         {mode === "signup" && password.length > 0 && (
           <div className="pt-2">
@@ -198,8 +194,8 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
               <div className={`h-full transition-all duration-300 ${strengthScore === 3 ? getStrengthColor() : 'bg-transparent'}`} style={{ width: '33.33%' }} />
             </div>
             <p className={`text-xs mt-1 font-medium transition-colors ${
-              strengthScore === 1 ? 'text-red-500' : 
-              strengthScore === 2 ? 'text-yellow-600' : 
+              strengthScore === 1 ? 'text-red-500' :
+              strengthScore === 2 ? 'text-yellow-600' :
               'text-green-600'
             }`}>
               {getStrengthText()}
@@ -207,7 +203,7 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
           </div>
         )}
       </div>
-      
+
       {mode === "login" && (
         <div className="text-right">
           <Link
@@ -218,7 +214,7 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
           </Link>
         </div>
       )}
-      
+
       {error && <ErrorMessage message={error} />}
 
       {success && (

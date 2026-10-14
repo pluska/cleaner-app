@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Coins, Gamepad2, Ticket, IceCream, BookOpen, Gift, PartyPopper, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -21,42 +21,57 @@ interface Reward {
 
 export default function StorePage() {
   const { language } = useLanguage();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [purchasing, setPurchasing] = useState(false);
+  const requests = useRef(new Map<string,string>());
+  const purchasingRef = useRef(false);
   const [balance, setBalance] = useState(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [rewards, setRewards] = useState<Reward[]>([]);
 
   useEffect(() => {
-    fetch("/api/store/rewards")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.rewards) setRewards(data.rewards);
-        if (data.balance !== undefined) setBalance(data.balance);
-      });
-  }, []);
+    const controller = new AbortController();
+    fetch("/api/store/rewards", {signal:controller.signal})
+      .then(async res => {
+        if (!res.ok) throw new Error(language === 'es' ? 'No pudimos cargar la tienda.' : 'Could not load the store.');
+        const data = await res.json();
+        setRewards(data.rewards); setBalance(data.balance);
+      }).catch(e => {if (!controller.signal.aborted) setError(e.message);})
+      .finally(() => {if (!controller.signal.aborted) setLoading(false);});
+    return () => controller.abort();
+  }, [language]);
 
   const handlePurchase = async (reward: Reward) => {
 
+    if (purchasingRef.current) return;
     if (balance >= reward.cost && !reward.isPurchased) {
+      purchasingRef.current = true; setPurchasing(true); setError('');
+      const requestId = requests.current.get(reward.id) ?? crypto.randomUUID();
+      requests.current.set(reward.id, requestId);
       try {
         const res = await fetch("/api/store/purchase", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ rewardId: reward.id }),
+          body: JSON.stringify({ rewardId: reward.id, requestId }),
         });
         const json = await res.json();
-        
+
+        if (!res.ok) throw new Error(language === "es" ? "No se pudo comprar. Revisa tu saldo e intenta de nuevo." : "Purchase failed. Check your balance and retry.");
         if (json.success) {
           setBalance(json.newBalance);
           setRewards(prev => prev.map(r => r.id === reward.id ? {...r, isPurchased: true} : r));
           setToastMessage(
-            language === "es" 
-              ? `¡Comprado: ${reward.title}!` 
+            language === "es"
+              ? `¡Comprado: ${reward.title}!`
               : `Purchased: ${reward.title}!`
           );
           setTimeout(() => setToastMessage(null), 3000);
         }
       } catch (e) {
-        console.error("Purchase failed", e);
+        setError(e instanceof Error ? e.message : "Purchase failed");
+      } finally {
+        purchasingRef.current = false; setPurchasing(false);
       }
     }
   };
@@ -88,7 +103,7 @@ export default function StorePage() {
               : "Use your coins to unlock prizes"}
           </p>
         </div>
-        
+
         <div className="flex items-center space-x-3">
           <div className="bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100 flex items-center space-x-2 shrink-0 h-12">
             <Coins className="w-4 h-4 text-yellow-500" />
@@ -98,6 +113,8 @@ export default function StorePage() {
         </div>
       </div>
 
+      {error && <p role="alert" className="text-red-700 mb-4">{error}</p>}
+      {loading && <p role="status">{language === 'es' ? 'Cargando…' : 'Loading…'}</p>}
       <div className="grid grid-cols-2 gap-4">
         {rewards.map((reward) => {
           const IconComponent = iconMap[reward.iconType] || Gift;
@@ -107,14 +124,14 @@ export default function StorePage() {
                  <IconComponent className={`w-7 h-7 ${reward.color}`} />
               </div>
               <h3 className="font-bold text-dark text-sm mb-4 h-10 flex items-center">{reward.title}</h3>
-              
-              <button 
+
+              <button
                 onClick={() => handlePurchase(reward)}
-                disabled={balance < reward.cost || reward.isPurchased}
+                disabled={purchasing || balance < reward.cost || reward.isPurchased}
                 className={`w-full py-2.5 rounded-full flex items-center justify-center space-x-1.5 font-bold text-sm transition-colors ${
                   reward.isPurchased
                     ? "bg-green-100 text-green-600"
-                    : balance >= reward.cost 
+                    : balance >= reward.cost
                     ? "bg-primary text-white hover:brightness-110 shadow-sm"
                     : "bg-gray-100 text-gray-400 cursor-not-allowed"
                 }`}

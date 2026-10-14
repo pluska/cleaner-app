@@ -1,118 +1,46 @@
-import { NextResponse } from "next/server";
-import { db } from "@/db";
-import { taskTemplates, taskInstances, userProfiles } from "@/db/schema";
-import { eq, and, lt, gt } from "drizzle-orm";
-import { v4 as uuidv4 } from "uuid";
-import { rrulestr } from "rrule";
+import { database } from '@/db';
+import { localDay } from '@/libs/kingdom-rules';
+import { calendarDate, scheduledOn } from '@/libs/task-schedule';
+import { digest } from '@/libs/server/security';
+import { serverEnv } from '@/libs/server/env';
+import { errorResponse } from '@/libs/server/http';
+import { rrulestr } from 'rrule';
 
-// /api/cron/daily
-// SECURE ENDPOINT: Must pass Authorization: Bearer <CRON_SECRET> or similar
 export async function GET(request: Request) {
-  // 1. Authorization
-  const authHeader = request.headers.get("Authorization");
-  const expectedSecret = process.env.CRON_SECRET;
-  
-  if (expectedSecret && authHeader !== `Bearer ${expectedSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+  const secret = serverEnv('CRON_SECRET');
+  if (!secret) return Response.json({error:'Daily job unavailable'}, {status:503});
+  // Hash both values to avoid length-dependent secret comparisons.
+  if (await digest(request.headers.get('Authorization') ?? '') !== await digest(`Bearer ${secret}`))
+    return Response.json({error:'Unauthorized'}, {status:401});
   try {
-    const today = new Date();
-    // --- 1. INSTANTIATE PAST DUE TASKS ---
-    // Find all active templates that have their next occurrence before or exactly on today.
-    // They should become actual 'pending' instances so the user can see they missed them.
-    const dueTemplates = await db
-      .select()
-      .from(taskTemplates)
-      .where(
-        and(
-          eq(taskTemplates.isArchived, false),
-          lt(taskTemplates.nextOccurrence, today) // Strictly past due or today based on time
-        )
-      );
-
-    const instancesToInsert: (typeof taskInstances.$inferInsert)[] = [];
-    
-    for (const template of dueTemplates) {
-      if (!template.nextOccurrence) continue;
-      
-      const occurrenceDateStr = template.nextOccurrence.toISOString().split("T")[0];
-      
-      // Check if instance already exists to avoid duplicates
-      const [existing] = await db
-        .select()
-        .from(taskInstances)
-        .where(
-            and(
-                eq(taskInstances.templateId, template.id), 
-                eq(taskInstances.dueDate, occurrenceDateStr)
-            )
-        );
-        
-      if (!existing) {
-        instancesToInsert.push({
-          id: uuidv4(),
-          templateId: template.id,
-          dueDate: occurrenceDateStr,
-          status: "pending"
-        });
-      }
-
-      // Calculate the NEXT occurrence for this template and update it
-      try {
-        const parsedRule = rrulestr(template.rrule, { dtstart: new Date(template.startDate) });
-        const nextDate = parsedRule.after(template.nextOccurrence, false); // get next one
-        
-        if (nextDate) {
-          await db
-            .update(taskTemplates)
-            .set({ nextOccurrence: nextDate })
-            .where(eq(taskTemplates.id, template.id));
-        }
-      } catch (err) {
-         console.error(`Error advancing RRULE for template ${template.id}`, err);
-      }
+    const d = database();
+    const now = new Date();
+    // Bound each invocation; repeat the authenticated job to catch up older cursors.
+    const templates = (await d.prepare(`SELECT t.*,COALESCE(p.timezone,'UTC') AS timezone FROM taskTemplates t
+      LEFT JOIN userProfiles p ON p.userId=t.userId WHERE t.isArchived=0 AND t.nextOccurrence<=? ORDER BY t.nextOccurrence LIMIT 15`)
+      .bind(now.getTime()).all<{id:string;rrule:string;startDate:number;endDate:number|null;nextOccurrence:number;timezone:string}>()).results;
+    let instancesCreated = 0;
+    for (const template of templates) {
+      const day = localDay(new Date(template.nextOccurrence), template.timezone);
+      const ruleText = template.rrule.split(/\r?\n/).filter(line=>!line.startsWith('DTSTART')).join('\n');
+      const startDay = localDay(new Date(template.startDate),template.timezone);
+      const next = rrulestr(ruleText,{dtstart:new Date(`${startDay}T00:00:00Z`)}).after(new Date(`${day}T00:00:00Z`),false);
+      const nextDate = next ? calendarDate(next.toISOString().slice(0,10),template.timezone).getTime() : null;
+      const writes = [];
+      if (scheduledOn(template,day,template.timezone)) writes.push(d.prepare(`INSERT INTO taskInstances(id,templateId,dueDate,status)
+        SELECT ?,?,?,'pending' WHERE EXISTS(SELECT 1 FROM taskTemplates WHERE id=? AND nextOccurrence=? AND isArchived=0)
+        ON CONFLICT(templateId,dueDate) DO NOTHING`).bind(crypto.randomUUID(),template.id,day,template.id,template.nextOccurrence));
+      writes.push(d.prepare('UPDATE taskTemplates SET nextOccurrence=? WHERE id=? AND nextOccurrence=?')
+        .bind(template.endDate && nextDate && nextDate>template.endDate ? null : nextDate,template.id,template.nextOccurrence));
+      const result = await d.batch(writes);
+      if (writes.length>1) instancesCreated += result[0].meta.changes;
     }
-
-    if (instancesToInsert.length > 0) {
-      await db.insert(taskInstances).values(instancesToInsert);
-    }
-    
-    // --- 2. BREAK ABANDONED STREAKS ---
-    // Anyone whose lastActivityDate is OLDER than yesterday loses their streak
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split("T")[0];
-
-    // Find profiles with streak > 0 but last activity < yesterday
-    const abandonedProfiles = await db
-      .select()
-      .from(userProfiles)
-      .where(
-        and(
-          gt(userProfiles.currentStreak, 0),
-          lt(userProfiles.lastActivityDate, yesterdayStr)
-        )
-      );
-      
-    for (const profile of abandonedProfiles) {
-      await db
-        .update(userProfiles)
-        .set({ currentStreak: 0 })
-        .where(eq(userProfiles.userId, profile.userId));
-    }
-
-    return NextResponse.json({ 
-      success: true, 
-      instancesCreated: instancesToInsert.length,
-      streaksReset: abandonedProfiles.length
-    });
-    
-  } catch (error) {
-    console.error("Cron Error:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" }, 
-      { status: 500 }
-    );
-  }
+    // One SQL update uses each user's local yesterday and preserves resting streaks.
+    const result = await d.prepare(`UPDATE userProfiles SET currentStreak=0
+      WHERE currentStreak>0 AND resting=0 AND timezone='UTC'
+        AND (lastActivityDate IS NULL OR lastActivityDate < date(?,'-1 day'))`)
+      .bind(now.toISOString().slice(0,10)).run();
+    // Non-UTC streaks are derived from their timezone at reads/completion; no UTC reset.
+    return Response.json({success:true,instancesCreated,streaksReset:result.meta.changes,processed:templates.length});
+  } catch (error) { return errorResponse(error); }
 }

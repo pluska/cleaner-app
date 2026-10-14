@@ -1,33 +1,11 @@
-import { db } from "@/db";
-import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { NextRequest, NextResponse } from "next/server";
+import { readJson, errorResponse } from '@/libs/server/http';
+import { normalizeEmail, throttleAuth } from '@/libs/server/security';
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const { email } = await request.json();
-
-    if (!email) {
-      return NextResponse.json({ error: "Email is required" }, { status: 400 });
-    }
-
-    const [existingUser] = await db
-      .select({ id: users.id })
-      .from(users)
-      .where(eq(users.email, email))
-      .limit(1);
-
-    const userExists = !!existingUser;
-
-    return NextResponse.json({
-      exists: userExists,
-      message: userExists ? "Email already registered" : "Email available",
-    });
-  } catch (error) {
-    console.error("Error checking email:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
-  }
+    const body = await readJson(request, 4096);
+    const email = normalizeEmail(body.email);
+    await throttleAuth(request, 'email-check', email);
+    return Response.json({ message: 'Continue with signup or sign in. Use password recovery if needed.' });
+  } catch (error) { return errorResponse(error); }
 }

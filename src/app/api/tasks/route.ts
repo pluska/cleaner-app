@@ -1,3 +1,8 @@
+import { calendarDate } from "@/libs/task-schedule";
+import { readJson, errorResponse, HttpError } from "@/libs/server/http";
+import { validateTask } from "@/libs/server/task-validation";
+import { userTimezone } from "@/services/rescheduleService";
+import { localDay, validDay } from "@/libs/kingdom-rules";
 import { NextRequest, NextResponse } from "next/server";
 import { TaskService } from "@/services/taskService";
 import { auth } from "@/auth";
@@ -12,34 +17,31 @@ export async function GET(request: NextRequest) {
     const userId = session.user.id;
 
     const { searchParams } = new URL(request.url);
-    const dateParam = searchParams.get("date") || new Date().toISOString().split("T")[0];
-    
+    const timezone = await userTimezone(userId);
+    const dateParam = searchParams.get("date") || searchParams.get("dueDate") || localDay(new Date(),timezone);
+
     const targetDate = new Date(dateParam);
-    if (isNaN(targetDate.getTime())) {
+    if (!validDay(dateParam)) {
       return NextResponse.json({ error: "Invalid date format" }, { status: 400 });
     }
 
     // Generate and merge tasks for the requested date using our gamified RRule service
-    const tasks = await TaskService.getTasksForDate(userId, targetDate);
+    const tasks = await TaskService.getTasksForDate(userId, targetDate, timezone);
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       date: dateParam,
-      tasks 
+      tasks
     });
   } catch (error) {
-    console.error("API Error fetching tasks:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return errorResponse(error);
   }
 }
 
 import { RRule, rrulestr } from "rrule";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "@/db";
-import { taskTemplates } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { taskTemplates, rooms } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 
 // POST /api/tasks - Create a new gamified task blueprint (template)
 export async function POST(request: NextRequest) {
@@ -50,33 +52,22 @@ export async function POST(request: NextRequest) {
     }
     const userId = session.user.id;
 
-    const body = await request.json();
-
-    // Validate minimal required fields
-    if (!body.title || !body.title.trim()) {
-      return NextResponse.json({ error: "Title is required" }, { status: 400 });
-    }
-
-    if (!body.roomId) {
-      return NextResponse.json({ error: "Room ID is required" }, { status: 400 });
-    }
-
-    const validFrequencies = ["daily", "weekly", "monthly", "yearly", "once"];
-    if (body.frequency && !validFrequencies.includes(body.frequency)) {
-      return NextResponse.json({ error: "Invalid frequency" }, { status: 400 });
-    }
+    const body = validateTask(await readJson(request));
+    const [room] = await db.select().from(rooms).where(and(eq(rooms.id,body.roomId),eq(rooms.userId,userId)));
+    if (!room) throw new HttpError(400,"Room does not belong to this user");
 
     // 1. Generate the mathematical RRULE string
     let rruleStr = "";
-    const startDate = new Date(body.startDate || new Date());
-    
+    const timezone = await userTimezone(userId);
+    const startDate = calendarDate(body.startDate ?? localDay(new Date(), timezone), timezone);
+
     let nextOccurrenceDate = startDate;
-    
+
     if (body.frequency === "daily") {
       rruleStr = new RRule({ freq: RRule.DAILY, dtstart: startDate }).toString();
     } else if (body.frequency === "weekly") {
        // If a specific day is passed, use it, otherwise use the start date's day
-       const byweekday = body.dayOfWeek !== undefined ? [body.dayOfWeek] : undefined;
+       const byweekday = body.dayOfWeek !== undefined ? [body.dayOfWeek as number] : undefined;
        rruleStr = new RRule({ freq: RRule.WEEKLY, byweekday, dtstart: startDate }).toString();
     } else if (body.frequency === "monthly") {
       rruleStr = new RRule({ freq: RRule.MONTHLY, dtstart: startDate }).toString();
@@ -86,11 +77,11 @@ export async function POST(request: NextRequest) {
       // "once" - we use EXACTLY one count so it only occurs on the start date
       rruleStr = new RRule({ freq: RRule.DAILY, count: 1, dtstart: startDate }).toString();
     }
-    
+
     // Parse it back to cleanly get the single strictly first occurrence
     try {
       const parsedRule = rrulestr(rruleStr, { dtstart: startDate });
-      const nextDate = parsedRule.after(new Date(), true); // true = inclusive of today
+      const nextDate = parsedRule.after(startDate, true); // true = inclusive of today
       if (nextDate) {
         nextOccurrenceDate = nextDate;
       }
@@ -105,19 +96,19 @@ export async function POST(request: NextRequest) {
       userId: userId,
       roomId: body.roomId,
       title: body.title.trim(),
-      description: body.description?.trim() || null,
-      
+      description: body.description,
+
       // Gamification Base Defaults (Can be passed from frontend if complex UI exists)
       importanceLevel: body.importanceLevel || 3,
-      expReward: body.expReward || 10,
-      healthImpact: body.healthImpact || null,
-      scientificSource: body.scientificSource || null,
-      aiExplanation: body.aiExplanation || null,
+      expReward: body.importanceLevel * 5,
+      healthImpact: null,
+      scientificSource: null,
+      aiExplanation: null,
 
       // Recurrence
       rrule: rruleStr,
       startDate: startDate,
-      endDate: body.endDate ? new Date(body.endDate) : null,
+      endDate: body.endDate ? calendarDate(body.endDate,timezone) : null,
       nextOccurrence: nextOccurrenceDate,
     });
 
@@ -129,10 +120,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ task: inserted }, { status: 201 });
   } catch (error) {
-    console.error("API Error creating task template:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return errorResponse(error);
   }
 }

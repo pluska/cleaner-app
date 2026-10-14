@@ -1,3 +1,4 @@
+import { getTodayDate } from "./date-utils";
 import { Task } from "@/types";
 
 export const getPriorityColor = (priority: string) => {
@@ -27,7 +28,7 @@ export const getCategoryColor = (category: string) => {
 };
 
 export const isTaskOverdue = (task: Task) => {
-  const today = new Date().toISOString().split("T")[0];
+  const today = getTodayDate();
   return task.due_date && task.due_date < today && !task.completed;
 };
 

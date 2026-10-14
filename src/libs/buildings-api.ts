@@ -1,9 +1,19 @@
+import "server-only";
+import { auth } from "@/auth";
+import { HttpError } from "@/libs/server/http";
 import { db } from "@/db";
 import { buildings } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { Building } from "@/types";
 
+async function currentUser() {
+  const session = await auth();
+  if (!session?.user?.id) throw new HttpError(401, 'Unauthorized');
+  return session.user.id;
+}
+
 export const fetchUserBuildings = async (userId: string): Promise<Building[]> => {
+  if (await currentUser() !== userId) throw new HttpError(404,'Buildings not found');
   const result = await db
     .select()
     .from(buildings)
@@ -23,16 +33,19 @@ export const fetchUserBuildings = async (userId: string): Promise<Building[]> =>
 };
 
 export const updateBuildingSlot = async (id: string, slotIndex: number) => {
+  const userId = await currentUser();
+  if (!Number.isInteger(slotIndex) || slotIndex < 0 || slotIndex > 11) throw new HttpError(400,'Invalid slot');
   await db
     .update(buildings)
     .set({ 
       slotIndex,
       updatedAt: new Date()
     })
-    .where(eq(buildings.id, id));
+    .where(and(eq(buildings.id, id),eq(buildings.userId,userId)));
 };
 
 export const createBuilding = async (building: Omit<Building, "id" | "created_at" | "updated_at">) => {
+  if (await currentUser() !== building.user_id) throw new HttpError(404,'Buildings not found');
   const [newBuilding] = await db
     .insert(buildings)
     .values({

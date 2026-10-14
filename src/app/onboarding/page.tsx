@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Card } from "@/components/ui/layout/Card";
@@ -82,11 +83,14 @@ const PROCESS_STEPS: OnboardingStep[] = [
 export default function OnboardingPage() {
   const { language } = useLanguage();
   const router = useRouter();
+  const { update: updateSession } = useSession();
+  const started = useRef(false);
+  const [saving, setSaving] = useState(false);
 
   // Questionnaire State
   const [isOnboardingForm, setIsOnboardingForm] = useState(true);
   const [formStep, setFormStep] = useState(0);
-  
+
   const [formData, setFormData] = useState<Partial<HomeAssessmentInput>>({
     home_type: "house",
     rooms: [
@@ -108,57 +112,10 @@ export default function OnboardingPage() {
   // Processing State
   const [processStep, setProcessStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [pendingAssessment, setPendingAssessment] = useState<HomeAssessmentInput | null>(null);
   const [generatedTasks, setGeneratedTasks] = useState<number>(0);
 
-  useEffect(() => {
-    if (isOnboardingForm) return;
-
-    const initializeOnboarding = async () => {
-      try {
-        setProcessStep(0);
-        const savedAssessment = localStorage.getItem("pendingHomeAssessment");
-        
-        if (!savedAssessment) {
-          throw new Error("No home assessment found");
-        }
-
-        const parsedAssessment: HomeAssessmentInput = JSON.parse(savedAssessment);
-
-        // Step 2: Create user profile
-        setProcessStep(1);
-        await createUserProfile(parsedAssessment);
-
-        // Step 3: Generate suggested tasks
-        setProcessStep(2);
-        const tasks = await generateSuggestedTasks(parsedAssessment);
-        setGeneratedTasks(tasks.length);
-
-        // Step 4: Finalize setup
-        setProcessStep(3);
-        await finalizeSetup();
-
-        // Step 5: Redirect to dashboard
-        setTimeout(() => {
-          const gamificationProfile = localStorage.getItem("pendingGamificationProfile");
-          if (gamificationProfile) {
-            localStorage.setItem("firstLoginData", gamificationProfile);
-            localStorage.removeItem("pendingGamificationProfile");
-          }
-          localStorage.removeItem("pendingHomeAssessment");
-          router.push("/");
-        }, 1500);
-
-      } catch (err) {
-        console.error("Onboarding error:", err);
-        setError(err instanceof Error ? err.message : "An error occurred");
-      }
-    };
-
-    initializeOnboarding();
-  }, [isOnboardingForm, router]);
-
-  const createUserProfile = async (assessment: HomeAssessmentInput) => {
-    await new Promise(resolve => setTimeout(resolve, 1500));
+  const createUserProfile = useCallback(async (assessment: HomeAssessmentInput) => {
     try {
       const response = await fetch("/api/user/home-assessment", {
         method: "POST",
@@ -169,7 +126,7 @@ export default function OnboardingPage() {
       if (!response.ok) throw new Error("Failed to create home assessment");
 
       for (const room of assessment.rooms) {
-        await fetch("/api/user/areas", {
+        const areaResponse = await fetch("/api/user/areas", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -182,15 +139,17 @@ export default function OnboardingPage() {
             special_features: room.special_features || [],
           }),
         });
+        if (!areaResponse.ok) throw new Error(language === "es" ? "No pudimos guardar las habitaciones." : "Could not save rooms.");
       }
+      const timezoneResponse = await fetch('/api/kingdom', {method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({timezone:Intl.DateTimeFormat().resolvedOptions().timeZone})});
+      if (!timezoneResponse.ok) throw new Error('Could not save timezone');
     } catch (err) {
       console.error("Error creating user profile:", err);
-      // We ignore error for now to let user proceed even if mock fails
+      throw err;
     }
-  };
+  }, [language]);
 
-  const generateSuggestedTasks = async (assessment: HomeAssessmentInput): Promise<{ id: string }[]> => {
-    await new Promise(resolve => setTimeout(resolve, 2000));
+  const generateSuggestedTasks = useCallback(async (assessment: HomeAssessmentInput): Promise<{ id: string }[]> => {
     try {
       const roomTypes = assessment.rooms.map(room => room.type);
       const response = await fetch("/api/tasks/suggested", {
@@ -203,6 +162,7 @@ export default function OnboardingPage() {
           pets: assessment.pets,
           children: assessment.children,
           allergies: assessment.allergies,
+          language,
         }),
       });
 
@@ -211,16 +171,31 @@ export default function OnboardingPage() {
       return data.tasks || [];
     } catch (err) {
       console.error("Error generating suggested tasks:", err);
-      return []; // Return empty array if error
+      throw err;
     }
-  };
+  }, [language]);
 
-  const finalizeSetup = async () => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  };
+  useEffect(() => {
+    if (isOnboardingForm || !pendingAssessment || started.current) return;
+    started.current = true;
+    const initialize = async () => {
+      try {
+        setProcessStep(1);
+        await createUserProfile(pendingAssessment);
+        setProcessStep(2);
+        const tasks = await generateSuggestedTasks(pendingAssessment);
+        setGeneratedTasks(tasks.length);
+        setProcessStep(3);
+        router.push('/dashboard');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Setup failed');
+      }
+    };
+    void initialize();
+  }, [isOnboardingForm, pendingAssessment, createUserProfile, generateSuggestedTasks, router]);
 
   const handleNextForm = async () => {
-    if (formStep === 0 && heroName.trim() === "") return;
+    if (saving || (formStep === 0 && heroName.trim() === "") || (formStep === 2 && !selectedRooms.length)) return;
 
     if (formStep < 5) {
       setFormStep(prev => prev + 1);
@@ -241,18 +216,25 @@ export default function OnboardingPage() {
       // Update name on server via our new API
       if (heroName.trim() !== "") {
         try {
-          await fetch("/api/user/hero-name", {
+          setSaving(true);
+          const response = await fetch("/api/user/hero-name", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name: heroName }),
           });
+          if (!response.ok) throw new Error('Could not save hero name');
+          await updateSession({name:heroName.trim()});
         } catch (err) {
           console.error("Failed to update hero name", err);
+          setError(language === 'es' ? 'No pudimos guardar tu nombre. Intenta de nuevo.' : 'Could not save your name. Please retry.');
+          setSaving(false);
+          return;
         }
+        setSaving(false);
       }
 
       const finalData = { ...formData, rooms: mappedRooms } as HomeAssessmentInput;
-      localStorage.setItem("pendingHomeAssessment", JSON.stringify(finalData));
+      setPendingAssessment(finalData);
       setIsOnboardingForm(false);
     }
   };
@@ -305,6 +287,7 @@ export default function OnboardingPage() {
                 <div className="space-y-4">
                   <input
                     type="text"
+                    maxLength={100}
                     value={heroName}
                     onChange={(e) => setHeroName(e.target.value)}
                     placeholder={isEs ? "Tu nombre de héroe" : "Your hero name"}
@@ -333,8 +316,8 @@ export default function OnboardingPage() {
                       key={ht.id}
                       onClick={() => updateFormData("home_type", ht.id as HomeType)}
                       className={`flex flex-col items-center p-6 rounded-2xl border-2 transition-all ${
-                        formData.home_type === ht.id 
-                          ? "border-primary bg-primary/5 text-primary shadow-md transform scale-105" 
+                        formData.home_type === ht.id
+                          ? "border-primary bg-primary/5 text-primary shadow-md transform scale-105"
                           : "border-gray-100 bg-white text-gray-500 hover:border-primary/30 hover:bg-gray-50"
                       }`}
                     >
@@ -441,8 +424,8 @@ export default function OnboardingPage() {
                       key={ls.id}
                       onClick={() => updateFormData("lifestyle", ls.id as Lifestyle)}
                       className={`flex flex-col items-center text-center p-6 rounded-2xl border-2 transition-all ${
-                        formData.lifestyle === ls.id 
-                          ? "border-primary bg-primary/5 text-primary shadow-md transform scale-105" 
+                        formData.lifestyle === ls.id
+                          ? "border-primary bg-primary/5 text-primary shadow-md transform scale-105"
                           : "border-gray-100 bg-white text-gray-500 hover:border-primary/30 hover:bg-gray-50"
                       }`}
                     >
@@ -497,6 +480,7 @@ export default function OnboardingPage() {
             )}
           </div>
 
+          {error && <p role="alert" className="text-red-700">{error}</p>}
           <div className="mt-8 flex items-center justify-between pt-6 border-t border-gray-100">
             <Button
               variant="outline"
@@ -507,10 +491,10 @@ export default function OnboardingPage() {
               <ChevronLeft className="w-5 h-5 mr-1" />
               {isEs ? "Atrás" : "Back"}
             </Button>
-            
+
             <Button
               onClick={handleNextForm}
-              disabled={formStep === 0 && heroName.trim() === ""}
+              disabled={saving || (formStep === 0 && heroName.trim() === "") || (formStep === 2 && selectedRooms.length === 0)}
               className="flex items-center pr-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md hover:shadow-lg transition-all"
             >
               {formStep === 5 ? (isEs ? "Finalizar" : "Finish") : (isEs ? "Siguiente" : "Next")}
@@ -539,8 +523,8 @@ export default function OnboardingPage() {
               {language === "es" ? "Error en la configuración" : "Setup Error"}
             </h3>
             <p className="text-gray-600">{error}</p>
-            <Button onClick={() => router.push("/")} className="mt-4 w-full">
-              {language === "es" ? "Volver al Inicio" : "Back to Home"}
+            <Button onClick={() => {started.current = false; setError(null); setIsOnboardingForm(true);}} className="mt-4 w-full">
+              {language === "es" ? "Reintentar configuración" : "Retry setup"}
             </Button>
           </div>
         </Card>
@@ -581,13 +565,13 @@ export default function OnboardingPage() {
               </p>
             </div>
           </div>
-          
+
           {processStep === 2 && generatedTasks > 0 && (
             <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-xl animate-in fade-in slide-in-from-bottom-2">
               <div className="flex items-center justify-center space-x-2 text-green-700">
                 <CheckCircle className="w-5 h-5" />
                 <span className="font-bold">
-                  {language === "es" 
+                  {language === "es"
                     ? `¡${generatedTasks} misiones creadas!`
                     : `${generatedTasks} quests forged!`
                   }

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSparklinStore } from "@/hooks/useSparklinStore";
@@ -21,7 +22,7 @@ export function SparklinChat() {
   const { isOpen, message, setIsOpen, triggerGreeting, handleSpamClick } = useSparklinStore();
   const { language } = useLanguage();
   const router = useRouter();
-  
+
   const [bubbles, setBubbles] = useState<{ id: number; left: string; delay: string; duration: string }[]>([]);
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +30,7 @@ export function SparklinChat() {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [pendingPrompt, setPendingPrompt] = useState<string | null>(null);
   const [consecutiveLoreCount, setConsecutiveLoreCount] = useState(0);
-  
+
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Initialize bubbles on open and set initial greeting
@@ -101,28 +102,28 @@ export function SparklinChat() {
 
   const sendMessageToApi = async (textToSend: string, contextObj?: { roomContext: string }) => {
      setIsLoading(true);
-     
+
      // Add user message to UI
      const userMsgId = Date.now().toString();
      setChatHistory(prev => [...prev, { id: userMsgId, sender: "user", text: textToSend }]);
-     
+
      try {
        const res = await fetch("/api/sparklin/chat", {
          method: "POST",
          headers: { "Content-Type": "application/json" },
-         body: JSON.stringify({ 
-             message: textToSend, 
-             ...(contextObj || {}) 
+         body: JSON.stringify({
+             message: textToSend,
+             ...(contextObj || {})
          })
        });
-       
+
        const data = await res.json();
-       
+
        if (data.text) {
           if (data.intent === "LORE") {
             const newCount = consecutiveLoreCount + 1;
             setConsecutiveLoreCount(newCount);
-            
+
             if (newCount >= 3) {
               const spellOptions = [
                 {
@@ -143,7 +144,7 @@ export function SparklinChat() {
                 }
               ];
               const spell = spellOptions[Math.floor(Math.random() * spellOptions.length)];
-              
+
               setChatHistory(prev => [...prev, {
                  id: (Date.now() + 1).toString(),
                  sender: "sparklin",
@@ -167,12 +168,12 @@ export function SparklinChat() {
         } else {
          throw new Error("Invalid response");
        }
-       
+
        // Clear pending prompt if it was resolved
        if (contextObj) {
          setPendingPrompt(null);
        }
-       
+
      } catch (err) {
        console.error(err);
        setChatHistory(prev => [...prev, {
@@ -188,15 +189,15 @@ export function SparklinChat() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputText.trim() || isLoading) return;
-    
+
     const textToSend = inputText;
     setInputText("");
-    
+
     // Store in case we need context
     setPendingPrompt(textToSend);
     await sendMessageToApi(textToSend);
   };
-  
+
   const handleRoomSelection = async (roomId: string, label: string) => {
       if (["routine", "stain", "potion", "navigation"].includes(roomId)) {
         // Quick Action clicked
@@ -218,7 +219,7 @@ export function SparklinChat() {
              }
            ];
            const randomStainGreeting = stainOptions[Math.floor(Math.random() * stainOptions.length)];
-           
+
            setChatHistory(prev => [...prev, {
               id: Date.now().toString(),
               sender: "user",
@@ -239,23 +240,23 @@ export function SparklinChat() {
            }, {
               id: (Date.now() + 1).toString(),
               sender: "sparklin",
-              text: language === "es" 
+              text: language === "es"
                  ? "¡Ah, adentrándote en las peligrosas artes de la alquimia, ya veo! Mezclar las pociones de limpieza equivocadas puede invocar nubes tóxicas o derretir tu caldero. Dime, aprendiz, ¿qué ingredientes o superficies planeas combinar?"
                  : "Ah, delving into the dangerous arts of alchemy, I see! Mixing the wrong cleaning potions can summon toxic clouds or melt your cauldron. Tell me, apprentice, what ingredients or surfaces are you planning to combine?"
            }]);
            return;
         }
         if (roomId === "navigation") promptToUse = language === "es" ? "Estoy perdido" : "I'm lost";
-        
+
         await sendMessageToApi(promptToUse);
         return;
       }
-  
+
       // User clicked a room button to fulfill a Special Task request
       if (!pendingPrompt) return;
-      
+
       setPendingPrompt(null);
-      
+
       await sendMessageToApi(`Selected: ${label}`, { roomContext: roomId });
   };
 
@@ -268,8 +269,8 @@ export function SparklinChat() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 50, transition: { duration: 0.2 } }}
             className={`mb-4 bg-white rounded-2xl shadow-2xl overflow-hidden border border-purple-200 pointer-events-auto flex flex-col transition-all duration-300 ease-in-out ${
-               isExpanded 
-                 ? "w-[90vw] sm:w-[500px] h-[80vh] sm:h-[700px] max-h-[85vh] absolute bottom-16 right-0" 
+               isExpanded
+                 ? "w-[90vw] sm:w-[500px] h-[80vh] sm:h-[700px] max-h-[85vh] absolute bottom-16 right-0"
                  : "w-80 sm:w-96 h-[500px] max-h-[80vh]"
             }`}
           >
@@ -280,7 +281,7 @@ export function SparklinChat() {
                 Sparklin
               </h3>
               <div className="flex items-center gap-1">
-                <button 
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsExpanded(!isExpanded);
@@ -289,7 +290,7 @@ export function SparklinChat() {
                 >
                   {isExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
                 </button>
-                <button 
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsOpen(false);
@@ -302,7 +303,7 @@ export function SparklinChat() {
             </div>
 
             {/* Chat History Area */}
-            <div 
+            <div
                ref={scrollRef}
                className="flex-1 overflow-y-auto p-4 bg-slate-50 relative custom-scrollbar flex flex-col gap-4"
             >
@@ -314,15 +315,15 @@ export function SparklinChat() {
                       className="absolute w-2 h-2 rounded-full bg-yellow-400 opacity-60 z-0"
                       style={{ left: bubble.left, bottom: "-10px" }}
                       initial={{ y: 20, opacity: 0 }}
-                      animate={{ 
-                        y: -350, 
+                      animate={{
+                        y: -350,
                         opacity: [0, 0.8, 0],
                         scale: [0.5, 1.5, 0.5]
                       }}
-                      transition={{ 
-                        duration: parseFloat(bubble.duration), 
+                      transition={{
+                        duration: parseFloat(bubble.duration),
                         delay: parseFloat(bubble.delay),
-                        ease: "easeOut" 
+                        ease: "easeOut"
                       }}
                     />
                   ))}
@@ -330,24 +331,24 @@ export function SparklinChat() {
 
               {chatHistory.map((msg) => (
                 <div key={msg.id} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"} z-10 w-full`}>
-                   
+
                    {msg.sender === "sparklin" && (
                      <div className="w-10 h-10 shrink-0 mr-2 mt-auto">
-                        <img 
-                          src="/sparklin/sparklin_talking.png" 
-                          alt="Sparklin" 
+                        <Image unoptimized width={64} height={64}
+                          src="/sparklin/sparklin_talking.png"
+                          alt="Sparklin"
                           className="w-full h-full object-contain"
                         />
                      </div>
                    )}
-                   
+
                    <div className={`max-w-[75%] rounded-2xl p-3 text-sm shadow-sm flex flex-col gap-3 ${
-                      msg.sender === "user" 
-                        ? "bg-purple-600 text-white rounded-br-none" 
+                      msg.sender === "user"
+                        ? "bg-purple-600 text-white rounded-br-none"
                         : "bg-white border border-purple-100 text-slate-700 rounded-bl-none"
                    }`}>
                       <p className="leading-relaxed whitespace-pre-wrap">{msg.text}</p>
-                      
+
                       {/* UI Actions Rendering */}
                       {msg.uiAction && msg.uiAction.type === "NAVIGATE_LINKS" && (
                          <div className="flex flex-col gap-2 mt-1">
@@ -363,7 +364,7 @@ export function SparklinChat() {
                            ))}
                          </div>
                       )}
-                      
+
                       {msg.uiAction && msg.uiAction.type === "SHOW_ROOM_BUTTONS" && (
                          <div className="grid grid-cols-2 gap-2 mt-1">
                            {(msg.uiAction.payload?.options as {id: string, labelEs: string, labelEn: string, icon: string}[] || []).map((opt) => (
@@ -381,11 +382,11 @@ export function SparklinChat() {
                    </div>
                 </div>
               ))}
-              
+
               {isLoading && (
                  <div className="flex justify-start z-10 w-full">
                     <div className="w-10 h-10 shrink-0 mr-2 mt-auto">
-                        <img src="/sparklin/sparklin_talking.png" alt="Sparklin" className="w-full h-full object-contain blur-[1px] opacity-70" />
+                        <Image unoptimized width={64} height={64} src="/sparklin/sparklin_talking.png" alt="Sparklin" className="w-full h-full object-contain blur-[1px] opacity-70" />
                      </div>
                      <div className="bg-white border border-purple-100 rounded-2xl rounded-bl-none p-3 shadow-sm flex items-center justify-center h-10">
                         <Loader2 className="animate-spin text-purple-400" size={18} />
@@ -393,17 +394,17 @@ export function SparklinChat() {
                  </div>
               )}
             </div>
-            
+
             {/* Input Area */}
             <form onSubmit={handleSubmit} className="p-3 bg-white border-t border-purple-100 flex items-center gap-2 shrink-0 z-20">
-              <input 
+              <input
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder={language === 'es' ? "Pregúntale a Sparklin..." : "Ask Sparklin..."}
                 className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
-              <button 
+              <button
                 type="submit"
                 disabled={!inputText.trim() || isLoading}
                 className="bg-purple-600 hover:bg-purple-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg p-2 transition-colors flex items-center justify-center"
@@ -425,7 +426,7 @@ export function SparklinChat() {
         <Sparkles size={24} className="z-10" />
         <motion.div
           className="absolute inset-0 bg-white/20"
-          animate={{ 
+          animate={{
             opacity: [0, 0.5, 0],
             scale: [1, 1.5, 1],
           }}

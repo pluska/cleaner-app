@@ -39,10 +39,7 @@ function LoginContent() {
         </h2>
         <p className="text-gray-600">
           {isSignup
-            ? t(
-                "Please check your email to confirm your account before signing in.",
-                language
-              )
+            ? (language === "es" ? "Crea tu cuenta y prepara tu hogar." : "Create your account and set up your home.")
             : t("Sign in to your account", language)}
         </p>
       </div>

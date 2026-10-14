@@ -44,8 +44,8 @@ function ResetPasswordContent() {
     setError(null);
 
     // Validation
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+    if (password.length < 8 || new TextEncoder().encode(password).length > 72 || !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+      setError(language === "es" ? "La contraseña debe tener entre 8 y 72 bytes, mayúsculas, minúsculas y un número." : "Password must contain 8–72 bytes, uppercase, lowercase, and a number");
       setLoading(false);
       return;
     }

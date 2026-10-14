@@ -38,19 +38,14 @@ export const authConfig = {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isAuthRoute = nextUrl.pathname.startsWith("/auth");
-      const isProtectedRoute = ["/profile", "/dashboard", "/schedule", "/stats", "/store", "/kingdom"].some(route => 
+      const isProtectedRoute = ["/onboarding", "/profile", "/dashboard", "/schedule", "/stats", "/store", "/kingdom"].some(route =>
         nextUrl.pathname.startsWith(route)
       );
 
-      if (isAuthRoute) {
-        if (isLoggedIn) {
-          return Response.redirect(new URL("/dashboard", nextUrl));
-        }
-        return true;
-      }
+      if (isAuthRoute) return true;
 
       if (isProtectedRoute && !isLoggedIn) {
-        return false; // Redirect to login
+        return Response.redirect(new URL("/auth/login", nextUrl));
       }
 
       if (nextUrl.pathname === "/" && isLoggedIn) {

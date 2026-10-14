@@ -1,3 +1,4 @@
+import { useDialog } from "@/hooks/useDialog";
 import { X, Clock, HeartPulse, Hammer, CheckSquare, Target, Check } from "lucide-react";
 import { type TaskType } from "./TaskItem";
 
@@ -8,6 +9,7 @@ export function TaskDetailModal({
   task: TaskType;
   onClose: () => void;
 }) {
+  const dialog = useDialog(true, onClose);
   const difficultyColors = {
     LOW: "bg-green-100 text-green-700",
     MEDIUM: "bg-yellow-100 text-yellow-700",
@@ -20,8 +22,8 @@ export function TaskDetailModal({
         className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] transition-opacity"
         onClick={onClose}
       />
-      
-      <div className="fixed inset-x-0 bottom-0 top-20 md:w-[500px] md:h-[600px] md:inset-auto md:left-1/2 md:-translate-x-1/2 md:top-1/2 md:-translate-y-1/2 bg-white rounded-t-3xl md:rounded-3xl z-[101] shadow-xl flex flex-col overflow-hidden animate-slide-up md:animate-scale-in">
+
+      <div ref={dialog} role="dialog" aria-modal="true" aria-labelledby="task-detail-title" tabIndex={-1} className="fixed inset-x-0 bottom-0 top-20 md:w-[500px] md:h-[600px] md:inset-auto md:left-1/2 md:-translate-x-1/2 md:top-1/2 md:-translate-y-1/2 bg-white rounded-t-3xl md:rounded-3xl z-[101] shadow-xl flex flex-col overflow-hidden animate-slide-up md:animate-scale-in">
         {/* Header Section */}
         <div className="p-6 border-b border-gray-100 flex items-start justify-between bg-gray-50/50">
           <div>
@@ -39,7 +41,7 @@ export function TaskDetailModal({
                 </span>
               )}
             </div>
-            <h2 className="text-xl font-bold text-dark">{task.title}</h2>
+            <h2 id="task-detail-title" className="text-xl font-bold text-dark">{task.title}</h2>
             <div className="flex items-center gap-3 mt-2 text-sm text-gray-500 font-medium">
               <span className="flex items-center gap-1.5">
                 <Clock className="w-4 h-4 text-gray-400" />
@@ -57,6 +59,7 @@ export function TaskDetailModal({
             </div>
           </div>
           <button
+            aria-label="Cerrar detalles"
             onClick={onClose}
             className="p-2 bg-white border border-gray-200 text-gray-400 hover:text-dark hover:bg-gray-50 rounded-full transition-colors"
           >
@@ -66,7 +69,7 @@ export function TaskDetailModal({
 
         {/* Scrollable Body */}
         <div className="flex-1 overflow-y-auto p-6 space-y-8">
-          
+
           {/* Description */}
           {task.description && (
             <div>
@@ -119,13 +122,13 @@ export function TaskDetailModal({
                   {task.subtasks.filter(t => t.completed).length}/{task.subtasks.length}
                 </span>
               </div>
-              
+
               <div className="space-y-2">
                 {task.subtasks.map((subtask) => (
                   <div key={subtask.id} className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 bg-white">
-                    <button className={`w-5 h-5 rounded flex items-center justify-center shrink-0 mt-0.5 transition-colors ${subtask.completed ? 'bg-indigo-500 border-indigo-500' : 'bg-white border-2 border-gray-200'}`}>
+                    <span aria-hidden="true" className={`w-5 h-5 rounded flex items-center justify-center shrink-0 mt-0.5 transition-colors ${subtask.completed ? 'bg-indigo-500 border-indigo-500' : 'bg-white border-2 border-gray-200'}`}>
                       {subtask.completed && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
-                    </button>
+                    </span>
                     <div className="flex-1 min-w-0">
                       <p className={`text-sm font-medium ${subtask.completed ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
                         {subtask.title}
@@ -144,9 +147,9 @@ export function TaskDetailModal({
         {/* Footer */}
         {task.sourceLink && (
           <div className="p-4 border-t border-gray-100 bg-gray-50/50 text-center">
-            <a 
-              href={task.sourceLink} 
-              target="_blank" 
+            <a
+              href={task.sourceLink}
+              target="_blank"
               rel="noreferrer"
               className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 hover:underline transition-colors"
             >

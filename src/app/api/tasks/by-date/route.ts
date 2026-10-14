@@ -1,7 +1,8 @@
+import { validDay } from "@/libs/kingdom-rules";
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { taskTemplates, taskInstances } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, ne } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -14,9 +15,9 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const date = searchParams.get("date");
 
-    if (!date) {
+    if (!validDay(date)) {
       return NextResponse.json(
-        { error: "Date parameter is required" },
+        { error: "Valid date parameter is required" },
         { status: 400 }
       );
     }
@@ -43,6 +44,8 @@ export async function GET(request: NextRequest) {
       .where(
         and(
           eq(taskTemplates.userId, session.user.id),
+          eq(taskTemplates.isArchived, false),
+          ne(taskInstances.status, "skipped"),
           eq(taskInstances.dueDate, date)
         )
       )
@@ -52,7 +55,7 @@ export async function GET(request: NextRequest) {
     const tTemplates = await db
       .select()
       .from(taskTemplates)
-      .where(eq(taskTemplates.userId, session.user.id));
+      .where(and(eq(taskTemplates.userId, session.user.id),eq(taskTemplates.isArchived,false)));
 
     return NextResponse.json({
       taskInstances: tInstances || [],

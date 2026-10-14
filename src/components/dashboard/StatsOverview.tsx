@@ -3,13 +3,13 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 
 interface StatsOverviewProps {
-  statusPercentage: number;
-  streakCount: number;
+  coins?: number;
+  level?: number;
 }
 
 export function StatsOverview({
-  statusPercentage,
-  streakCount,
+  coins,
+  level,
 }: StatsOverviewProps) {
   const { language } = useLanguage();
 
@@ -24,7 +24,7 @@ export function StatsOverview({
           </span>
         </div>
         <div className="text-4xl font-extrabold text-dark tracking-tight">
-          {statusPercentage}
+          {coins ?? "—"}
         </div>
       </div>
 
@@ -37,7 +37,7 @@ export function StatsOverview({
           </span>
         </div>
         <div className="text-4xl font-extrabold text-dark tracking-tight">
-          {streakCount}
+          {level ?? "—"}
         </div>
       </div>
     </div>

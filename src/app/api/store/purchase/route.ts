@@ -1,56 +1,26 @@
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
-import { db } from "@/db";
-import { rewardsStore, userRewards, userProfiles } from "@/db/schema";
-import { eq } from "drizzle-orm";
-
-export async function POST(request: NextRequest) {
+import { auth } from '@/auth';
+import { database } from '@/db';
+import { readJson, errorResponse, HttpError } from '@/libs/server/http';
+export async function POST(request: Request) {
   try {
     const session = await auth();
-    if (!session || !session.user || !session.user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { rewardId } = await request.json();
-    if (!rewardId) {
-      return NextResponse.json({ error: "rewardId is required" }, { status: 400 });
-    }
-
-    const [reward] = await db
-      .select()
-      .from(rewardsStore)
-      .where(eq(rewardsStore.id, rewardId));
-
-    if (!reward) {
-      return NextResponse.json({ error: "Reward not found" }, { status: 404 });
-    }
-
-    const [profile] = await db
-      .select()
-      .from(userProfiles)
-      .where(eq(userProfiles.userId, session.user.id));
-
-    if (!profile || profile.coins < reward.cost) {
-      return NextResponse.json({ error: "Insufficient balance" }, { status: 400 });
-    }
-
-    // Deduct coins and add reward
-    await db
-      .update(userProfiles)
-      .set({ coins: profile.coins - reward.cost })
-      .where(eq(userProfiles.userId, session.user.id));
-
-    await db.insert(userRewards).values({
-      userId: session.user.id,
-      rewardId: reward.id,
-    });
-
-    return NextResponse.json({ success: true, newBalance: profile.coins - reward.cost });
-  } catch (error) {
-    console.error("Error computing reward purchase:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
-  }
+    if (!session?.user?.id) throw new HttpError(401, 'Unauthorized');
+    const {rewardId,requestId} = await readJson(request,4096);
+    if (typeof rewardId !== 'string' || !rewardId || rewardId.length>200 || typeof requestId !== 'string' || requestId.length<8 || requestId.length>100)
+      throw new HttpError(400,'rewardId and requestId required');
+    const d=database(), userId=session.user.id, id=`${userId}:${requestId}`;
+    const prior=await d.prepare('SELECT rewardId FROM userRewards WHERE id=?').bind(id).first<{rewardId:string}>();
+    if (prior && prior.rewardId!==rewardId) throw new HttpError(409,'Request already used');
+    // A reward unlocks once per user, even when separate requests race with different IDs.
+    await d.prepare(`INSERT OR IGNORE INTO userRewards(id,userId,rewardId,purchasedAt)
+      SELECT ?,?,?,? FROM rewardsStore r JOIN userProfiles p ON p.userId=?
+      WHERE r.id=? AND r.isPurchasable=1 AND r.cost>=0 AND p.coins>=r.cost
+      AND NOT EXISTS(SELECT 1 FROM userRewards WHERE userId=? AND rewardId=?)`)
+      .bind(id,userId,rewardId,Date.now(),userId,rewardId,userId,rewardId).run();
+    const bought=await d.prepare('SELECT rewardId FROM userRewards WHERE id=?').bind(id).first<{rewardId:string}>();
+    if (!bought) throw new HttpError(400,'Reward unavailable or insufficient balance');
+    if (bought.rewardId!==rewardId) throw new HttpError(409,'Request already used');
+    const profile=await d.prepare('SELECT coins FROM userProfiles WHERE userId=?').bind(userId).first<{coins:number}>();
+    return Response.json({success:true,newBalance:profile!.coins});
+  } catch (error) { return errorResponse(error); }
 }

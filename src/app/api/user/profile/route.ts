@@ -1,3 +1,4 @@
+import { readJson, errorResponse, textField, HttpError } from "@/libs/server/http";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/db";
@@ -25,13 +26,16 @@ export async function GET() {
           userId: userId,
           level: 1,
           xp: 0,
-          coins: 100,
+          coins: 0,
           currentStreak: 0,
           maxStreak: 0,
         })
+        .onConflictDoNothing()
         .returning();
 
-      return NextResponse.json({ profile: newProfile });
+      if (newProfile) return NextResponse.json({ profile: newProfile });
+      const [existing] = await db.select().from(userProfiles).where(eq(userProfiles.userId,userId));
+      return NextResponse.json({profile:existing});
     }
 
     return NextResponse.json({ profile });
@@ -51,11 +55,13 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json();
+    const body = await readJson(request);
     const { username, display_name, avatar_url, name, image } = body;
 
-    const newName = name || display_name || username;
-    const newImage = image || avatar_url;
+    const candidate = name ?? display_name ?? username;
+    const newName = candidate === undefined ? undefined : textField(candidate, "name", 100);
+    const newImage = image ?? avatar_url;
+    if (newImage !== undefined && newImage !== null && (typeof newImage !== 'string' || newImage.length > 2048 || !(/^(https:\/\/|\/(?!\/))/.test(newImage)))) throw new HttpError(400,'Invalid image URL');
 
     if (newName && (typeof newName !== "string" || newName.length < 2)) {
       return NextResponse.json(
@@ -79,10 +85,6 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({ profile, user: updateData });
   } catch (error) {
-    console.error("Unexpected error in profile PUT:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return errorResponse(error);
   }
 }

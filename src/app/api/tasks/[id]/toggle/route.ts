@@ -1,73 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
-import { db } from "@/db";
-import { taskInstances, taskTemplates } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
-
-export async function PATCH(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+import { auth } from '@/auth';
+import { database } from '@/db';
+import { HttpError, errorResponse } from '@/libs/server/http';
+import { POST as complete } from '../complete/route';
+export async function PATCH(request: Request, {params}: {params:Promise<{id:string}>}) {
   try {
     const session = await auth();
-    if (!session || !session.user || !session.user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { id } = await params;
-
-    // Check if this is a task instance
-    const [instance] = await db
-      .select({
-        id: taskInstances.id,
-        status: taskInstances.status,
-        templateId: taskInstances.templateId,
-      })
-      .from(taskInstances)
-      .where(eq(taskInstances.id, id))
-      .limit(1);
-
-    if (instance) {
-      // Check ownership via template
-      const [template] = await db
-        .select()
-        .from(taskTemplates)
-        .where(and(eq(taskTemplates.id, instance.templateId), eq(taskTemplates.userId, session.user.id)))
-        .limit(1);
-
-      if (!template) {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-      }
-
-      const newStatus = instance.status === "completed" ? "pending" : "completed";
-      
-      const [updatedInstance] = await db
-        .update(taskInstances)
-        .set({ 
-          status: newStatus,
-          completedAt: newStatus === "completed" ? new Date() : null
-        })
-        .where(eq(taskInstances.id, id))
-        .returning();
-
-      return NextResponse.json({
-        task: {
-          ...template,
-          id: updatedInstance.id,
-          status: updatedInstance.status,
-          dueDate: updatedInstance.dueDate,
-          isInstance: true,
-          templateId: updatedInstance.templateId,
-        },
-      });
-    }
-
-    return NextResponse.json({ error: "Task instance not found" }, { status: 404 });
-  } catch (error) {
-    console.error("API Error in toggle PATCH:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
-  }
+    if (!session?.user?.id) throw new HttpError(401,'Unauthorized');
+    const {id} = await params;
+    const instance = await database().prepare(`SELECT i.* FROM taskInstances i JOIN taskTemplates t ON t.id=i.templateId WHERE i.id=? AND t.userId=?`).bind(id,session.user.id).first<{templateId:string;dueDate:string;status:string}>();
+    if (!instance) throw new HttpError(404,'Task not found');
+    if (instance.status !== 'pending') throw new HttpError(409,'Completed quests cannot be undone. Las misiones completadas no se pueden deshacer.');
+    const response = await complete(new Request(request.url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dueDate:instance.dueDate})}),{params:Promise.resolve({id:instance.templateId})});
+    if (!response.ok) return response;
+    const result = await response.json();
+    return Response.json({...result,task:{id,templateId:instance.templateId,dueDate:instance.dueDate,status:'completed',completed:true,isInstance:true}});
+  } catch (error) { return errorResponse(error); }
 }

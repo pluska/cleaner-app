@@ -92,7 +92,7 @@ export default function ForgotPasswordPage() {
         ) : (
           <div className="space-y-4">
             <SuccessMessage
-              message={t("Reset link sent! Check your email.", language)}
+              message={(language === "es" ? "Si existe una cuenta con ese correo, hemos solicitado el envío del enlace. Revisa tu bandeja de entrada." : "If that account exists, we have requested a reset email. Please check your inbox.")}
             />
             <div className="text-center text-sm text-gray-600">
               <p>

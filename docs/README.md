@@ -130,3 +130,5 @@ This folder contains the organized documentation for the Cleaner Planner project
 
 **Last Updated:** December 2024
 **Maintained By:** Development Team
+
+La revisión vigente del código y las funcionalidades está en [CODE_REVIEW_2026-10-14.md](CODE_REVIEW_2026-10-14.md), con correcciones, evidencia ejecutada y límites de validación. Los documentos anteriores describen estados históricos.

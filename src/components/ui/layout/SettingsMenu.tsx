@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Settings, LogOut, Sun, Moon, Languages } from "lucide-react";
+import { Settings, LogOut, Languages } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { signOut, useSession } from "next-auth/react";
 import { t } from "@/libs/translations";
@@ -12,7 +12,6 @@ export function SettingsMenu() {
   const { language, setLanguage } = useLanguage();
   const { data: session, update: updateSession } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDark, setIsDark] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState("");
   const [isSavingName, setIsSavingName] = useState(false);
@@ -33,12 +32,6 @@ export function SettingsMenu() {
   const toggleLanguage = () => {
     setLanguage(language === "en" ? "es" : "en");
     setIsMenuOpen(false);
-  };
-
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-    setIsMenuOpen(false);
-    // Dark mode logic will go here if/when implemented globally
   };
 
   const handleLogout = () => {
@@ -79,6 +72,8 @@ export function SettingsMenu() {
   return (
     <div ref={menuRef} className="relative z-50 shrink-0">
       <motion.button
+        aria-label={language === "es" ? "Ajustes" : "Settings"}
+        aria-expanded={isMenuOpen}
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -135,6 +130,7 @@ export function SettingsMenu() {
                       {session?.user?.name || (language === "es" ? "Héroe Anónimo" : "Anonymous Hero")}
                     </span>
                     <button
+                      aria-label={language === "es" ? "Editar nombre" : "Edit name"}
                       onClick={startEditingName}
                       className="text-gray-400 opacity-0 group-hover:opacity-100 hover:text-primary transition-all"
                     >
@@ -150,18 +146,6 @@ export function SettingsMenu() {
               >
                 <Languages className="w-4 h-4 text-gray-400" />
                 <span>{language === "en" ? "Español" : "English"}</span>
-              </button>
-
-              <button
-                onClick={toggleTheme}
-                className="w-full px-4 py-3 flex items-center space-x-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                {isDark ? (
-                  <Sun className="w-4 h-4 text-gray-400" />
-                ) : (
-                  <Moon className="w-4 h-4 text-gray-400" />
-                )}
-                <span>{isDark ? "Light Mode" : "Dark Mode"}</span>
               </button>
 
               <div className="h-px bg-gray-100 my-1 mx-4" />

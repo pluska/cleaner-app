@@ -1,5 +1,7 @@
 "use client";
 
+import { useLanguage } from "@/contexts/LanguageContext";
+import { es, enUS } from "date-fns/locale";
 import { useState, useEffect, useRef } from "react";
 import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, isSameDay } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -10,16 +12,19 @@ interface CalendarStripProps {
 }
 
 export function CalendarStrip({ selectedDate, onSelectDate }: CalendarStripProps) {
+  const { language } = useLanguage();
+  const locale = language === "es" ? es : enUS;
+  useEffect(() => {setCurrentMonth(startOfMonth(selectedDate));}, [selectedDate]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [currentMonth, setCurrentMonth] = useState<Date>(startOfMonth(selectedDate));
-  
+
   // Generate days for the currently viewed month
   const daysInMonth = getDaysInMonth(currentMonth);
   const days = Array.from({ length: daysInMonth }).map((_, i) => {
     const d = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i + 1);
     return {
       dateObj: d,
-      dayName: format(d, 'EEE').toUpperCase(),
+      dayName: format(d, 'EEE', {locale}).toUpperCase(),
       dayNum: d.getDate(),
       isToday: isSameDay(d, new Date()),
     };
@@ -64,16 +69,18 @@ export function CalendarStrip({ selectedDate, onSelectDate }: CalendarStripProps
       {/* Month Navigation Header */}
       <div className="flex items-center justify-between px-6 md:px-8 mb-4">
         <h3 className="text-lg font-bold text-dark capitalize">
-          {format(currentMonth, 'MMMM yyyy')}
+          {format(currentMonth, 'MMMM yyyy', {locale})}
         </h3>
         <div className="flex space-x-2">
-          <button 
+          <button
+            aria-label={language === "es" ? "Mes anterior" : "Previous month"}
             onClick={handlePrevMonth}
             className="w-8 h-8 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-500 hover:text-primary hover:bg-gray-50 transition-colors shadow-sm"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <button 
+          <button
+            aria-label={language === "es" ? "Mes siguiente" : "Next month"}
             onClick={handleNextMonth}
             className="w-8 h-8 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-500 hover:text-primary hover:bg-gray-50 transition-colors shadow-sm"
           >
@@ -83,7 +90,7 @@ export function CalendarStrip({ selectedDate, onSelectDate }: CalendarStripProps
       </div>
 
       {/* Scrollable Dates */}
-      <div 
+      <div
         ref={scrollRef}
         className="px-6 md:px-8 overflow-x-auto scroll-smooth pb-4 [&::-webkit-scrollbar]:hidden"
         style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
@@ -92,8 +99,9 @@ export function CalendarStrip({ selectedDate, onSelectDate }: CalendarStripProps
           {days.map((day, idx) => {
              const isSelected = isSameDay(selectedDate, day.dateObj);
             return (
-              <div
+              <button
                 key={idx}
+                aria-pressed={isSelected}
                 data-selected={isSelected}
                 onClick={() => onSelectDate(day.dateObj)}
                 className={`flex flex-col items-center justify-center w-[60px] h-[85px] rounded-[24px] cursor-pointer transition-colors shrink-0 ${
@@ -113,7 +121,7 @@ export function CalendarStrip({ selectedDate, onSelectDate }: CalendarStripProps
                 {day.isToday && !isSelected && (
                   <div className="w-1 h-1 bg-primary rounded-full mt-1"></div>
                 )}
-              </div>
+              </button>
             );
           })}
         </div>

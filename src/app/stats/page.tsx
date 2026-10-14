@@ -2,33 +2,31 @@
 
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Target, Zap, Clock, Trophy, CheckCircle2 } from "lucide-react";
+import { Zap, Clock, Trophy, CheckCircle2 } from "lucide-react";
 import { SettingsMenu } from "@/components/ui/layout/SettingsMenu";
 
 export default function StatsPage() {
   const { language } = useLanguage();
 
+  const [week, setWeek] = useState('0');
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<{summary:{completedTasks:number;totalXp:number;estimatedMinutes:number};profile:{level:number;currentStreak:number}} | null>(null);
   const [weeklyData, setWeeklyData] = useState<{day: string, score: number, isToday: boolean}[]>([]);
 
   useEffect(() => {
-    fetch("/api/user/weekly-activity")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.activities && data.activities.length > 0) {
-          setWeeklyData(data.activities);
-        } else {
-          setWeeklyData([
-            { day: "Mon", score: 0, isToday: false },
-            { day: "Tue", score: 0, isToday: false },
-            { day: "Wed", score: 0, isToday: false },
-            { day: "Thu", score: 0, isToday: false },
-            { day: "Fri", score: 0, isToday: false },
-            { day: "Sat", score: 0, isToday: false },
-            { day: "Sun", score: 0, isToday: false },
-          ]);
-        }
-      });
-  }, []);
+    const controller = new AbortController();
+    setLoading(true); setError(false); setWeeklyData([]);
+    fetch(`/api/user/weekly-activity?week=${week}`, {signal:controller.signal})
+      .then(async response => {
+        if (!response.ok) throw new Error('stats');
+        const data = await response.json();
+        setWeeklyData(data.activities); setStats(data);
+      }).catch(() => {if (!controller.signal.aborted) setError(true);})
+      .finally(() => {if (!controller.signal.aborted) setLoading(false);});
+    return () => controller.abort();
+  }, [week]);
+  const maxScore = Math.max(1, ...weeklyData.map(d => d.score));
 
   return (
     <div className="w-full max-w-md md:max-w-xl lg:max-w-2xl mx-auto min-h-screen bg-[#F8F9FA] px-6 md:px-8 pt-12 md:pt-16 pb-32">
@@ -44,6 +42,8 @@ export default function StatsPage() {
         <SettingsMenu />
       </div>
 
+      {error && <p role="alert" className="text-red-700">{language === 'es' ? 'No pudimos cargar las estadísticas.' : 'Could not load statistics.'}</p>}
+      {loading && <p role="status">{language === 'es' ? 'Cargando…' : 'Loading…'}</p>}
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="bg-white rounded-[24px] p-5 shadow-sm border border-gray-100 flex flex-col justify-between h-[110px]">
           <div className="flex items-center space-x-1.5 mb-1">
@@ -53,10 +53,10 @@ export default function StatsPage() {
             </span>
           </div>
           <div className="text-2xl font-bold text-dark mt-auto">
-            {language === "es" ? "Limpiador Pro" : "Pro Cleaner"}
+            {stats ? `${language === "es" ? "Nivel" : "Level"} ${stats.profile.level}` : "—"}
           </div>
         </div>
-        
+
         <div className="bg-white rounded-[24px] p-5 shadow-sm border border-gray-100 flex flex-col justify-between h-[110px]">
           <div className="flex items-center space-x-1.5 mb-1">
             <Zap className="w-[14px] h-[14px] text-orange-500" />
@@ -65,7 +65,7 @@ export default function StatsPage() {
             </span>
           </div>
           <div className="text-4xl font-extrabold text-dark tracking-tight mt-auto">
-            12 <span className="text-lg font-medium text-gray-400">{language === "es" ? "días" : "days"}</span>
+            {stats?.profile.currentStreak ?? "—"} <span className="text-lg font-medium text-gray-400">{language === "es" ? "días" : "days"}</span>
           </div>
         </div>
       </div>
@@ -77,9 +77,9 @@ export default function StatsPage() {
           <h2 className="text-sm font-bold text-dark">
             {language === "es" ? "Actividad Semanal" : "Weekly Activity"}
           </h2>
-          <select className="text-xs text-gray-400 font-bold bg-gray-50 px-3 py-1.5 rounded-full border-none outline-none cursor-pointer">
-            <option>{language === "es" ? "Esta semana" : "This Week"}</option>
-            <option>{language === "es" ? "Semana pasada" : "Last Week"}</option>
+          <select aria-label={language === "es" ? "Semana" : "Week"} value={week} onChange={e => setWeek(e.target.value)} className="text-xs text-gray-400 font-bold bg-gray-50 px-3 py-1.5 rounded-full border-none outline-none cursor-pointer">
+            <option value="0">{language === "es" ? "Esta semana" : "This Week"}</option>
+            <option value="1">{language === "es" ? "Semana pasada" : "Last Week"}</option>
           </select>
         </div>
 
@@ -88,12 +88,12 @@ export default function StatsPage() {
             <div key={i} className="flex flex-col items-center flex-1">
               <div className="w-full relative px-1 flex justify-center group h-32 flex-col justify-end">
                 {data.score > 0 ? (
-                  <div 
+                  <div
                     className={`w-full max-w-[32px] rounded-t-lg transition-all duration-700 ease-out-expo ${data.isToday ? 'bg-primary' : 'bg-primary/20 hover:bg-primary/40'}`}
-                    style={{ height: `${data.score}%` }}
+                    style={{ height: `${data.score / maxScore * 100}%` }}
                   >
                     <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-dark text-white text-[10px] font-bold py-1 px-2 rounded whitespace-nowrap transition-opacity">
-                      {data.score} pts
+                      {data.score} XP
                     </div>
                   </div>
                 ) : (
@@ -101,19 +101,19 @@ export default function StatsPage() {
                 )}
               </div>
               <span className={`text-[10px] font-bold mt-3 uppercase ${data.isToday ? 'text-primary' : 'text-gray-400'}`}>
-                {data.day}
+                {language === "es" ? ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"][i] : data.day}
               </span>
             </div>
           ))}
         </div>
       </div>
-      
+
       {/* Mini Stats List */}
       <div className="space-y-3">
         <h2 className="text-sm font-bold text-dark mb-4 ml-2">
           {language === "es" ? "Resumen de Todos los Tiempos" : "All-Time Summary"}
         </h2>
-        
+
         <div className="bg-white px-5 py-4 rounded-2xl flex items-center shadow-sm border border-gray-50">
           <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mr-4">
             <CheckCircle2 className="w-5 h-5 text-blue-500" />
@@ -121,7 +121,7 @@ export default function StatsPage() {
           <div className="flex-1">
             <div className="text-sm font-bold text-dark">{language === "es" ? "Tareas Completadas" : "Completed Tasks"}</div>
           </div>
-          <div className="text-lg font-bold">1,248</div>
+          <div className="text-lg font-bold">{stats?.summary.completedTasks ?? "—"}</div>
         </div>
 
         <div className="bg-white px-5 py-4 rounded-2xl flex items-center shadow-sm border border-gray-50">
@@ -129,19 +129,19 @@ export default function StatsPage() {
             <Clock className="w-5 h-5 text-green-500" />
           </div>
           <div className="flex-1">
-            <div className="text-sm font-bold text-dark">{language === "es" ? "Horas Limpiando" : "Hours Cleaning"}</div>
+            <div className="text-sm font-bold text-dark">{language === "es" ? "Horas estimadas" : "Estimated Hours"}</div>
           </div>
-          <div className="text-lg font-bold">342</div>
+          <div className="text-lg font-bold">{stats ? (stats.summary.estimatedMinutes / 60).toFixed(1) : "—"}</div>
         </div>
 
         <div className="bg-white px-5 py-4 rounded-2xl flex items-center shadow-sm border border-gray-50">
           <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center mr-4">
-            <Target className="w-5 h-5 text-purple-500" />
+            <Zap className="w-5 h-5 text-purple-500" />
           </div>
           <div className="flex-1">
-            <div className="text-sm font-bold text-dark">{language === "es" ? "Días Perfectos" : "Perfect Days"}</div>
+            <div className="text-sm font-bold text-dark">{language === "es" ? "XP total" : "Total XP"}</div>
           </div>
-          <div className="text-lg font-bold">89</div>
+          <div className="text-lg font-bold">{stats?.summary.totalXp ?? "—"}</div>
         </div>
       </div>
     </div>

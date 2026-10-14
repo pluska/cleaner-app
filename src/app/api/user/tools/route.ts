@@ -1,3 +1,4 @@
+import { readJson, textField, errorResponse } from "@/libs/server/http";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/db";
@@ -50,8 +51,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json();
-    const { tool_id } = body;
+    const body = await readJson(request);
+    const tool_id = textField(body.tool_id,"tool_id",100);
 
     // Validate input
     if (!tool_id) {
@@ -83,7 +84,7 @@ export async function POST(request: NextRequest) {
         }>;
       };
       const jsonTool = toolsData.tools.find((t) => t.id === tool_id);
-      
+
       if (!jsonTool) {
         return NextResponse.json({ error: "Invalid tool ID" }, { status: 400 });
       }
@@ -99,7 +100,7 @@ export async function POST(request: NextRequest) {
           durabilityLossPerUse: 1,
         }).onConflictDoNothing();
       }
-      
+
       toolDefinition = await db
         .select()
         .from(tools)
@@ -120,8 +121,8 @@ export async function POST(request: NextRequest) {
         userId: session.user.id,
         level: 1,
         xp: 0,
-        coins: 100,
-      });
+        coins: 0,
+      }).onConflictDoNothing();
     }
 
     // Check if user already has this tool
@@ -157,10 +158,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ tool: newUserTool }, { status: 201 });
   } catch (error) {
-    console.error("Unexpected error in tools POST:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return errorResponse(error);
   }
 }

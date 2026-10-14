@@ -497,7 +497,7 @@ export interface AIRecommendation {
   area_health_impact: number;
   tools_required: string[];
   subtasks?: SubtaskFormData[];
-  source: "gemini" | "fallback";
+  source: "openai" | "fallback";
   difficulty?: "easy" | "medium" | "hard";
   estimated_total_minutes?: number;
   tools_usage?: Record<
