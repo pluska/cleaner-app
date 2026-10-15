@@ -40,11 +40,14 @@ The historical `pages:*` command names are retained for compatibility:
 
 | Command | Purpose |
 | --- | --- |
-| `npm run pages:build` | Build the OpenNext Cloudflare artifact. |
+| `npm run build` / `npm run pages:build` | Build Next.js and the OpenNext Cloudflare artifact. |
+| `npm run build:next` | Build Next.js only (called internally by OpenNext). |
 | `npm run pages:preview` | Build and preview using the Cloudflare runtime. |
 | `npm run pages:deploy` | Build and deploy manually, only after release approval. |
 
-The names do not imply deployment through the former next-on-pages adapter. Validate the OpenNext configuration, Worker entry point, assets, runtime compatibility settings, and D1 binding together. A successful `next build` alone does not prove the Cloudflare artifact works.
+The names do not imply deployment through the former next-on-pages adapter. Validate the OpenNext configuration, Worker entry point, assets, runtime compatibility settings, and D1 binding together. A successful `next build` alone does not prove the Cloudflare artifact works. `open-next.config.ts` explicitly invokes `build:next` to avoid recursion now that `build` produces the complete Cloudflare artifact.
+
+Workers Builds targets `sparkclean` in the account declared in `wrangler.toml`. Its build command is `npm run build`; the non-production upload command is `npx wrangler versions upload`. Uploading a version does not activate it in production. Production uses `npm run pages:deploy` or `npx wrangler deploy` after a successful build. The default runtime origin is [sparkclean.pluskaandres.workers.dev](https://sparkclean.pluskaandres.workers.dev). Configure `AUTH_SECRET` and `CRON_SECRET` as Worker secrets, separately from build variables.
 
 ## CI and Releases
 

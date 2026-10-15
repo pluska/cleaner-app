@@ -1,8 +1,13 @@
 # wrangler.toml
-name = "cleaner-planner"
+name = "sparkclean"
+account_id = "0239049a88a172c27e9f290c453e95ce"
 main = "worker.mjs"
 compatibility_date = "2026-09-25"
 compatibility_flags = ["nodejs_compat"]
+
+[vars]
+AUTH_URL = "https://sparkclean.pluskaandres.workers.dev"
+AUTH_TRUST_HOST = "true"
 
 [assets]
 directory = ".open-next/assets"
