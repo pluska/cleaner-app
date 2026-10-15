@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "images:optimize": "node scripts/optimize-images.mjs",
     "dev": "next dev --turbopack",
     "build": "opennextjs-cloudflare build",
     "build:next": "next build",
@@ -70,6 +71,7 @@
     "eslint": "^9",
     "eslint-config-next": "^15.5.24",
     "happy-dom": "^20.14.5",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^5.0.3",

@@ -62,7 +62,7 @@ export default function KingdomExperience(){
       <nav className="kingdom-nav" aria-label="Navegación principal"><Link href="/kingdom" aria-current="page"><Crown/>Reino</Link><Link href="/dashboard"><CalendarDays/>Agenda</Link><Link href="/store"><ShoppingBag/>Tienda</Link><button disabled={busy||!data||editing} aria-pressed={!!data?.profile.resting} onClick={()=>action(()=>patch({resting:!data?.profile.resting}))}><Moon/>Descanso</button></nav>
     </section>
     <aside className="kingdom-panel">
-      <div className="kingdom-guide"><Image src="/sparklin/sparklin_talking.png" alt="Sparklin" width="64" height="64"/><div><small>SPARKLIN TE ACOMPAÑA</small><h2>{chapters[Math.min(6,data?.campaign.completed??0)]}</h2><p>Capítulo {Math.min(7,(data?.campaign.completed??0)+1)} de 7</p></div></div>
+      <div className="kingdom-guide"><Image unoptimized src="/sparklin/sparklin-avatar.webp" alt="Sparklin" width="64" height="64"/><div><small>SPARKLIN TE ACOMPAÑA</small><h2>{chapters[Math.min(6,data?.campaign.completed??0)]}</h2><p>Capítulo {Math.min(7,(data?.campaign.completed??0)+1)} de 7</p></div></div>
       <progress aria-label="Campaña" value={data?.campaign.completed??0} max="7"/>
       {error&&<div className="kingdom-error" role="alert">{error}<button onClick={()=>action(load)}><RefreshCw size={16}/>Reintentar</button></div>}
       {message&&<p className="kingdom-success" role="status">{message}</p>}

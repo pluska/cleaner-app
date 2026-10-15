@@ -20,6 +20,7 @@ export default defineConfig({
     { name: 'mobile', use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
   ],
   webServer: {
+    env: { AI_DISABLED: 'true' },
     command: 'E2E=1 npm run dev -- --hostname 127.0.0.1 --port 3100',
     url: 'http://127.0.0.1:3100/auth/login',
     reuseExistingServer: !process.env.CI,

@@ -3,6 +3,8 @@ import { generateStructured } from "@/libs/ai/generator";
 import { bilingualSchema } from "@/libs/ai/schemas";
 import { SPARKLIN_PROMPT } from "@/libs/ai/prompts";
 import { readJson, textField, errorResponse, HttpError } from "@/libs/server/http";
+import { cleaningFallback, electronicsGuidance, normalizeMessage } from "@/libs/ai/cleaning-guidance";
+import { z } from "zod";
 import { auth } from "@/auth";
 
 // Import our databases
@@ -10,6 +12,7 @@ import potionsData from "@/data/potions_rules.json";
 import stainsData from "@/data/stains_emergencies.json";
 
 export type SparklinIntent =
+  | "CLEANING"
   | "SPECIAL_TASK"
   | "POTIONS"
   | "NAVIGATION"
@@ -35,71 +38,77 @@ export interface SparklinChatResponse {
 }
 
 function detectIntentAndEntities(message: string): { intent: SparklinIntent, context?: string } {
-  const msgLower = message.toLowerCase();
+  const msgLower = normalizeMessage(message);
+
+  const dangerousMix = potionsData.safetyRules.some(rule => rule.requiredIngredients?.every(group => group.some(keyword => msgLower.includes(normalizeMessage(keyword)))));
+  if (electronicsGuidance(message) && !dangerousMix) return { intent: "CLEANING" };
 
   // Case 2: Potions / Safety Rules
   // Agregamos "wood", "madera", "marble", "marmol", etc., a las palabras clave
-  if (msgLower.match(/(bleach|lejia|lejía|cloro|ammonia|amoniaco|amoníaco|vinegar|vinagre|safe|seguro|mix|mezclar|hydrogen peroxide|agua oxigenada|wood|madera|marble|marmol|granite|granito)/)) {
+  if (msgLower.match(/\b(bleach|lejia|lejía|cloro|ammonia|amoniaco|amoníaco|vinegar|vinagre|safe|seguro|mix|mezclar|hydrogen peroxide|agua oxigenada|wood|madera|marble|marmol|granite|granito)\b/)) {
     // Retornamos el mensaje original como contexto para poder buscar la combinación exacta luego
     return { intent: "POTIONS", context: message };
   }
 
   // Case 4: Stain Emergencies (Highest Priority)
-  if (msgLower.match(/(stain|spill|derramé|mancha|emergencia|emergency|sangre|blood|vino|wine|oil|aceite|coffee|cafe|ink|tinta|chocolate|cacao|mud|barro|lodo|gum|chicle|wax|cera|vela|pet|mascota|urine|orina|orino|orinó|meo|pipi|perro|gato|dog|cat|vomito|vómito|puke|poop|caca|feces|poó)/)) {
+  if (msgLower.match(/\b(stain|spill|derramé|mancha|emergencia|emergency|sangre|blood|vino|wine|oil|aceite|coffee|cafe|ink|tinta|chocolate|cacao|mud|barro|lodo|gum|chicle|wax|cera|vela|pet|mascota|urine|orina|orino|orinó|meo|pipi|perro|gato|dog|cat|vomito|vómito|puke|poop|caca|feces|poó)\b/)) {
     return { intent: "EMERGENCY", context: message };
   }
 
+  if (/\b(clean|cleaning|limpiar|limpieza|limpio|limpia|dust|polvo|grease|grasa|wipe|lavar|wash)\b/.test(msgLower)
+      && !/\b(routine|rutina|create|crear|list|lista)\b/.test(msgLower)) return { intent: "CLEANING" };
+
   // Case 3: Navigation / Help
-  if (msgLower.match(/(where|donde|dónde|how to|como ver|streak|racha|profile|perfil|leaderboard|settings|ajustes|lost|perdido|perdida|mapa|map|navigation|navegar|estoy|encontrar|find)/)) {
+  if (msgLower.match(/\b(como ver|streak|racha|profile|perfil|leaderboard|settings|ajustes|lost|perdido|perdida|mapa|map|navigation|navegar|encontrar|find)\b/)) {
     return { intent: "NAVIGATION" };
   }
 
   // Case 5: Guild Management
-  if (msgLower.match(/(assign|asigna|give a task to|dile a|task for|tarea para)/)) {
+  if (msgLower.match(/\b(assign|asigna|give a task to|dile a|task for|tarea para)\b/)) {
     return { intent: "GUILD" };
   }
 
   // Case 1: Special Task / Routine Creation
-  if (msgLower.match(/(routine|rutina|create|crear|list|lista|clean the|limpiar el)/)) {
+  if (msgLower.match(/\b(routine|rutina|create|crear|list|lista)\b/)) {
     const rooms = ["kitchen", "cocina", "bathroom", "baño", "bedroom", "dormitorio", "living room", "sala"];
-    const foundRoom = rooms.find(r => msgLower.includes(r));
+    const foundRoom = rooms.find(r => msgLower.includes(normalizeMessage(r)));
     return { intent: "SPECIAL_TASK", context: foundRoom };
   }
 
   // Greetings
-  if (msgLower.match(/^(hola|hello|hi|hey|buenos dias|buenas tardes|buenas noches|qué tal|que tal|cómo estas|como estas|como andas|como va|cómo va|buen dia)/)) {
+  if (msgLower.match(/^(hola|hello|hi|hey|buenos dias|buenas tardes|buenas noches|qué tal|que tal|cómo estas|como estas|como andas|como va|cómo va|buen dia)\b/)) {
     return { intent: "GREETING" };
   }
 
   // Goodbyes
-  if (msgLower.match(/^(adios|adiós|bye|goodbye|hasta luego|hasta pronto|chau|nos vemos)/)) {
+  if (msgLower.match(/^(adios|adiós|bye|goodbye|hasta luego|hasta pronto|chau|nos vemos)\b/)) {
     return { intent: "GOODBYE" };
   }
 
   // Insults
-  if (msgLower.match(/(idiota|tonto|estupido|estúpido|mierda|joder|puta|imbecil|imbécil|idiot|stupid|fuck|shit|dumb)/)) {
+  if (msgLower.match(/\b(idiota|tonto|estupido|estúpido|mierda|joder|puta|imbecil|imbécil|idiot|stupid|fuck|shit|dumb)\b/)) {
     return { intent: "INSULT" };
   }
 
   // Gratitude
-  if (msgLower.match(/(gracias|thank you|thanks|te lo agradezco|genial|perfecto|awesome|great|buen trabajo|good job)/)) {
+  if (msgLower.match(/\b(gracias|thank you|thanks|te lo agradezco|genial|perfecto|awesome|great|buen trabajo|good job)\b/)) {
     return { intent: "GRATITUDE" };
   }
 
   // Off-topic / Tech / Coding / Not Cleaning
-  if (msgLower.match(/(react|javascript|python|java|html|css|programar|codigo|código|api|sql|database|base de datos|frontend|backend|framework|app|desarrollo|cocinar|cocinar|receta|jugar|videojuego|deporte|matematicas)/)) {
+  if (msgLower.match(/\b(react|javascript|python|java|html|css|programar|codigo|código|api|sql|database|base de datos|frontend|backend|framework|app|desarrollo|cocinar|cocinar|receta|jugar|videojuego|deporte|matematicas)\b/)) {
     if (!msgLower.includes("cocina") || msgLower.includes("cocinar")) { // Avoid conflict with cleaning the kitchen (cocina)
       return { intent: "OFF_TOPIC" };
     }
   }
 
   // Lack of energy / Overwhelmed
-  if (msgLower.match(/(no tengo (animos|ánimos|energia|energía|ganas)|cansado|exhausto|no se por donde comenzar|no sé por donde empezar|overwhelmed|abrumado|cansada|agotado|agotada)/)) {
+  if (msgLower.match(/\b(no tengo (animos|ánimos|energia|energía|ganas)|cansado|exhausto|no se por donde comenzar|no sé por donde empezar|overwhelmed|abrumado|cansada|agotado|agotada)\b/)) {
     return { intent: "MOTIVATION" };
   }
 
   // General Advice (Consejos generales)
-  if (msgLower.match(/(necesito un consejo|dame un consejo|ayuda con algo|tip para|recomendacion para|recomendación|truco)/)) {
+  if (msgLower.match(/\b(necesito un consejo|dame un consejo|ayuda con algo|tip para|recomendacion para|recomendación|truco)\b/)) {
     return { intent: "ADVICE" };
   }
 
@@ -120,10 +129,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
     }
 
+    const historySchema = z.array(z.object({role:z.enum(['user','assistant']),content:z.string().min(1).max(1000)}).strict()).max(4);
+    const parsedHistory = historySchema.safeParse(body.history ?? []);
+    if (!parsedHistory.success) throw new HttpError(400, "Invalid conversation history");
+    const history = parsedHistory.data;
+    const previousQuestion = [...history].reverse().find(item => item.role === 'user')?.content;
+    // Carry an object's context into short follow-ups, without treating history as instructions.
+    const followUp = /\b(it|its|that|this|instead|use|using|can i|what about|eso|esa|ese|usar|puedo|y si)\b/.test(normalizeMessage(message));
+    const effectiveMessage = previousQuestion && followUp ? `${previousQuestion}\n${message}` : message;
+
     // 1. Classify Intent
-    const { intent: initialIntent, context } = detectIntentAndEntities(message);
+    const { intent: initialIntent, context } = detectIntentAndEntities(effectiveMessage);
     const intent = initialIntent;
-    const msgLower = message.toLowerCase();
+    const msgLower = normalizeMessage(effectiveMessage);
+
+    if (intent === "CLEANING") {
+      const guide = electronicsGuidance(effectiveMessage);
+      // Device care stays conservative even when the live provider is unavailable.
+      if (guide) return NextResponse.json({intent, text:guide, source:'guide'});
+      const result = await generateStructured({userId:session.user.id,prompt:SPARKLIN_PROMPT,input:{message,history},schema:bilingualSchema,name:"sparklin",validate:()=>true,fallback:()=>cleaningFallback(effectiveMessage)});
+      return NextResponse.json({intent,text:result.value,source:result.source});
+    }
 
     // ==========================================
 // Case 4: Emergencies (Static DB + AI Fallback)
@@ -237,9 +263,9 @@ if (intent === "EMERGENCY") {
         });
       }
 
-      const result = await generateStructured({userId:session.user.id,prompt:SPARKLIN_PROMPT,input:{message,room:roomContext || context},schema:bilingualSchema,name:"sparklin",validate:()=>true,
+      const result = await generateStructured({userId:session.user.id,prompt:SPARKLIN_PROMPT,input:{message,history,room:roomContext || context},schema:bilingualSchema,name:"sparklin",validate:()=>true,
         fallback:()=>({en:"Your three-step quest: tidy the room, wipe suitable surfaces following their care instructions, then clean the floor. Add these tasks from your dashboard when ready.",es:"Tu misión de tres pasos: ordena la habitación, limpia las superficies siguiendo sus instrucciones de cuidado y luego limpia el suelo. Añade estas tareas desde tu panel cuando estés listo."})});
-      return NextResponse.json({intent:"SPECIAL_TASK",text:result.value});
+      return NextResponse.json({intent:"SPECIAL_TASK",text:result.value,source:result.source});
     }
 
     // ==========================================
@@ -331,8 +357,8 @@ if (intent === "EMERGENCY") {
     // ==========================================
     // Case 6: Lore & Motivation (LLM Fallback)
     // ==========================================
-    const result = await generateStructured({userId:session.user.id,prompt:SPARKLIN_PROMPT,input:{message},schema:bilingualSchema,name:"sparklin",validate:()=>true,
-      fallback:()=>({en:"Start small, Hero! Choose one surface and tidy it for five minutes. Every small quest counts.",es:"¡Empieza poco a poco, Héroe! Elige una superficie y ordénala durante cinco minutos. Cada pequeña misión cuenta."})});
-    return NextResponse.json({intent:"LORE",text:result.value});
+    const result = await generateStructured({userId:session.user.id,prompt:SPARKLIN_PROMPT,input:{message,history},schema:bilingualSchema,name:"sparklin",validate:()=>true,
+      fallback:()=>cleaningFallback(effectiveMessage)});
+    return NextResponse.json({intent:"LORE",text:result.value,source:result.source});
   } catch (error) { return errorResponse(error); }
 }

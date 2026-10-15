@@ -55,7 +55,7 @@ export const themes: Record<ThemeType, Theme> = {
       accent: '#EAB308', // gold
     },
     assets: {
-      bgPattern: 'url("/patterns/wood.png")',
+      bgPattern: 'url("/patterns/wood.webp")',
       buttonTexture: 'wood',
     },
     typography: {
@@ -95,7 +95,7 @@ export const themes: Record<ThemeType, Theme> = {
       accent: '#22D3EE', // cyan glow
     },
     assets: {
-      bgPattern: 'url("/patterns/stardust.png")',
+      bgPattern: 'url("/patterns/stardust.webp")',
       buttonTexture: 'crystal',
     },
     typography: {

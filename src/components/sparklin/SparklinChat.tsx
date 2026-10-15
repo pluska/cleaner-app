@@ -12,6 +12,7 @@ type ChatMessage = {
   id: string;
   sender: "user" | "sparklin";
   text: string;
+  source?: "openai" | "fallback" | "guide";
   uiAction?: {
     type: "SHOW_ROOM_BUTTONS" | "NAVIGATE_LINKS";
     payload?: Record<string, unknown>;
@@ -29,7 +30,6 @@ export function SparklinChat() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [pendingPrompt, setPendingPrompt] = useState<string | null>(null);
-  const [consecutiveLoreCount, setConsecutiveLoreCount] = useState(0);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -112,57 +112,20 @@ export function SparklinChat() {
          method: "POST",
          headers: { "Content-Type": "application/json" },
          body: JSON.stringify({
-             message: textToSend,
+             message: contextObj && pendingPrompt ? pendingPrompt : textToSend,
+             history: chatHistory.slice(-4).map(msg => ({role: msg.sender === "user" ? "user" : "assistant", content: msg.text.slice(0,1000)})),
              ...(contextObj || {})
          })
        });
 
        const data = await res.json();
 
-       if (data.text) {
-          if (data.intent === "LORE") {
-            const newCount = consecutiveLoreCount + 1;
-            setConsecutiveLoreCount(newCount);
-
-            if (newCount >= 3) {
-              const spellOptions = [
-                {
-                   en: "I am flattered by your devotion, Hero, truly! But my magic only works if you move the brush. The Dust Dragons aren't going to banish themselves while we chat!",
-                   es: "¡Me halaga tu devoción, Héroe, de verdad! Pero mi magia solo funciona si tú mueves el cepillo. ¡Los Dragones de Polvo no se van a desterrar solos mientras charlamos!"
-                },
-                {
-                   en: "My magical energy is best spent on potions, not small talk! Go forth and conquer that kitchen; I shall be here... resting my magnificent beard.",
-                   es: "¡Mi energía mágica se aprovecha mejor en pociones, no en charlas triviales! Ve y conquista esa cocina; yo estaré aquí... descansando mi magnífica barba."
-                },
-                {
-                   en: "I know, I know, I am incredibly charismatic. But even the greatest wizards need to scrub a toilet once in a while. Off you go! Your legend awaits in the laundry room!",
-                   es: "Lo sé, lo sé, soy increíblemente carismático. Pero incluso los magos más grandes necesitan fregar un inodoro de vez en cuando. ¡Largo de aquí! ¡Tu leyenda te espera en el cuarto de lavado!"
-                },
-                {
-                   en: "Are you trying to cast a 'Procrastination Shield' by talking to me? It won't work! The Grime Goblins are throwing a party in your sink right now. To battle!",
-                   es: "¿Estás intentando lanzar un 'Escudo de Procrastinación' hablando conmigo? ¡No funcionará! Los Duendes de la Mugre están dando una fiesta en tu fregadero ahora mismo. ¡A la batalla!"
-                }
-              ];
-              const spell = spellOptions[Math.floor(Math.random() * spellOptions.length)];
-
-              setChatHistory(prev => [...prev, {
-                 id: (Date.now() + 1).toString(),
-                 sender: "sparklin",
-                 text: language === "es" ? spell.es : spell.en,
-                 uiAction: data.uiAction
-              }]);
-              setConsecutiveLoreCount(0);
-              if (contextObj) setPendingPrompt(null);
-              return;
-            }
-          } else {
-             setConsecutiveLoreCount(0);
-          }
-
+       if (res.ok && data.text?.en && data.text?.es) {
           setChatHistory(prev => [...prev, {
              id: (Date.now() + 1).toString(),
              sender: "sparklin",
              text: language === "es" ? data.text.es : data.text.en,
+             source: data.source,
              uiAction: data.uiAction
           }]);
         } else {
@@ -255,8 +218,6 @@ export function SparklinChat() {
       // User clicked a room button to fulfill a Special Task request
       if (!pendingPrompt) return;
 
-      setPendingPrompt(null);
-
       await sendMessageToApi(`Selected: ${label}`, { roomContext: roomId });
   };
 
@@ -291,6 +252,7 @@ export function SparklinChat() {
                   {isExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
                 </button>
                 <button
+                  aria-label={language === "es" ? "Cerrar chat" : "Close chat"}
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsOpen(false);
@@ -335,7 +297,7 @@ export function SparklinChat() {
                    {msg.sender === "sparklin" && (
                      <div className="w-10 h-10 shrink-0 mr-2 mt-auto">
                         <Image unoptimized width={64} height={64}
-                          src="/sparklin/sparklin_talking.png"
+                          src="/sparklin/sparklin-avatar.webp"
                           alt="Sparklin"
                           className="w-full h-full object-contain"
                         />
@@ -348,6 +310,7 @@ export function SparklinChat() {
                         : "bg-white border border-purple-100 text-slate-700 rounded-bl-none"
                    }`}>
                       <p className="leading-relaxed whitespace-pre-wrap">{msg.text}</p>
+                      {msg.source === "fallback" && <span className="text-xs text-slate-500">{language === "es" ? "Guía básica · IA no disponible" : "Basic guide · AI unavailable"}</span>}
 
                       {/* UI Actions Rendering */}
                       {msg.uiAction && msg.uiAction.type === "NAVIGATE_LINKS" && (
@@ -386,7 +349,7 @@ export function SparklinChat() {
               {isLoading && (
                  <div className="flex justify-start z-10 w-full">
                     <div className="w-10 h-10 shrink-0 mr-2 mt-auto">
-                        <Image unoptimized width={64} height={64} src="/sparklin/sparklin_talking.png" alt="Sparklin" className="w-full h-full object-contain blur-[1px] opacity-70" />
+                        <Image unoptimized width={64} height={64} src="/sparklin/sparklin-avatar.webp" alt="Sparklin" className="w-full h-full object-contain blur-[1px] opacity-70" />
                      </div>
                      <div className="bg-white border border-purple-100 rounded-2xl rounded-bl-none p-3 shadow-sm flex items-center justify-center h-10">
                         <Loader2 className="animate-spin text-purple-400" size={18} />
@@ -406,6 +369,7 @@ export function SparklinChat() {
               />
               <button
                 type="submit"
+                aria-label={language === "es" ? "Enviar mensaje" : "Send message"}
                 disabled={!inputText.trim() || isLoading}
                 className="bg-purple-600 hover:bg-purple-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg p-2 transition-colors flex items-center justify-center"
               >
@@ -418,6 +382,7 @@ export function SparklinChat() {
 
       {/* Floating Button */}
       <motion.button
+        aria-label={language === "es" ? "Hablar con Sparklin" : "Chat with Sparklin"}
         onClick={handleOpen}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
