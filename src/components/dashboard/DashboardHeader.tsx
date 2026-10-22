@@ -19,9 +19,9 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
     .toUpperCase();
 
   return (
-    <div className="flex items-center justify-between mb-6 relative">
+    <div className="flex items-start justify-between gap-4 mb-6 relative">
       <div>
-        <div className="text-gray-400 text-[10px] font-bold tracking-[0.15em] mb-1">
+        <div className="text-muted text-xs font-medium tracking-wide mb-2">
           {formattedDate}
         </div>
         <h1 className="text-2xl font-bold text-dark">

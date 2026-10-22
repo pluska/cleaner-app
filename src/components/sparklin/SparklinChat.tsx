@@ -222,7 +222,7 @@ export function SparklinChat() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 flex flex-col items-end z-[9999] drop-shadow-md pointer-events-none">
+    <div className="sparklin-launcher fixed bottom-6 right-6 flex flex-col items-end z-[9999] drop-shadow-md pointer-events-none">
       <AnimatePresence>
         {isOpen && (
           <motion.div

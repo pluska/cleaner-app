@@ -43,6 +43,20 @@
       "when": 1791432000005,
       "tag": "0005_occurrence_guards",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1792148537166,
+      "tag": "0006_households",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1792186937562,
+      "tag": "0007_shared_work",
+      "breakpoints": true
     }
   ]
 }

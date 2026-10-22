@@ -1,0 +1,328 @@
+{
+  "screenCount": 129,
+  "mobile": 110,
+  "desktop": 16,
+  "darkExamples": 3,
+  "nodeTypes": {
+    "FRAME": 1962,
+    "INSTANCE": 1210,
+    "VECTOR": 2338,
+    "TEXT": 2191,
+    "RECTANGLE": 1027
+  },
+  "fonts": [
+    "Geist",
+    "Lora"
+  ],
+  "imageNodes": 213,
+  "prototypeConnections": 981,
+  "brokenLinkCount": 0,
+  "textOverflowCount": 0,
+  "overflowIds": [],
+  "brandColors": {
+    "navy": "#1E3A8A",
+    "royal": "#2B4C7E",
+    "cyan": "#5CE1E6",
+    "cyanLight": "#7AD7F0",
+    "sky": "#A3C9E2",
+    "skyLight": "#B8DAF7",
+    "gold": "#E5B842",
+    "goldDark": "#D4AF37",
+    "wood": "#8C5831",
+    "caramel": "#B07D4F",
+    "ice": "#F4F9FD",
+    "white": "#FFFFFF",
+    "cloud": "#EBF4FA",
+    "midnight": "#0B1528",
+    "navyCard": "#152442",
+    "ink": "#0F1E36",
+    "muted": "#4A607A",
+    "dust": "#7D858A",
+    "grime": "#7D654E",
+    "clean": "#10B981",
+    "sparkle": "#34D399",
+    "dusty": "#F59E0B",
+    "overdue": "#F43F5E",
+    "magic": "#8B5CF6"
+  },
+  "flowCount": 8,
+  "prototypeTraceChecks": {
+    "checks": [
+      {
+        "name": "Crear hogar e invitar",
+        "passed": true,
+        "missingEdges": [],
+        "steps": 12
+      },
+      {
+        "name": "Entrar como camarada",
+        "passed": true,
+        "missingEdges": [],
+        "steps": 3
+      },
+      {
+        "name": "Repartir y completar",
+        "passed": true,
+        "missingEdges": [],
+        "steps": 5
+      },
+      {
+        "name": "Construir y mejorar",
+        "passed": true,
+        "missingEdges": [],
+        "steps": 10
+      },
+      {
+        "name": "Comprar y equipar",
+        "passed": true,
+        "missingEdges": [],
+        "steps": 6
+      },
+      {
+        "name": "Clima y efectos",
+        "passed": true,
+        "missingEdges": [],
+        "steps": 7
+      },
+      {
+        "name": "Participar y reclamar",
+        "passed": true,
+        "missingEdges": [],
+        "steps": 5
+      },
+      {
+        "name": "Programar evento",
+        "passed": true,
+        "missingEdges": [],
+        "steps": 5
+      },
+      {
+        "name": "Aprobación adulta",
+        "passed": true,
+        "missingEdges": [],
+        "steps": 5
+      },
+      {
+        "name": "Registro con invitación",
+        "passed": true,
+        "missingEdges": [],
+        "steps": 4
+      }
+    ],
+    "passed": 10,
+    "total": 10
+  },
+  "visualChecks": [
+    "Product cover",
+    "Design-system specimen",
+    "Light desktop dashboard",
+    "Dark desktop dashboard after contrast repair",
+    "Twelve-event calendar",
+    "Prototype launch hub",
+    "Tower levels 1–3",
+    "Snowy mobile atmosphere",
+    "Official logo and restored source copy: desktop landing full page, Spanish mobile landing, dashboard, onboarding"
+  ],
+  "scope": "Figma design and generated PNG assets; application runtime unchanged",
+  "assetChecks": [
+    {
+      "name": "camarada.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "bytes": 1987054
+    },
+    {
+      "name": "gate3d.png",
+      "width": 1374,
+      "height": 1145,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "bytes": 1702933
+    },
+    {
+      "name": "lantern.png",
+      "width": 1237,
+      "height": 1272,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "bytes": 1334738
+    },
+    {
+      "name": "magicmop.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "bytes": 1779116
+    },
+    {
+      "name": "sparklin.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "bytes": 1512883
+    },
+    {
+      "name": "tavern3d.png",
+      "width": 1312,
+      "height": 1199,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "bytes": 1942436
+    },
+    {
+      "name": "terrain-autumn.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "bytes": 2402451
+    },
+    {
+      "name": "terrain-winter.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "bytes": 2241212
+    },
+    {
+      "name": "terrain.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "bytes": 2354700
+    },
+    {
+      "name": "tower1.png",
+      "width": 1312,
+      "height": 1199,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "bytes": 1170314
+    },
+    {
+      "name": "tower2.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "bytes": 1420742
+    },
+    {
+      "name": "tower3.png",
+      "width": 1283,
+      "height": 1226,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "bytes": 1493172
+    },
+    {
+      "name": "well3d.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "bytes": 1653261
+    },
+    {
+      "name": "wintercape.png",
+      "width": 1312,
+      "height": 1199,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "bytes": 1846319
+    },
+    {
+      "name": "winterhero.png",
+      "width": 1156,
+      "height": 1361,
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "bytes": 1550458
+    }
+  ],
+  "coreTextContrast": [
+    {
+      "role": "Texto claro",
+      "foreground": "#0F1E36",
+      "background": "#F4F9FD",
+      "ratio": 15.74
+    },
+    {
+      "role": "Texto secundario",
+      "foreground": "#4A607A",
+      "background": "#F4F9FD",
+      "ratio": 6.11
+    },
+    {
+      "role": "Acción primaria clara",
+      "foreground": "#FFFFFF",
+      "background": "#1E3A8A",
+      "ratio": 10.36
+    },
+    {
+      "role": "Texto oscuro",
+      "foreground": "#F4F9FD",
+      "background": "#0B1528",
+      "ratio": 17.2
+    },
+    {
+      "role": "Acción primaria oscura",
+      "foreground": "#152442",
+      "background": "#5CE1E6",
+      "ratio": 9.81
+    }
+  ],
+  "allCoreTextPairsAtLeast4_5": true,
+  "copyRevisionReport": "copy-qa-report.json"
+}

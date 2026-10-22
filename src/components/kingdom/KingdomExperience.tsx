@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { BrandLogo } from "@/components/ui/layout/BrandLogo";
 import { Check, Coins, Crown, CalendarDays, Moon, Move, Plus, Minus, Save, RotateCcw, ShoppingBag, Sparkles, ArrowUp, Clock, RefreshCw } from "lucide-react";
 import { BUILDINGS, validPositions } from "@/libs/kingdom-rules";
 import type { KingdomBuilding } from "@/services/kingdomService";
@@ -54,7 +55,7 @@ export default function KingdomExperience(){
   const current=(editing?positions:data?.buildings)?.find(b=>b.id===selected);
   const missions=tasks.filter(t=>!t.completed&&t.duration<=minutes&&(!selected||data?.links.some(l=>l.roomId===t.roomId&&l.buildingId===selected))).slice(0,3);
   return <main className="kingdom-shell">
-    <header className="kingdom-header"><Link href="/kingdom" className="kingdom-brand"><Crown/><span>SPARKCLEAN<small>Tu reino, un reto a la vez</small></span></Link><div className="kingdom-wallet"><span><Sparkles size={17}/>{data?.profile.xp??0} XP</span><span><Coins size={17}/>{data?.profile.coins??0}</span><strong>Nv. {data?.profile.level??1}</strong></div></header>
+    <header className="kingdom-header"><div className="kingdom-brand"><BrandLogo href="/kingdom" priority/><small>Tu reino, un reto a la vez</small></div><div className="kingdom-wallet"><span><Sparkles size={17}/>{data?.profile.xp??0} XP</span><span><Coins size={17}/>{data?.profile.coins??0}</span><strong>Nv. {data?.profile.level??1}</strong></div></header>
     <section className="kingdom-world">
       <Canvas buildings={editing?positions:data?.buildings??[]} selected={selected} editing={editing} zoom={zoom} onSelect={setSelected} onMove={move}/>
       <div className="kingdom-caption"><span>VALLE DE LA AURORA</span><h1>Un hogar que florece.</h1><p>{data?.profile.resting?"El reino descansa contigo.":"Hoy, una pequeña misión puede cambiarlo todo."}</p></div>

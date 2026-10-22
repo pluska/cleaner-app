@@ -1,6 +1,6 @@
 "use client";
 
-import { Trophy, Sparkles } from "lucide-react";
+import { DesignIcon } from "./DesignIcon";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 import { Card } from "@/components/ui/layout/Card";
@@ -14,14 +14,12 @@ export function CTASection({ onGetStarted }: CTASectionProps) {
   const { language } = useLanguage();
 
   return (
-    <Card className="mt-20 text-center p-12 shadow-lg bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20">
-      <div className="bg-gradient-to-r from-primary to-secondary p-4 rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-6">
-        <Trophy className="h-10 w-10 text-white" />
-      </div>
-      <h2 className="text-3xl font-bold text-dark mb-4">
+    <Card className="landing-cta" shadow="sm">
+      <DesignIcon name="crown" />
+      <h2 >
         {t("Beat the Mess for Good", language)}
       </h2>
-      <p className="text-dark/70 mb-8 max-w-2xl mx-auto">
+      <p >
         {t(
           "Join thousands of users who have turned their chores into a game. Stop cleaning, start playing.",
           language
@@ -33,7 +31,6 @@ export function CTASection({ onGetStarted }: CTASectionProps) {
         size="lg"
         className="group"
       >
-        <Sparkles className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform" />
         {t("Gamify My Cleaning", language)}
       </Button>
     </Card>

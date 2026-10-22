@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Star, Coins } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { InteractiveTaskCard } from "./InteractiveTaskCard";
 import { TaskCompletionAnimation } from "./TaskCompletionAnimation";
@@ -217,51 +216,10 @@ export function GamificationPreview({
         showAnimation={showCompletionAnimation} // Controlled by parent component
       />
 
-      <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl p-8  shadow-xl">
-        {/* Task Header */}
-        <div className="ml-6 relative">
-          <div className="flex items-center space-x-3">
-            {/* Arrow pointing down to task card */}
-            <div className="flex-shrink-0">
-              <svg
-                className="w-5 h-5 text-dark/40"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 2L12 22"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M12 22L6 16"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M12 22L18 16"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-            <h3 className="text-lg font-semibold text-dark transition-all duration-700 ease-in-out">
-              {language === "es"
-                ? `${cleaningVerbs[currentVerbIndex].es} tu tarea`
-                : `${cleaningVerbs[currentVerbIndex].en} your task`}
-            </h3>
-          </div>
-        </div>
-
+      <div className="quest-preview">
+        <h3>{language === "es" ? `${cleaningVerbs[currentVerbIndex].es} tu tarea` : `${cleaningVerbs[currentVerbIndex].en} your task`}</h3>
         {/* Interactive Task Cards - Show only current task */}
-        <div className="space-y-4 mb-6">
+        <div >
           {currentTask && (
             <InteractiveTaskCard
               key={currentTask.id}
@@ -278,62 +236,19 @@ export function GamificationPreview({
           )}
         </div>
 
-        {/* XP & Level Progress */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white rounded-2xl p-4 text-center shadow-md border border-gray-100">
-            <div className="bg-primary/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-2">
-              <Star className="h-6 w-6 text-primary" />
-            </div>
-            <div className="text-2xl font-bold text-primary mb-1">
-              Level {currentLevel}
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl p-4 text-center shadow-md border border-gray-100">
-            <div className="bg-secondary/10 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-2">
-              <Coins className="h-6 w-6 text-secondary" />
-            </div>
-            <div className="text-2xl font-bold text-secondary mb-1">
-              {totalXP.toLocaleString()} XP
-            </div>
-          </div>
+        <div className="preview-stats" aria-live="polite">
+          <div className="preview-stat">Level {currentLevel}</div>
+          <div className="preview-stat">{totalXP.toLocaleString()} XP</div>
         </div>
-
-        {/* Level Progress Bar */}
-        <div className="mt-4 bg-white rounded-2xl p-4 shadow-md border border-gray-100">
-          <div className="flex items-center justify-between text-sm mb-2">
-            <span className="text-dark/70">
-              Progress to Level {currentLevel + 1}
-            </span>
-            <span className="text-dark font-medium">
-              {progressToNextLevel}/{xpForNextLevel - xpForCurrentLevel} XP
-            </span>
+        <div className="preview-progress">
+          <p>Progress to Level {currentLevel + 1}</p>
+          <span>{progressToNextLevel}/{xpForNextLevel - xpForCurrentLevel} XP</span>
+          <div className="preview-progress-track" role="progressbar" aria-label={`Progress to Level ${currentLevel + 1}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progressToNextLevel}>
+            <div style={{ width: `${Math.min(100, Math.max(0, progressToNextLevel))}%` }} />
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-3">
-            <div
-              className="bg-gradient-to-r from-primary to-secondary h-3 rounded-full transition-all duration-1000 ease-out"
-              style={{
-                width: `${Math.min(
-                  100,
-                  Math.max(
-                    0,
-                    (progressToNextLevel /
-                      (xpForNextLevel - xpForCurrentLevel)) *
-                      100
-                  )
-                )}%`,
-              }}
-            />
-          </div>
-          <p className="text-xs text-dark/50 mt-2 text-center">
-            {xpNeededForNextLevel > 0
-              ? language === "es"
-                ? `¡Solo ${xpNeededForNextLevel} XP más para el siguiente nivel!`
-                : `Just ${xpNeededForNextLevel} XP more to next level!`
-              : language === "es"
-              ? "¡Nivel completado! ¡Felicidades!"
-              : "Level completed! Congratulations!"}
-          </p>
+          <p>{xpNeededForNextLevel > 0
+            ? language === "es" ? `¡Solo ${xpNeededForNextLevel} XP más para el siguiente nivel!` : `Just ${xpNeededForNextLevel} XP more to next level!`
+            : language === "es" ? "¡Nivel completado! ¡Felicidades!" : "Level completed! Congratulations!"}</p>
         </div>
       </div>
     </>

@@ -28,7 +28,7 @@ export function Card({
   };
 
   const baseClasses =
-    "bg-white rounded-2xl border border-base transition-all duration-200";
+    "sc-card transition-colors duration-200";
   const classes = `${baseClasses} ${paddingClasses[padding]} ${shadowClasses[shadow]} ${className}`;
 
   return (

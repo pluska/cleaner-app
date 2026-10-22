@@ -1,0 +1,101 @@
+{
+  "date": "2026-10-15",
+  "figmaFile": "KbdaVK1RegHyjr8Z9HvJJ5",
+  "scope": "Figma visual design revision only; existing application source and translations were not edited by this revision.",
+  "policy": "Use existing copy verbatim for its selected locale. New copy is reserved for new features.",
+  "officialLogo": {
+    "path": "assets/sparkclean-official-logo.png",
+    "componentId": "47:231",
+    "imageHash": "2f5f60ec6d341cac65f1340ea2c80f30c0fa6a2b",
+    "preservedOriginalBytes": true,
+    "screensWithLogo": 129
+  },
+  "landing": {
+    "stringsPerLocale": 39,
+    "locales": [
+      "en",
+      "es"
+    ],
+    "layouts": [
+      {
+        "key": "landing",
+        "id": "6:2947",
+        "lang": "es",
+        "mobile": true,
+        "missingStrings": []
+      },
+      {
+        "key": "landing-en",
+        "id": "49:6593",
+        "lang": "en",
+        "mobile": true,
+        "missingStrings": []
+      },
+      {
+        "key": "landing-desktop-en",
+        "id": "49:6768",
+        "lang": "en",
+        "mobile": false,
+        "missingStrings": []
+      },
+      {
+        "key": "landing-desktop-es",
+        "id": "49:6942",
+        "lang": "es",
+        "mobile": false,
+        "missingStrings": []
+      }
+    ],
+    "fullPageReview": [
+      {
+        "id": "52:6734",
+        "key": "landing",
+        "content": "52:6744",
+        "h": 4525.33349609375
+      },
+      {
+        "id": "52:6846",
+        "key": "landing-en",
+        "content": "52:6856",
+        "h": 4355.33349609375
+      },
+      {
+        "id": "52:6958",
+        "key": "landing-desktop-en",
+        "content": "52:6966",
+        "h": 2524.666748046875
+      },
+      {
+        "id": "52:7067",
+        "key": "landing-desktop-es",
+        "content": "52:7075",
+        "h": 2545.666748046875
+      }
+    ]
+  },
+  "originalContentRestored": [
+    "authentication headings and labels",
+    "dashboard headings",
+    "schedule headings",
+    "onboarding questions and options",
+    "task detail headings and sample template content",
+    "statistics sections",
+    "six original rewards and prices",
+    "kingdom headings",
+    "settings identity",
+    "Sparklin quick actions and placeholder",
+    "session expiry message"
+  ],
+  "prototype": {
+    "screens": 129,
+    "connections": 981,
+    "brokenTargets": 0
+  },
+  "visualReview": [
+    "English desktop landing full page",
+    "Spanish mobile landing",
+    "mobile dashboard",
+    "occupants onboarding"
+  ],
+  "copyHandoffNode": "53:34"
+}

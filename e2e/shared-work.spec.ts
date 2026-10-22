@@ -1,0 +1,83 @@
+import { test, expect, type Page } from '@playwright/test';
+
+async function login(page:Page,email:string,password:string){
+  await page.goto('/auth/login');
+  await page.getByLabel('Email',{exact:true}).fill(email);
+  await page.getByLabel('Password',{exact:true}).fill(password);
+  await page.getByRole('button',{name:'Sign In',exact:true}).click();
+  await expect(page).toHaveURL(/\/dashboard/);
+}
+
+test('shared room, reviewed allocation, accepted handoff and contributor rewards persist',async({page,browser},testInfo)=>{
+  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
+  const password=`Quest-${crypto.randomUUID()}-A1`,ownerEmail=`shared-owner-${crypto.randomUUID()}@example.invalid`,memberEmail=`shared-member-${crypto.randomUUID()}@example.invalid`;
+  for(const email of [ownerEmail,memberEmail])expect((await page.request.post('/api/auth/signup',{data:{email,password}})).status()).toBe(201);
+  await login(page,ownerEmail,password);
+  expect((await page.request.patch('/api/user/hero-name',{data:{name:'Andrés'}})).ok()).toBe(true);
+  const created=await (await page.request.post('/api/households',{data:{name:'Casa Aurora'}})).json(),id=created.id;
+  const work=`/api/households/${id}/work`;
+  const invitation=await (await page.request.post(`/api/households/${id}/invitations`,{data:{email:memberEmail}})).json();
+  const memberContext=await browser.newContext({baseURL:new URL('/',page.url()).href,viewport:page.viewportSize()??undefined});
+  const member=await memberContext.newPage();member.on('pageerror',e=>errors.push(e.message));
+  try{
+    await login(member,memberEmail,password);
+    expect((await member.request.patch('/api/user/hero-name',{data:{name:'Lucía'}})).ok()).toBe(true);
+    expect((await member.request.post('/api/households/join',{data:{token:invitation.token}})).ok()).toBe(true);
+    await page.goto('/households/work');
+    await expect(page.getByRole('heading',{name:'Household schedule',exact:true})).toBeVisible();
+    await page.getByLabel('Timezone',{exact:true}).fill('America/Lima');
+    await page.getByRole('button',{name:'Save timezone',exact:true}).click();
+    await expect(page.getByText('Casa Aurora · America/Lima',{exact:true})).toBeVisible();
+    await page.getByLabel('Room name',{exact:true}).fill('Cocina compartida');
+    await page.getByRole('button',{name:'Add room',exact:true}).click();
+    await expect(page.getByLabel('Task title',{exact:true})).toBeVisible();
+    await page.getByLabel('Task title',{exact:true}).fill('Limpiar la mesa');
+    await page.getByRole('button',{name:'Add Task',exact:true}).click();
+    const ownerTask=page.locator('[data-shared-task]').filter({hasText:'Limpiar la mesa'});
+    await expect(ownerTask).toBeVisible();
+    const initial=await (await page.request.get(work)).json(),today=initial.today,taskId=initial.tasks[0].taskId;
+    await expect(page.getByLabel('Timezone',{exact:true})).toHaveCount(0);
+    expect((await page.request.post(work,{data:{action:'timezone',timezone:'UTC'}})).status()).toBe(409);
+    await member.goto('/households/work');
+    await member.getByLabel('Time per day (minutes)',{exact:true}).fill('20');
+    await member.getByRole('button',{name:'Save availability',exact:true}).click();
+    await expect(member.getByRole('status').filter({hasText:'Changes saved.'})).toBeVisible();
+    expect((await member.request.post(work,{data:{action:'preview',start:today}})).status()).toBe(403);
+    await page.reload();
+    await page.getByRole('button',{name:'Allocate the week',exact:true}).click();
+    await expect(page.getByRole('button',{name:'Publish allocation proposal',exact:true})).toBeEnabled();
+    expect((await (await page.request.get(work)).json()).tasks[0].assigneeId).toBeNull();
+    await page.getByRole('button',{name:'Publish allocation proposal',exact:true}).click();
+    await expect(ownerTask.getByLabel('Assignee',{exact:true})).not.toHaveValue('');
+    await member.reload();
+    const memberTask=member.locator('[data-shared-task]').filter({hasText:'Limpiar la mesa'});
+    await memberTask.getByLabel('Ask for help from',{exact:true}).selectOption({label:'Andrés'});
+    await memberTask.getByRole('button',{name:'Propose handoff',exact:true}).click();
+    await expect(member.getByText('Request awaiting a response.',{exact:true})).toBeVisible();
+    const before=(await (await member.request.get(work)).json()).tasks[0].assigneeId;
+    await page.reload();await page.getByRole('button',{name:'Accept handoff',exact:true}).click();
+    await expect(ownerTask.getByRole('button',{name:'I have finished',exact:true})).toBeVisible();
+    const assigned=(await (await page.request.get(work)).json()).tasks[0].assigneeId;expect(assigned).not.toBe(before);
+    const {profile:oldProfile}=await (await page.request.get('/api/user/profile')).json();
+    await ownerTask.getByRole('button',{name:'I have finished',exact:true}).click();
+    await expect(ownerTask.getByText('Task completed ✓',{exact:true})).toBeVisible();
+    await expect(page.getByText('1 shared resource',{exact:true})).toBeVisible();
+    const completed=await (await page.request.get(work)).json(),{profile:newProfile}=await (await page.request.get('/api/user/profile')).json();
+    expect(completed.tasks[0].completedName).toBe('Andrés');
+    expect(newProfile.coins-oldProfile.coins).toBe(2);expect(newProfile.xp-oldProfile.xp).toBe(10);
+    const activity=await (await page.request.get('/api/user/weekly-activity')).json();
+    expect(activity.summary).toMatchObject({completedTasks:1,totalXp:10,estimatedMinutes:10});
+    expect((await page.request.post(work,{data:{action:'complete',taskId,dueDate:today}})).status()).toBe(200);
+    expect((await (await page.request.get(work)).json()).resources).toBe(1);
+    await member.reload();await expect(memberTask.getByText('Completed by Andrés',{exact:true})).toBeVisible();
+    await expect(memberTask.getByRole('button',{name:'I have finished',exact:true})).toHaveCount(0);
+    await page.reload();await expect(page.getByText('1 shared resource',{exact:true})).toBeVisible();
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+    await page.screenshot({path:testInfo.outputPath('shared-work.png'),fullPage:true});
+    await member.evaluate(()=>localStorage.setItem('language','es'));await member.reload();
+    await expect(member.getByRole('heading',{name:'Tu disponibilidad',exact:true})).toBeVisible();
+    expect(await member.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+    await member.screenshot({path:testInfo.outputPath('shared-work-member-es.png'),fullPage:true});
+    expect(errors).toEqual([]);
+  }finally{await memberContext.close();}
+});

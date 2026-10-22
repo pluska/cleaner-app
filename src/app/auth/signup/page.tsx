@@ -1,8 +1,10 @@
 "use client";
 
+import { BrandLogo } from "@/components/ui/layout/BrandLogo";
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Sparkles, CheckCircle } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -40,8 +42,7 @@ function SignupContent() {
     <div className="max-w-md w-full space-y-8">
       <div className="text-center">
         <div className="flex items-center justify-center space-x-2 mb-6">
-          <Sparkles className="h-8 w-8 text-blue-600" />
-          <span className="text-2xl font-bold text-gray-900">SparkClean</span>
+          <BrandLogo priority />
         </div>
 
         {fromFirstSteps && (
@@ -117,7 +118,7 @@ function SignupContent() {
 
 export default function SignupPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-6">
+    <div className="auth-screen">
       <Suspense fallback={<div>Loading...</div>}>
         <SignupContent />
       </Suspense>

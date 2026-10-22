@@ -4,7 +4,7 @@ Turn household cleaning into quests that grow a personal medieval kingdom. The i
 
 ## Migration Status
 
-This README describes the migration target, not a declaration that every feature or release gate is complete. The project is moving from `@cloudflare/next-on-pages` to `@opennextjs/cloudflare`, with Next.js 15.5.24 or newer within the supported Next.js 15 line. Package scripts, the lockfile, application code, and deployment configuration must agree before release.
+The application uses `@opennextjs/cloudflare` and Next.js 16.3.8. Next.js is pinned because the installed adapter fails at runtime with Next.js 16.4's new preview-props manifest ([upstream issue](https://github.com/opennextjs/opennextjs-cloudflare/issues/1355)). Recheck the compiled Workers preview before changing that pin. The production build explicitly uses webpack, and authentication uses the Next.js 16 `proxy.ts` convention.
 
 The target stack is Next.js, React, TypeScript, Auth.js, Drizzle, Cloudflare D1 through the server-side `DB` binding, and PixiJS / `@pixi/react` for the kingdom. User tasks and kingdom progress must be scoped to the authenticated user on every server read and mutation. D1 does not inherit the old Supabase row-level security policies; authorization must be enforced by the application.
 
@@ -53,7 +53,7 @@ Workers Builds targets `sparkclean` in the account declared in `wrangler.toml`. 
 
 `.github/workflows/ci.yml` runs `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, and `npm run pages:build` (including the Next.js build) on pushes and pull requests. It does not deploy or apply remote migrations. Passing CI is only one release requirement.
 
-Production release is blocked until all evidence in [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md) is recorded, including:
+The general release acceptance criteria in [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md) include:
 
 - Actual end-to-end tests against the staging Cloudflare runtime and staging D1 database.
 - Measured kingdom rendering at a sustained minimum of 30 FPS on representative physical mobile devices.
@@ -61,7 +61,13 @@ Production release is blocked until all evidence in [docs/RELEASE_CHECKLIST.md](
 - A completed D1 backup and restore rehearsal with verified recovered user progress.
 - Verification that one user cannot read or change another user's tasks or kingdom progress.
 
-Deployment is a separate, explicit operator action after sign-off. Neither this documentation nor CI guarantees a bug-free release. Record known defects, residual risks, rollback ownership, and any missing evidence honestly.
+Deployment is a separate, explicit operator action after sign-off. The owner requested controlled production testing on October 22, 2026; [the release record](docs/RELEASE_2026-10-22.md) records the deployment, validation and remaining gaps. Neither this documentation nor CI guarantees a bug-free release.
+
+To run browser checks against an already running Cloudflare preview or deployment, set `E2E_BASE_URL`. This disables the local Next development server. Authenticated browser scenarios create isolated accounts and household data; use a test database unless deliberately validating a production release.
+
+```bash
+E2E_BASE_URL=http://127.0.0.1:3101 npx playwright test e2e/design-system.spec.ts e2e/households.spec.ts e2e/shared-work.spec.ts
+```
 
 ## GPT and security configuration
 

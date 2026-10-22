@@ -14,9 +14,9 @@ interface CalendarStripProps {
 export function CalendarStrip({ selectedDate, onSelectDate }: CalendarStripProps) {
   const { language } = useLanguage();
   const locale = language === "es" ? es : enUS;
-  useEffect(() => {setCurrentMonth(startOfMonth(selectedDate));}, [selectedDate]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [currentMonth, setCurrentMonth] = useState<Date>(startOfMonth(selectedDate));
+  useEffect(() => {setCurrentMonth(startOfMonth(selectedDate));}, [selectedDate]);
 
   // Generate days for the currently viewed month
   const daysInMonth = getDaysInMonth(currentMonth);

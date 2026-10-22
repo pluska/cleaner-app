@@ -1,8 +1,10 @@
 "use client";
 
+import { BrandLogo } from "@/components/ui/layout/BrandLogo";
+
 import { useState } from "react";
 import Link from "next/link";
-import { Sparkles, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/forms/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { LoadingSpinner } from "@/components/ui/feedback/LoadingSpinner";
@@ -49,12 +51,11 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-6">
+    <div className="auth-screen">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex items-center justify-center space-x-2 mb-6">
-            <Sparkles className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-bold text-gray-900">SparkClean</span>
+            <BrandLogo priority />
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             {t("Password Reset", language)}

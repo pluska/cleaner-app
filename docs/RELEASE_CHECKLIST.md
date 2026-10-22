@@ -1,6 +1,6 @@
 # Production Release Checklist
 
-Status: BLOCKED until all required checks below have evidence and an accountable reviewer. Unchecked items are not completed by passing CI. No staging, performance, delivery, or recovery result is claimed by this checklist.
+General release acceptance remains incomplete until the checks below have evidence and an accountable reviewer. The owner explicitly requested controlled production testing on October 22, 2026; see [that release record](RELEASE_2026-10-22.md). Unchecked items are not completed by passing CI, and that deployment does not establish staging, physical-device performance, email delivery or remote recovery evidence.
 
 ## Release Record
 
@@ -14,7 +14,7 @@ Status: BLOCKED until all required checks below have evidence and an accountable
 
 ## Build and Migration
 
-- [ ] The committed manifest and lockfile resolve Next.js 15.5.24+ within the supported 15.x line and `@opennextjs/cloudflare`; the former next-on-pages adapter is no longer used by the build path.
+- [ ] The committed manifest and lockfile resolve supported, compatible Next.js and `@opennextjs/cloudflare` releases; the former next-on-pages adapter is no longer used by the build path.
 - [ ] A clean checkout passes `npm ci`, `npm run typecheck`, `npm test`, and `npm run build`. Record the CI run and candidate commit.
 - [ ] `npm run pages:build` succeeds and `npm run pages:preview` serves the candidate in the Cloudflare runtime. Check Worker entry point, assets, compatibility settings, and removal of obsolete Pages output configuration.
 - [ ] The retained `db:migrate:local`, `pages:build`, `pages:preview`, and `pages:deploy` commands match their documented behavior.

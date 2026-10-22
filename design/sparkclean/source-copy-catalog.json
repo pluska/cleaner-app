@@ -1,0 +1,684 @@
+{
+  "policy": "Existing app copy must be used verbatim for the selected locale. New copy is limited to new features. Read t(key, language) and source component literals; never editorially rewrite existing messages.",
+  "translations": [
+    {
+      "source": "src/app/auth/error/page.tsx",
+      "line": 20,
+      "key": "Your password reset link has expired",
+      "en": "Your password reset link has expired",
+      "es": "Tu enlace de restablecimiento de contraseña ha expirado"
+    },
+    {
+      "source": "src/app/auth/error/page.tsx",
+      "line": 48,
+      "key": "Authentication Error",
+      "en": "Authentication Error",
+      "es": "Error de Autenticación"
+    },
+    {
+      "source": "src/app/auth/error/page.tsx",
+      "line": 55,
+      "key": "Please request a new password reset link",
+      "en": "Please request a new password reset link",
+      "es": "Por favor solicita un nuevo enlace de restablecimiento"
+    },
+    {
+      "source": "src/app/auth/error/page.tsx",
+      "line": 63,
+      "key": "Request New Reset Link",
+      "en": "Request New Reset Link",
+      "es": "Solicitar Nuevo Enlace de Restablecimiento"
+    },
+    {
+      "source": "src/app/auth/error/page.tsx",
+      "line": 68,
+      "key": "Try Again",
+      "en": "Try Again",
+      "es": "Intentar de Nuevo"
+    },
+    {
+      "source": "src/app/auth/error/page.tsx",
+      "line": 75,
+      "key": "Back to Home",
+      "en": "Back to Home",
+      "es": "Volver al Inicio"
+    },
+    {
+      "source": "src/app/auth/forgot-password/page.tsx",
+      "line": 60,
+      "key": "Password Reset",
+      "en": "Password Reset",
+      "es": "Restablecimiento de Contraseña"
+    },
+    {
+      "source": "src/app/auth/forgot-password/page.tsx",
+      "line": 63,
+      "key": "Enter your email to receive a password reset link",
+      "en": "Enter your email to receive a password reset link",
+      "es": "Ingresa tu correo para recibir un enlace de restablecimiento de contraseña"
+    },
+    {
+      "source": "src/app/auth/forgot-password/page.tsx",
+      "line": 72,
+      "key": "Email",
+      "en": "Email",
+      "es": "Correo Electrónico"
+    },
+    {
+      "source": "src/app/auth/forgot-password/page.tsx",
+      "line": 88,
+      "key": "Send Reset Link",
+      "en": "Send Reset Link",
+      "es": "Enviar Enlace de Restablecimiento"
+    },
+    {
+      "source": "src/app/auth/forgot-password/page.tsx",
+      "line": 99,
+      "key": "Didn't receive the email?",
+      "en": "Didn't receive the email?",
+      "es": "¿No recibiste el correo?"
+    },
+    {
+      "source": "src/app/auth/forgot-password/page.tsx",
+      "line": 107,
+      "key": "Try Again",
+      "en": "Try Again",
+      "es": "Intentar de Nuevo"
+    },
+    {
+      "source": "src/app/auth/forgot-password/page.tsx",
+      "line": 120,
+      "key": "Back to Sign In",
+      "en": "Back to Sign In",
+      "es": "Volver a Iniciar Sesión"
+    },
+    {
+      "source": "src/app/auth/login/page.tsx",
+      "line": 43,
+      "key": "Sign in to your account",
+      "en": "Sign in to your account",
+      "es": "Inicia sesión en tu cuenta"
+    },
+    {
+      "source": "src/app/auth/login/page.tsx",
+      "line": 61,
+      "key": "Redirecting to dashboard...",
+      "en": "Redirecting to dashboard...",
+      "es": "Redirigiendo al panel..."
+    },
+    {
+      "source": "src/app/auth/login/page.tsx",
+      "line": 70,
+      "key": "Already have an account?",
+      "en": "Already have an account?",
+      "es": "¿Ya tienes una cuenta?"
+    },
+    {
+      "source": "src/app/auth/login/page.tsx",
+      "line": 71,
+      "key": "Don't have an account?",
+      "en": "Don't have an account?",
+      "es": "¿No tienes una cuenta?"
+    },
+    {
+      "source": "src/app/auth/login/page.tsx",
+      "line": 76,
+      "key": "Sign In",
+      "en": "Sign In",
+      "es": "Iniciar Sesión"
+    },
+    {
+      "source": "src/app/auth/login/page.tsx",
+      "line": 76,
+      "key": "Sign Up",
+      "en": "Sign Up",
+      "es": "Registrarse"
+    },
+    {
+      "source": "src/app/auth/reset-password/page.tsx",
+      "line": 112,
+      "key": "Authentication Error",
+      "en": "Authentication Error",
+      "es": "Error de Autenticación"
+    },
+    {
+      "source": "src/app/auth/reset-password/page.tsx",
+      "line": 120,
+      "key": "Request new reset link",
+      "en": "Request new reset link",
+      "es": "Solicitar nuevo enlace de restablecimiento"
+    },
+    {
+      "source": "src/app/auth/reset-password/page.tsx",
+      "line": 135,
+      "key": "Reset Password",
+      "en": "Reset Password",
+      "es": "Restablecer Contraseña"
+    },
+    {
+      "source": "src/app/auth/reset-password/page.tsx",
+      "line": 138,
+      "key": "Enter your new password",
+      "en": "Enter your new password",
+      "es": "Ingresa tu nueva contraseña"
+    },
+    {
+      "source": "src/app/auth/reset-password/page.tsx",
+      "line": 147,
+      "key": "New Password",
+      "en": "New Password",
+      "es": "Nueva Contraseña"
+    },
+    {
+      "source": "src/app/auth/reset-password/page.tsx",
+      "line": 171,
+      "key": "Confirm New Password",
+      "en": "Confirm New Password",
+      "es": "Confirmar Nueva Contraseña"
+    },
+    {
+      "source": "src/app/auth/reset-password/page.tsx",
+      "line": 198,
+      "key": "Reset Password",
+      "en": "Reset Password",
+      "es": "Restablecer Contraseña"
+    },
+    {
+      "source": "src/app/auth/reset-password/page.tsx",
+      "line": 205,
+      "key": "Password updated successfully!",
+      "en": "Password updated successfully!",
+      "es": "¡Contraseña actualizada exitosamente!"
+    },
+    {
+      "source": "src/app/auth/reset-password/page.tsx",
+      "line": 219,
+      "key": "Back to Sign In",
+      "en": "Back to Sign In",
+      "es": "Volver a Iniciar Sesión"
+    },
+    {
+      "source": "src/app/auth/signup/page.tsx",
+      "line": 71,
+      "key": "Sign in to your account",
+      "en": "Sign in to your account",
+      "es": "Inicia sesión en tu cuenta"
+    },
+    {
+      "source": "src/app/auth/signup/page.tsx",
+      "line": 89,
+      "key": "Redirecting to dashboard...",
+      "en": "Redirecting to dashboard...",
+      "es": "Redirigiendo al panel..."
+    },
+    {
+      "source": "src/app/auth/signup/page.tsx",
+      "line": 98,
+      "key": "Already have an account?",
+      "en": "Already have an account?",
+      "es": "¿Ya tienes una cuenta?"
+    },
+    {
+      "source": "src/app/auth/signup/page.tsx",
+      "line": 99,
+      "key": "Don't have an account?",
+      "en": "Don't have an account?",
+      "es": "¿No tienes una cuenta?"
+    },
+    {
+      "source": "src/app/auth/signup/page.tsx",
+      "line": 104,
+      "key": "Sign In",
+      "en": "Sign In",
+      "es": "Iniciar Sesión"
+    },
+    {
+      "source": "src/app/auth/signup/page.tsx",
+      "line": 104,
+      "key": "Sign Up",
+      "en": "Sign Up",
+      "es": "Registrarse"
+    },
+    {
+      "source": "src/app/dashboard/add-task/page.tsx",
+      "line": 46,
+      "key": "Add Task",
+      "en": "Add Task",
+      "es": "Agregar Tarea"
+    },
+    {
+      "source": "src/app/dashboard/add-task/page.tsx",
+      "line": 50,
+      "key": "Task title",
+      "en": "Task title",
+      "es": "Título de la tarea"
+    },
+    {
+      "source": "src/app/dashboard/add-task/page.tsx",
+      "line": 52,
+      "key": "Due Date",
+      "en": "Due Date",
+      "es": "Fecha de Vencimiento"
+    },
+    {
+      "source": "src/app/dashboard/add-task/page.tsx",
+      "line": 54,
+      "key": "Add Task",
+      "en": "Add Task",
+      "es": "Agregar Tarea"
+    },
+    {
+      "source": "src/app/page.tsx",
+      "line": 46,
+      "key": "Sign In",
+      "en": "Sign In",
+      "es": "Iniciar Sesión"
+    },
+    {
+      "source": "src/app/page.tsx",
+      "line": 49,
+      "key": "Get Started",
+      "en": "Get Started",
+      "es": "Comenzar"
+    },
+    {
+      "source": "src/app/page.tsx",
+      "line": 68,
+      "key": "Sign In",
+      "en": "Sign In",
+      "es": "Iniciar Sesión"
+    },
+    {
+      "source": "src/app/page.tsx",
+      "line": 71,
+      "key": "Get Started",
+      "en": "Get Started",
+      "es": "Comenzar"
+    },
+    {
+      "source": "src/app/schedule/page.tsx",
+      "line": 63,
+      "key": "Schedule",
+      "en": "Schedule",
+      "es": "Programa"
+    },
+    {
+      "source": "src/components/auth/AuthForm.tsx",
+      "line": 144,
+      "key": "Invalid email or password",
+      "en": "Invalid email or password",
+      "es": "Correo o contraseña inválidos"
+    },
+    {
+      "source": "src/components/auth/AuthForm.tsx",
+      "line": 167,
+      "key": "Email",
+      "en": "Email",
+      "es": "Correo Electrónico"
+    },
+    {
+      "source": "src/components/auth/AuthForm.tsx",
+      "line": 179,
+      "key": "Password",
+      "en": "Password",
+      "es": "Contraseña"
+    },
+    {
+      "source": "src/components/auth/AuthForm.tsx",
+      "line": 213,
+      "key": "Forgot Password?",
+      "en": "Forgot Password?",
+      "es": "¿Olvidaste tu contraseña?"
+    },
+    {
+      "source": "src/components/auth/AuthForm.tsx",
+      "line": 224,
+      "key": "Account created successfully! Please check your email.",
+      "en": "Account created successfully! Please check your email.",
+      "es": "Cuenta creada exitosamente. Por favor revisa tu correo."
+    },
+    {
+      "source": "src/components/auth/AuthForm.tsx",
+      "line": 228,
+      "key": "Successfully signed in!",
+      "en": "Successfully signed in!",
+      "es": "¡Sesión iniciada exitosamente!"
+    },
+    {
+      "source": "src/components/auth/AuthForm.tsx",
+      "line": 247,
+      "key": "Sign In",
+      "en": "Sign In",
+      "es": "Iniciar Sesión"
+    },
+    {
+      "source": "src/components/auth/AuthForm.tsx",
+      "line": 249,
+      "key": "Sign Up",
+      "en": "Sign Up",
+      "es": "Registrarse"
+    },
+    {
+      "source": "src/components/dashboard/DashboardHeader.tsx",
+      "line": 28,
+      "key": "Ready for your quest?",
+      "en": "Ready for your quest?",
+      "es": "¿Listo para tu misión?"
+    },
+    {
+      "source": "src/components/dashboard/StatsOverview.tsx",
+      "line": 23,
+      "key": "Coins",
+      "en": "Coins",
+      "es": "Monedas"
+    },
+    {
+      "source": "src/components/dashboard/StatsOverview.tsx",
+      "line": 36,
+      "key": "Level",
+      "en": "Level",
+      "es": "Nivel"
+    },
+    {
+      "source": "src/components/dashboard/TaskList.tsx",
+      "line": 84,
+      "key": "Today's Strategy",
+      "en": "Today's Strategy",
+      "es": "Estrategia de Hoy"
+    },
+    {
+      "source": "src/components/dashboard/TaskList.tsx",
+      "line": 93,
+      "key": "Add Task",
+      "en": "Add Task",
+      "es": "Agregar Tarea"
+    },
+    {
+      "source": "src/components/dashboard/TaskList.tsx",
+      "line": 98,
+      "key": "Priority",
+      "en": "Priority",
+      "es": "Prioridad"
+    },
+    {
+      "source": "src/components/dashboard/TaskList.tsx",
+      "line": 99,
+      "key": "Schedule",
+      "en": "Schedule",
+      "es": "Programa"
+    },
+    {
+      "source": "src/components/home/CTASection.tsx",
+      "line": 22,
+      "key": "Beat the Mess for Good",
+      "en": "Beat the Mess for Good",
+      "es": "Vence al Desorden para Siempre"
+    },
+    {
+      "source": "src/components/home/CTASection.tsx",
+      "line": 25,
+      "key": "Join thousands of users who have turned their chores into a game. Stop cleaning, start playing.",
+      "en": "Join thousands of users who have turned their chores into a game. Stop cleaning, start playing.",
+      "es": "Únete a miles de usuarios que han convertido sus tareas en un juego. Deja de limpiar, empieza a jugar."
+    },
+    {
+      "source": "src/components/home/CTASection.tsx",
+      "line": 37,
+      "key": "Gamify My Cleaning",
+      "en": "Gamify My Cleaning",
+      "es": "Gamificar mi Limpieza"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 27,
+      "key": "Cleaning made fun, easy, and rewarding",
+      "en": "Cleaning made fun, easy, and rewarding",
+      "es": "Limpieza divertida, fácil y gratificante"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 30,
+      "key": "Tidy up faster, stay consistent, and enjoy a spotless home effortlessly!",
+      "en": "Tidy up faster, stay consistent, and enjoy a spotless home effortlessly!",
+      "es": "¡Organiza más rápido, mantén la consistencia y disfruta de un hogar impecable sin esfuerzo!"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 44,
+      "key": "Daily Quests",
+      "en": "Daily Quests",
+      "es": "Misiones Diarias"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 47,
+      "key": "Turn your to-do list into a series of bite-sized quests. Complete them to earn rewards and clear your mind.",
+      "en": "Turn your to-do list into a series of bite-sized quests. Complete them to earn rewards and clear your mind.",
+      "es": "Convierte tu lista de tareas en misiones pequeñas. Complétalas para ganar recompensas y despejar tu mente."
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 54,
+      "key": "+15 XP per task",
+      "en": "+15 XP per task",
+      "es": "+15 XP por tarea"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 63,
+      "key": "Smart Schedule",
+      "en": "Smart Schedule",
+      "es": "Horario Inteligente"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 66,
+      "key": "Never worry about what to clean next. Our AI builds a perfect schedule that adapts to your life, not the other way around.",
+      "en": "Never worry about what to clean next. Our AI builds a perfect schedule that adapts to your life, not the other way around.",
+      "es": "Nunca te preocupes por qué limpiar después. Nuestra IA crea un horario perfecto que se adapta a tu vida, no al revés."
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 73,
+      "key": "Auto-pilot mode",
+      "en": "Auto-pilot mode",
+      "es": "Modo piloto automático"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 82,
+      "key": "Level Up Your Life",
+      "en": "Level Up Your Life",
+      "es": "Sube de Nivel tu Vida"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 85,
+      "key": "Watch your character grow as your home becomes cleaner. Build real-world habits that stick forever.",
+      "en": "Watch your character grow as your home becomes cleaner. Build real-world habits that stick forever.",
+      "es": "Mira crecer a tu personaje mientras tu hogar se limpia. Construye hábitos reales que duren para siempre."
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 92,
+      "key": "Become a Pro",
+      "en": "Become a Pro",
+      "es": "Conviértete en un Profesional"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 106,
+      "key": "Real Progression",
+      "en": "Real Progression",
+      "es": "Progresión Real"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 109,
+      "key": "Earn XP for every minute you clean. Unlock new titles, badges, and customization options.",
+      "en": "Earn XP for every minute you clean. Unlock new titles, badges, and customization options.",
+      "es": "Gana XP por cada minuto que limpies. Desbloquea títulos, insignias y opciones de personalización."
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 116,
+      "key": "Infinite levels",
+      "en": "Infinite levels",
+      "es": "Niveles infinitos"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 129,
+      "key": "Instant Gratification",
+      "en": "Instant Gratification",
+      "es": "Gratificación Instantánea"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 132,
+      "key": "Get immediate feedback for your hard work. Every completed task gives you a dopamine hit.",
+      "en": "Get immediate feedback for your hard work. Every completed task gives you a dopamine hit.",
+      "es": "Obtén retroalimentación inmediata por tu trabajo. Cada tarea completada te da un golpe de dopamina."
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 139,
+      "key": "Feel good instantly",
+      "en": "Feel good instantly",
+      "es": "Siéntete bien al instante"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 152,
+      "key": "Streaks & Achievements",
+      "en": "Streaks & Achievements",
+      "es": "Rachas y Logros"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 155,
+      "key": "Maintain daily cleaning streaks and unlock special achievements for your consistency.",
+      "en": "Maintain daily cleaning streaks and unlock special achievements for your consistency.",
+      "es": "Mantén rachas de limpieza diaria y desbloquea logros especiales por tu consistencia."
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 162,
+      "key": "100+ achievements",
+      "en": "100+ achievements",
+      "es": "100+ logros"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 175,
+      "key": "Tool Inventory",
+      "en": "Tool Inventory",
+      "es": "Inventario de Herramientas"
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 178,
+      "key": "Unlock and customize your cleaning tool inventory as you progress.",
+      "en": "Unlock and customize your cleaning tool inventory as you progress.",
+      "es": "Desbloquea y personaliza tu inventario de herramientas de limpieza mientras progresas."
+    },
+    {
+      "source": "src/components/home/GamificationFeatures.tsx",
+      "line": 185,
+      "key": "50+ tools available",
+      "en": "50+ tools available",
+      "es": "50+ herramientas disponibles"
+    },
+    {
+      "source": "src/components/home/HeroSection.tsx",
+      "line": 19,
+      "key": "Turn Cleaning Into a Game",
+      "en": "Turn Cleaning Into a Game",
+      "es": "Haz de la Limpieza un Juego"
+    },
+    {
+      "source": "src/components/home/HeroSection.tsx",
+      "line": 22,
+      "key": "Stop procrastinating. Turn boring chores into rewarding quests, track your XP, and build a home you're proud of.",
+      "en": "Stop procrastinating. Turn boring chores into rewarding quests, track your XP, and build a home you're proud of.",
+      "es": "Deja de procrastinar. Convierte tareas aburridas en misiones gratificantes, rastrea tu XP y construye un hogar del que estés orgulloso."
+    },
+    {
+      "source": "src/components/home/HeroSection.tsx",
+      "line": 36,
+      "key": "Start Playing",
+      "en": "Start Playing",
+      "es": "Empezar a Jugar"
+    },
+    {
+      "source": "src/components/home/HeroSection.tsx",
+      "line": 39,
+      "key": "Sign In",
+      "en": "Sign In",
+      "es": "Iniciar Sesión"
+    },
+    {
+      "source": "src/components/home/UserPainsSection.tsx",
+      "line": 14,
+      "key": "Lack of Motivation",
+      "en": "Lack of Motivation",
+      "es": "Falta de Motivación"
+    },
+    {
+      "source": "src/components/home/UserPainsSection.tsx",
+      "line": 15,
+      "key": "I know I need to clean, but I just can't get started. It feels like a chore, not something I want to do.",
+      "en": "I know I need to clean, but I just can't get started. It feels like a chore, not something I want to do.",
+      "es": "Sé que necesito limpiar, pero no puedo empezar. Se siente como una obligación, no algo que quiera hacer."
+    },
+    {
+      "source": "src/components/home/UserPainsSection.tsx",
+      "line": 25,
+      "key": "Overwhelmed by Mess",
+      "en": "Overwhelmed by Mess",
+      "es": "Abrumado por el Desorden"
+    },
+    {
+      "source": "src/components/home/UserPainsSection.tsx",
+      "line": 26,
+      "key": "The mess is too big. I don't know where to begin, so I end up doing nothing at all.",
+      "en": "The mess is too big. I don't know where to begin, so I end up doing nothing at all.",
+      "es": "El desorden es demasiado grande. No sé por dónde empezar, así que termino no haciendo nada."
+    },
+    {
+      "source": "src/components/home/UserPainsSection.tsx",
+      "line": 36,
+      "key": "Can't Stay Consistent",
+      "en": "Can't Stay Consistent",
+      "es": "No Puedo Ser Consistente"
+    },
+    {
+      "source": "src/components/home/UserPainsSection.tsx",
+      "line": 37,
+      "key": "I clean once in a while, but then I stop. I wish I could build a habit that actually sticks.",
+      "en": "I clean once in a while, but then I stop. I wish I could build a habit that actually sticks.",
+      "es": "Limpio de vez en cuando, pero luego paro. Desearía poder construir un hábito que realmente dure."
+    },
+    {
+      "source": "src/components/home/UserPainsSection.tsx",
+      "line": 51,
+      "key": "Why is cleaning so hard?",
+      "en": "Why is cleaning so hard?",
+      "es": "¿Por qué es tan difícil limpiar?"
+    },
+    {
+      "source": "src/components/home/UserPainsSection.tsx",
+      "line": 54,
+      "key": "It's not you. It's the boring, endless nature of chores. We fixed that.",
+      "en": "It's not you. It's the boring, endless nature of chores. We fixed that.",
+      "es": "No eres tú. Es la naturaleza aburrida e interminable de las tareas. Nosotros arreglamos eso."
+    },
+    {
+      "source": "src/components/ui/layout/SettingsMenu.tsx",
+      "line": 158,
+      "key": "Sign Out",
+      "en": "Sign Out",
+      "es": "Cerrar Sesión"
+    }
+  ]
+}

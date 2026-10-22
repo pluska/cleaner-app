@@ -17,11 +17,12 @@ export async function GET(request: Request) {
     const start = monday.toISOString().slice(0,10);
     const end = new Date(monday.getTime() + 7*86_400_000).toISOString().slice(0,10);
     const activity = (await d.prepare(`SELECT activityDate AS date,SUM(xp) AS score FROM rewardEvents
-      WHERE userId=? AND templateId IS NOT NULL AND activityDate>=? AND activityDate<? GROUP BY activityDate`)
+      WHERE userId=? AND (templateId IS NOT NULL OR id LIKE 'household:%') AND activityDate>=? AND activityDate<? GROUP BY activityDate`)
       .bind(userId,start,end).all<{date:string;score:number}>()).results;
     const summary = await d.prepare(`SELECT COUNT(*) AS completedTasks,COALESCE(SUM(xp),0) AS totalXp,
-      COALESCE(SUM((SELECT COALESCE(SUM(estimatedMinutes),15) FROM taskSubtemplates s WHERE s.templateId=e.templateId)),0) AS estimatedMinutes
-      FROM rewardEvents e WHERE userId=? AND templateId IS NOT NULL`).bind(userId).first();
+      COALESCE(SUM(CASE WHEN e.templateId IS NOT NULL THEN (SELECT COALESCE(SUM(estimatedMinutes),15) FROM taskSubtemplates s WHERE s.templateId=e.templateId) ELSE 0 END),0)
+      + (SELECT COALESCE(SUM(minutes),0) FROM householdCompletions WHERE userId=?) AS estimatedMinutes
+      FROM rewardEvents e WHERE userId=? AND (templateId IS NOT NULL OR id LIKE 'household:%')`).bind(userId,userId).first();
     const profile = await d.prepare('SELECT level,currentStreak,lastActivityDate,resting FROM userProfiles WHERE userId=?').bind(userId)
       .first<{level:number;currentStreak:number;lastActivityDate:string|null;resting:number}>();
     const yesterday = new Date(Date.parse(today)-86_400_000).toISOString().slice(0,10);

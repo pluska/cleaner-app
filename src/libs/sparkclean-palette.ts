@@ -1,0 +1,13 @@
+/** Official brand values shared by the application and the Figma library. */
+export const sparkCleanPalette = {
+  sparklin: {
+    navy: '#1E3A8A', royal: '#2B4C7E', cyan: '#5CE1E6', cyanLight: '#7AD7F0',
+    sky: '#A3C9E2', skyLight: '#B8DAF7', gold: '#E5B842', goldDark: '#D4AF37',
+    wood: '#8C5831', caramel: '#B07D4F',
+  },
+  surface: {
+    ice: '#F4F9FD', white: '#FFFFFF', cloud: '#EBF4FA', midnight: '#0B1528', navyCard: '#152442',
+  },
+  ink: { DEFAULT: '#0F1E36', muted: '#4A607A', dust: '#7D858A', grime: '#7D654E' },
+  status: { clean: '#10B981', sparkle: '#34D399', dusty: '#F59E0B', overdue: '#F43F5E', magic: '#8B5CF6' },
+} as const;

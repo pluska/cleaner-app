@@ -1,14 +1,6 @@
-import { BottomNav } from "@/components/ui/layout/BottomNav";
+import type { ReactNode } from 'react';
+import { AppShell } from '@/components/ui/layout/AppShell';
 
-export default function StoreLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="min-h-screen bg-[#F8F9FA] pb-24">
-      {children}
-      <BottomNav />
-    </div>
-  );
+export default function Layout({ children }: { children: ReactNode }) {
+  return <AppShell>{children}</AppShell>;
 }

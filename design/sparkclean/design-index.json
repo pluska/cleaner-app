@@ -1,0 +1,789 @@
+{
+  "figmaFile": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5",
+  "coverNode": "28:2",
+  "prototypeHubNode": "34:26",
+  "screenCount": 129,
+  "screens": [
+    {
+      "name": "landing",
+      "id": "6:2947",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-2947"
+    },
+    {
+      "name": "signup",
+      "id": "6:3056",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3056"
+    },
+    {
+      "name": "login",
+      "id": "6:3084",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3084"
+    },
+    {
+      "name": "recovery",
+      "id": "6:3108",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3108"
+    },
+    {
+      "name": "recovery-sent",
+      "id": "6:3130",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3130"
+    },
+    {
+      "name": "reset",
+      "id": "6:3151",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3151"
+    },
+    {
+      "name": "onboarding",
+      "id": "6:3171",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3171"
+    },
+    {
+      "name": "setup-home",
+      "id": "6:3194",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3194"
+    },
+    {
+      "name": "setup-rooms",
+      "id": "6:3217",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3217"
+    },
+    {
+      "name": "setup-life",
+      "id": "6:3245",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3245"
+    },
+    {
+      "name": "avatar",
+      "id": "6:3271",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3271"
+    },
+    {
+      "name": "setup-review",
+      "id": "6:3307",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3307"
+    },
+    {
+      "name": "home",
+      "id": "6:3335",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3335"
+    },
+    {
+      "name": "households",
+      "id": "6:3492",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3492"
+    },
+    {
+      "name": "members",
+      "id": "6:3558",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3558"
+    },
+    {
+      "name": "invite",
+      "id": "6:3630",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3630"
+    },
+    {
+      "name": "invite-sent",
+      "id": "6:3700",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3700"
+    },
+    {
+      "name": "invitations",
+      "id": "6:3765",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3765"
+    },
+    {
+      "name": "invite-cancel",
+      "id": "6:3829",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3829"
+    },
+    {
+      "name": "join",
+      "id": "6:3890",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3890"
+    },
+    {
+      "name": "join-review",
+      "id": "6:3909",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-3909"
+    },
+    {
+      "name": "invite-expired",
+      "id": "6:4014",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-4014"
+    },
+    {
+      "name": "child",
+      "id": "6:4033",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-4033"
+    },
+    {
+      "name": "child-view",
+      "id": "6:4115",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-4115"
+    },
+    {
+      "name": "availability",
+      "id": "6:4192",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-4192"
+    },
+    {
+      "name": "schedule",
+      "id": "6:4259",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-4259"
+    },
+    {
+      "name": "calendar",
+      "id": "6:4332",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-4332"
+    },
+    {
+      "name": "task",
+      "id": "6:4511",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-4511"
+    },
+    {
+      "name": "task-complete",
+      "id": "6:4582",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-4582"
+    },
+    {
+      "name": "task-actions",
+      "id": "6:4733",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-4733"
+    },
+    {
+      "name": "task-create",
+      "id": "6:4803",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-4803"
+    },
+    {
+      "name": "task-edit",
+      "id": "6:4874",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-4874"
+    },
+    {
+      "name": "task-delete",
+      "id": "6:4939",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-4939"
+    },
+    {
+      "name": "reschedule",
+      "id": "6:5003",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-5003"
+    },
+    {
+      "name": "swap",
+      "id": "6:5068",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-5068"
+    },
+    {
+      "name": "swap-pending",
+      "id": "6:5133",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-5133"
+    },
+    {
+      "name": "swap-received",
+      "id": "6:5195",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-5195"
+    },
+    {
+      "name": "rotation",
+      "id": "6:5257",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-5257"
+    },
+    {
+      "name": "household-settings",
+      "id": "6:5328",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-5328"
+    },
+    {
+      "name": "edit-room",
+      "id": "6:5395",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-5395"
+    },
+    {
+      "name": "transfer",
+      "id": "6:5463",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-5463"
+    },
+    {
+      "name": "leave",
+      "id": "6:5527",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-5527"
+    },
+    {
+      "name": "rest",
+      "id": "6:5594",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-5594"
+    },
+    {
+      "name": "sparklin",
+      "id": "6:5661",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-5661"
+    },
+    {
+      "name": "stats",
+      "id": "6:5733",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-5733"
+    },
+    {
+      "name": "thanks",
+      "id": "6:5804",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=6-5804"
+    },
+    {
+      "name": "kingdom",
+      "id": "7:2126",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-2126"
+    },
+    {
+      "name": "building",
+      "id": "7:2281",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-2281"
+    },
+    {
+      "name": "upgrade",
+      "id": "7:2430",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-2430"
+    },
+    {
+      "name": "build",
+      "id": "7:2640",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-2640"
+    },
+    {
+      "name": "build-preview",
+      "id": "7:2708",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-2708"
+    },
+    {
+      "name": "build-edit",
+      "id": "7:2856",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-2856"
+    },
+    {
+      "name": "build-conflict",
+      "id": "7:3006",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-3006"
+    },
+    {
+      "name": "building-skin",
+      "id": "7:3067",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-3067"
+    },
+    {
+      "name": "store",
+      "id": "7:3249",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-3249"
+    },
+    {
+      "name": "item",
+      "id": "7:3334",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-3334"
+    },
+    {
+      "name": "purchase",
+      "id": "7:3414",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-3414"
+    },
+    {
+      "name": "purchased",
+      "id": "7:3493",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-3493"
+    },
+    {
+      "name": "purchase-child",
+      "id": "7:3568",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-3568"
+    },
+    {
+      "name": "approval",
+      "id": "7:3644",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-3644"
+    },
+    {
+      "name": "inventory",
+      "id": "7:3709",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-3709"
+    },
+    {
+      "name": "wardrobe",
+      "id": "7:3779",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-3779"
+    },
+    {
+      "name": "equipped",
+      "id": "7:3860",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-3860"
+    },
+    {
+      "name": "reward",
+      "id": "7:3935",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-3935"
+    },
+    {
+      "name": "tools",
+      "id": "7:3999",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-3999"
+    },
+    {
+      "name": "weather",
+      "id": "7:4063",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-4063"
+    },
+    {
+      "name": "weather-manual",
+      "id": "7:4216",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-4216"
+    },
+    {
+      "name": "storm",
+      "id": "7:4401",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-4401"
+    },
+    {
+      "name": "location",
+      "id": "7:4597",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-4597"
+    },
+    {
+      "name": "weather-error",
+      "id": "7:4663",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-4663"
+    },
+    {
+      "name": "accessibility",
+      "id": "7:4808",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-4808"
+    },
+    {
+      "name": "settings",
+      "id": "7:4878",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-4878"
+    },
+    {
+      "name": "event",
+      "id": "7:4946",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-4946"
+    },
+    {
+      "name": "event-progress",
+      "id": "7:5153",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-5153"
+    },
+    {
+      "name": "event-rewards",
+      "id": "7:5226",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-5226"
+    },
+    {
+      "name": "event-claim",
+      "id": "7:5293",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-5293"
+    },
+    {
+      "name": "event-claimed",
+      "id": "7:5369",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-5369"
+    },
+    {
+      "name": "event-calendar",
+      "id": "7:5444",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-5444"
+    },
+    {
+      "name": "event-upcoming",
+      "id": "7:5512",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-5512"
+    },
+    {
+      "name": "event-ended",
+      "id": "7:5657",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-5657"
+    },
+    {
+      "name": "event-paused",
+      "id": "7:5720",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-5720"
+    },
+    {
+      "name": "event-garden",
+      "id": "7:5781",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-5781"
+    },
+    {
+      "name": "event-camaradas",
+      "id": "7:5933",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-5933"
+    },
+    {
+      "name": "event-lights",
+      "id": "7:6079",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-6079"
+    },
+    {
+      "name": "album",
+      "id": "7:6289",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-6289"
+    },
+    {
+      "name": "session-expired",
+      "id": "7:6496",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-6496"
+    },
+    {
+      "name": "load-error",
+      "id": "7:6513",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-6513"
+    },
+    {
+      "name": "empty",
+      "id": "7:6574",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-6574"
+    },
+    {
+      "name": "no-permission",
+      "id": "7:6716",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=7-6716"
+    },
+    {
+      "name": "garden-progress",
+      "id": "12:7146",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=12-7146"
+    },
+    {
+      "name": "garden-claim",
+      "id": "12:7301",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=12-7301"
+    },
+    {
+      "name": "camaradas-progress",
+      "id": "12:7446",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=12-7446"
+    },
+    {
+      "name": "camaradas-claim",
+      "id": "12:7515",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=12-7515"
+    },
+    {
+      "name": "lights-progress",
+      "id": "12:7660",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=12-7660"
+    },
+    {
+      "name": "lights-claim",
+      "id": "12:7872",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=12-7872"
+    },
+    {
+      "name": "upgrade-ready",
+      "id": "12:8076",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=12-8076"
+    },
+    {
+      "name": "upgrade-complete",
+      "id": "12:8283",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=12-8283"
+    },
+    {
+      "name": "build-saved",
+      "id": "12:8487",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=12-8487"
+    },
+    {
+      "name": "member-manage",
+      "id": "12:8632",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=12-8632"
+    },
+    {
+      "name": "remove-member",
+      "id": "12:8698",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=12-8698"
+    },
+    {
+      "name": "leave-ready",
+      "id": "12:8762",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=12-8762"
+    },
+    {
+      "name": "left-household",
+      "id": "12:8823",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=12-8823"
+    },
+    {
+      "name": "loading",
+      "id": "12:8896",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=12-8896"
+    },
+    {
+      "name": "d-home",
+      "id": "8:6100",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=8-6100"
+    },
+    {
+      "name": "d-kingdom",
+      "id": "8:6267",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=8-6267"
+    },
+    {
+      "name": "d-schedule",
+      "id": "8:6413",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=8-6413"
+    },
+    {
+      "name": "d-members",
+      "id": "8:6504",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=8-6504"
+    },
+    {
+      "name": "d-store",
+      "id": "9:6345",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=9-6345"
+    },
+    {
+      "name": "d-wardrobe",
+      "id": "9:6485",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=9-6485"
+    },
+    {
+      "name": "d-event",
+      "id": "9:6593",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=9-6593"
+    },
+    {
+      "name": "d-weather",
+      "id": "9:6793",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=9-6793"
+    },
+    {
+      "name": "admin",
+      "id": "10:6769",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=10-6769"
+    },
+    {
+      "name": "admin-editor",
+      "id": "10:6829",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=10-6829"
+    },
+    {
+      "name": "admin-preview",
+      "id": "10:6900",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=10-6900"
+    },
+    {
+      "name": "admin-published",
+      "id": "10:7099",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=10-7099"
+    },
+    {
+      "name": "admin-pause",
+      "id": "10:7292",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=10-7292"
+    },
+    {
+      "name": "admin-validation",
+      "id": "10:7339",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=10-7339"
+    },
+    {
+      "name": "dark-home",
+      "id": "32:6501",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=32-6501"
+    },
+    {
+      "name": "dark-wardrobe",
+      "id": "32:6519",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=32-6519"
+    },
+    {
+      "name": "dark-d-home",
+      "id": "32:6535",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=32-6535"
+    },
+    {
+      "name": "approval-pending",
+      "id": "35:6670",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=35-6670"
+    },
+    {
+      "name": "guardian-check",
+      "id": "35:6731",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=35-6731"
+    },
+    {
+      "name": "signup-invited",
+      "id": "35:6753",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=35-6753"
+    },
+    {
+      "name": "login-invited",
+      "id": "35:6781",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=35-6781"
+    },
+    {
+      "name": "setup-occupants",
+      "id": "51:7120",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=51-7120"
+    },
+    {
+      "name": "setup-preferences",
+      "id": "51:7167",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=51-7167"
+    },
+    {
+      "name": "landing-en",
+      "id": "49:6593",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=49-6593"
+    },
+    {
+      "name": "landing-desktop-en",
+      "id": "49:6768",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=49-6768"
+    },
+    {
+      "name": "landing-desktop-es",
+      "id": "49:6942",
+      "url": "https://www.figma.com/design/KbdaVK1RegHyjr8Z9HvJJ5?node-id=49-6942"
+    }
+  ],
+  "flows": [
+    {
+      "name": "Crear hogar e invitar",
+      "startNode": "6:2947"
+    },
+    {
+      "name": "Entrar como camarada",
+      "startNode": "6:3890"
+    },
+    {
+      "name": "Repartir y completar tareas",
+      "startNode": "6:4259"
+    },
+    {
+      "name": "Construir y mejorar",
+      "startNode": "7:2126"
+    },
+    {
+      "name": "Comprar y equipar cosméticos",
+      "startNode": "7:3249"
+    },
+    {
+      "name": "Configurar clima y efectos",
+      "startNode": "7:4063"
+    },
+    {
+      "name": "Participar y reclamar premios",
+      "startNode": "7:4946"
+    },
+    {
+      "name": "Crear y programar eventos",
+      "startNode": "10:6769"
+    }
+  ],
+  "events": [
+    {
+      "month": "Enero",
+      "name": "El despertar de la aldea",
+      "mechanic": "Elegir objetivos pequeños y restaurar una plaza común.",
+      "rewards": "Estandarte fundacional · Ropa de explorador"
+    },
+    {
+      "month": "Febrero",
+      "name": "Festival de los camaradas",
+      "mechanic": "Misiones en pareja y agradecimientos por ayudas concretas.",
+      "rewards": "Emotes cooperativos · Bancos para la plaza"
+    },
+    {
+      "month": "Marzo",
+      "name": "El jardín encantado",
+      "mechanic": "Cultivar un jardín que crece con las rutinas del hogar.",
+      "rewards": "Plantas · Maceteros · Skins florales"
+    },
+    {
+      "month": "Abril",
+      "name": "El misterio del pozo",
+      "mechanic": "Desbloquear pistas de Sparklin con cada misión cotidiana.",
+      "rewards": "Pozo mágico · Accesorios de investigador"
+    },
+    {
+      "month": "Mayo",
+      "name": "La feria de los artesanos",
+      "mechanic": "Reunir materiales y elegir qué decoración fabricar.",
+      "rewards": "Puestos de feria · Atuendos de oficio"
+    },
+    {
+      "month": "Junio",
+      "name": "La noche de las luciérnagas",
+      "mechanic": "Iluminar sectores de la aldea con metas semanales flexibles.",
+      "rewards": "Faroles · Luciérnagas · Ropa luminosa"
+    },
+    {
+      "month": "Julio",
+      "name": "La expedición de Sparklin",
+      "mechanic": "Preparar provisiones mediante misiones breves y explorar.",
+      "rewards": "Mochila · Campamento · Recuerdos del viaje"
+    },
+    {
+      "month": "Agosto",
+      "name": "El refugio de las criaturas",
+      "mechanic": "Preparar espacios acogedores para criaturas visitantes.",
+      "rewards": "Refugios · Huellas · Accesorios de animales"
+    },
+    {
+      "month": "Septiembre",
+      "name": "El gran intercambio",
+      "mechanic": "Rotar responsabilidades mediante propuestas aceptadas.",
+      "rewards": "Plaza de intercambio · Conjuntos combinables"
+    },
+    {
+      "month": "Octubre",
+      "name": "La niebla traviesa",
+      "mechanic": "Encontrar recuerdos ocultos con misiones del hogar.",
+      "rewards": "Disfraces · Plaza misteriosa · Sombreros"
+    },
+    {
+      "month": "Noviembre",
+      "name": "El banquete del hogar",
+      "mechanic": "Preparar una celebración por etapas según disponibilidad.",
+      "rewards": "Mesas · Vajilla · Taberna festiva"
+    },
+    {
+      "month": "Diciembre",
+      "name": "El festival de las luces",
+      "mechanic": "Iluminar la aldea y completar el álbum del año.",
+      "rewards": "Guirnaldas · Ropa de gala · Monumento"
+    }
+  ],
+  "fullPageReview": [
+    {
+      "id": "52:6734",
+      "key": "landing",
+      "content": "52:6744",
+      "h": 4525.33349609375
+    },
+    {
+      "id": "52:6846",
+      "key": "landing-en",
+      "content": "52:6856",
+      "h": 4355.33349609375
+    },
+    {
+      "id": "52:6958",
+      "key": "landing-desktop-en",
+      "content": "52:6966",
+      "h": 2524.666748046875
+    },
+    {
+      "id": "52:7067",
+      "key": "landing-desktop-es",
+      "content": "52:7075",
+      "h": 2545.666748046875
+    }
+  ],
+  "copyHandoffNode": "53:34",
+  "officialLogoComponent": "47:231"
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { HouseholdWorkLink } from '@/components/households/HouseholdWorkLink';
 import { useState, useEffect, useRef } from "react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { StatsOverview } from "@/components/dashboard/StatsOverview";
@@ -16,6 +17,7 @@ export default function DashboardPage() {
   const { language } = useLanguage();
   const [error, setError] = useState("");
   const [profile, setProfile] = useState<{coins:number;level:number} | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const completing = useRef(new Set<string>());
   useEffect(() => {
     const date = new URLSearchParams(window.location.search).get('date');
@@ -30,7 +32,6 @@ export default function DashboardPage() {
     }).catch(() => { if (active) setError(language === 'es' ? 'No pudimos cargar tu progreso.' : 'Could not load your progress.'); });
     return () => { active = false; };
   }, [language]);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const dateRef = useRef(selectedDate);
   dateRef.current = selectedDate;
   const [tasks, setTasks] = useState<TaskType[]>([]);
@@ -92,6 +93,7 @@ export default function DashboardPage() {
   return (
     <div className="w-full max-w-md md:max-w-xl lg:max-w-2xl mx-auto min-h-screen bg-[#F8F9FA] px-6 md:px-8 pt-12 md:pt-16 pb-32">
       <DashboardHeader userName={user?.name || ""} />
+      <HouseholdWorkLink />
       <StatsOverview coins={profile?.coins} level={profile?.level} />
       {error && <p role="alert" className="text-red-700 mb-4">{error}</p>}
       <CalendarStrip

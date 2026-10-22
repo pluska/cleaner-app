@@ -1,0 +1,56 @@
+Continue using these templates for characters, buildings and items:
+
+A 3D game character render in the distinctive "Clash of Clans" (Supercell) art style, transforming a 2D concept into a chunky, high-detail 3D gaming model.
+Subject: A [gender/age] [character archetype/class, e.g., "royal knight", "mystic wizard", "crafty rogue"] named [Name (optional)], adapted from a 2D illustration. They have a [facial expression, e.g., "cheerful and confident", "determined and fierce", "mischievous"] expression with expressive, stylized 3D features typical of a playable troop.
+Features: [Description of hair/headwear/facial hair, e.g., "messy, short brown hair", "a bulky iron helmet with horns", "a thick bushy beard"]. He/She has [eye color/features] and [identifying physical traits].
+Attire & Gear:
+- Upper Body: A [color] [type of shirt/armor, e.g., "slate-blue tunic with rough, thick-edged fabric"] worn over [undergarments, e.g., "a white undershirt showing at the shoulders and neckline"].
+- Waist: A wide, worn [color] [belt/sash/apron, e.g., "brown leather belt with a chunky, metallic gold buckle"].
+- Lower Body: [color] [pants/skirt, e.g., "deep teal/dark grey trousers"] tucked into stout, bulky [color] [footwear, e.g., "dark brown leather boots with thick soles"].
+- Accessories: [Describe 1-2 key props, e.g., "a translucent, slightly fraying off-white cape flowing behind them", "holding a oversized wooden shield", "gripping a glowing magical staff"].
+Pose & Composition: The character is shown in a confident, dynamic three-quarter view, standing in an isometric perspective on a small, chunky patch of [base, e.g., "lush, cartoonish green grass", "cracked volcanic stone", "snowy earth"] similar to a troop card or pedestal. One hand is [position, e.g., "resting on their hip"] while the other [second position/action, e.g., "is clenched in a fist"].
+Lighting & Environment: Vibrant, warm, and cinematic lighting that highlights the chunky, hand-painted textures, casting soft shadows on the base below. The background is a simple, desaturated neutral gradient, focusing all attention on this lively 3D model. High-fidelity stylized rendering with rich, matte and metallic materials.
+
+Buildings:
+
+A 3D isometric game building asset in the distinctive "Clash of Clans" (Supercell) art style, featuring chunky, exaggerated proportions and tactile, stylized textures.
+Structure & Purpose: A [level/tier, e.g., "Level 3", "upgraded", "fortified"] [building type, e.g., "Archer Tower", "Gold Storage", "Blacksmith Forge", "Town Hall"]. The architecture has a slightly top-heavy, stylized silhouette with bevelled edges and oversized structural details built for clear readability from a top-down isometric camera.
+Materials & Construction:
+- Base/Foundation: Built upon [foundation material, e.g., "oversized, uneven grey cobblestones", "rough-hewn wooden logs", "reinforced dark iron plates"].
+- Walls & Body: Constructed from [primary material, e.g., "warm, weathered oak planks held together by thick iron brackets", "chunky sandstone blocks", "chiseled dark obsidian"].
+- Roof/Top: Topped with [roof description, e.g., "vibrant blue-tiled shingles with a thick golden trim", "a tattered red-and-white striped canvas awning", "a fortified wooden platform with crenellations"].
+Props & Functional Details:
+- Primary Feature: [Main interactive or defining element, e.g., "a massive, glowing cauldron of purple elixir bubbling at the center", "a giant wooden crossbow mounted on a rotating pivot", "an oversized iron anvil resting on a tree stump"].
+- Clutter & Accents: Surrounded by small environmental storytelling props on the base, such as [2-3 small details, e.g., "wooden barrels, a rack of iron swords, and scattered gold coins", "stacks of cannonballs and a wooden ladder", "glowing crystals and a coiled rope"].
+Base & Perspective: Presented in a strict isometric 3/4 view, sitting squarely on a small, chunky square tile of [base terrain, e.g., "lush, vibrant green grass with a trimmed dirt border", "cracked volcanic rock", "sandstone paving"].
+Lighting & Rendering: Warm, vibrant sunlit studio lighting with soft ambient occlusion and crisp drop shadows cast onto the grass base. Stylized PBR materials with a hand-painted, matte toy-like finish, subtle edge wear on wood and stone, and chunky metallic highlights. Isolated against a clean, neutral desaturated grey gradient background. Octane Render, 8k resolution.
+
+Items:
+
+A 3D game icon or item asset in the distinctive "Clash of Clans" (Supercell) art style, featuring chunky, exaggerated proportions, bold shapes, and highly tactile, stylized textures.
+Subject & Tier: A [tier/level, e.g., "tier-3 upgraded", "mythic", "crude"] [item type, e.g., "sword", "shield", "spell bottle", "resource crate", "loot sack"] named the [Name (optional)]. It has an oversized, slightly cartoonish silhouette designed for instant readability as an in-game collectible or UI asset.
+Materials & Crafting:
+- Primary Material: Crafted from [primary material, e.g., "chunky, battle-worn steel", "weathered oak", "translucent glowing elixir glass"].
+- Accent & Trim: Reinforced with [accent material, e.g., "riveted gold banding", "crude iron brackets", "gilding with jewel encrusting"].
+- Details: Features [characterizing details, e.g., "a wrapped leather grip", "glowing purple liquid swirling inside", "fine runic carvings"].
+VFX & Elements:
+- Particle/Glow (optional): Emits [magical/elemental effect, e.g., "subtle sparkling golden dust", "a warm flickering flame", "faint magical vapor"].
+- Wear/Character: Shows age and function through [imperfections, e.g., "chipped edges and dents", "battle scars", "spilled potion droplets", "overflowing gold coins"].
+Composition & Presentation: Shown in a stylized 3/4 isometric perspective, [placement, e.g., "resting slightly angled", "hovering dynamically"] on [ground/pedestal, e.g., "a small chunk of earthen turf", "a stone pedestal", "completely isolated/floating with an drop-shadow"]. The camera is close-up, maximizing the chunky details.
+Lighting & Rendering: Vibrant, warm, and highly saturated studio lighting that highlights specular glints on metallic edges and subsurface scattering on glass/liquids. Soft ambient occlusion and crisp drop shadows. Stylized PBR materials with a rich, hand-painted, slightly chunky and toy-like matte/specular finish. Isolated against a clean, neutral desaturated gradient background. Octane Render, 8k resolution.
+
+Background or environment:
+
+A 3D environment and battleground scene in the distinctive "Clash of Clans" (Supercell) art style, featuring chunky, hand-painted 3D models, whimsical natural forms, and a vibrant, fantasy atmosphere.
+Setting & Biome: A [biome/theme, e.g., "lush forest camp", "volcanic lava wasteland", "snow-capped mountain outpost", "underground elixir cavern"] during [time of day/weather, e.g., "bright golden hour", "misty night", "clear day"].
+Terrain & Ground Cover:
+- Field: Oversized, [color, e.g., "lush emerald-green"] turf covered in [terrain details, e.g., "smooth patchy grass, chunky worn dirt paths, and clusters of stylized daisies"].
+- Topography: The landscape features rolling, rounded elevations, [terrain borders, e.g., "cliff edges with bulky, blocky rock formations", "cracked volcanic fissures filled with molten lava", "bulky wooden boundary fences"].
+Foliage & Nature (The "Supercell Edge"):
+- Trees: Oversized, [color/type, e.g., "bushy green oak"] trees with [foliage style, e.g., "puffy, Cloud-like leaf clusters and thick, chunky trunks"].
+- Flora: Scatttred [foliage details, e.g., "bloated mushrooms, cartoonish bushes, and thick root systems breaking through the dirt"].
+Props & Structural Elements:
+- Interactivity/Obstacles: Features scatter clutter, like [natural/man-made props, e.g., "overturned barrels, mossy stone boulders, and broken fences"].
+- Encampments/Bases: Outlined [structures/bases, e.g., "ruined stone walls, campfires with rising smoke, and dirt battle paths"] crisscrossing the play area.
+Composition & Perspective: High-angle, top-down isometric 3/4 perspective, viewing a large slice of the map. Visible boundary elements, like dense, impassable borders of [e.g., "thick dense forest", "rugged mountain peaks", "unbroken fortress walls"].
+Atmosphere & Rendering: Warm, saturated sunlight filtering through the environment, casting soft, stylized shadows. Atmospheric effects like [fog/particles, e.g., "swirling fireflies", "drifting clouds", "glowing dust motes"]. Toy-like, hand-painted PBR materials with a matte finish, heavy ambient occlusion, and subtle cartoon edge-highlights. Octane Render, 8k resolution.

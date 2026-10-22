@@ -22,10 +22,10 @@ export async function getKingdom(userId: string) {
   const today = localDay(new Date(), profile.timezone);
   const state = await d.prepare("SELECT version FROM kingdomState WHERE userId=?").bind(userId).first<{ version: number }>();
   const buildings = await d.prepare("SELECT * FROM kingdomBuildings WHERE userId=? ORDER BY kind").bind(userId).all<KingdomBuilding>();
-  const count = await d.prepare("SELECT COUNT(*) AS total FROM rewardEvents WHERE userId=? AND templateId IS NOT NULL").bind(userId).first<{ total: number }>();
+  const count = await d.prepare("SELECT COUNT(*) AS total FROM rewardEvents WHERE userId=? AND (templateId IS NOT NULL OR id LIKE 'household:%')").bind(userId).first<{ total: number }>();
   const weekStart = new Date(`${today}T00:00:00Z`);
   weekStart.setUTCDate(weekStart.getUTCDate() - ((weekStart.getUTCDay() + 6) % 7));
-  const weekly = await d.prepare("SELECT COUNT(*) AS total FROM rewardEvents WHERE userId=? AND templateId IS NOT NULL AND activityDate>=?").bind(userId, weekStart.toISOString().slice(0,10)).first<{ total: number }>();
+  const weekly = await d.prepare("SELECT COUNT(*) AS total FROM rewardEvents WHERE userId=? AND (templateId IS NOT NULL OR id LIKE 'household:%') AND activityDate>=?").bind(userId, weekStart.toISOString().slice(0,10)).first<{ total: number }>();
   const links = await d.prepare("SELECT l.roomId,l.buildingId FROM kingdomRoomLinks l JOIN rooms r ON r.id=l.roomId WHERE r.userId=?").bind(userId).all();
   return { version: state!.version, profile, today, buildings: buildings.results.map(b => ({ ...b, corruption: corruption(b.restoredAt, profile.resting ? profile.restStartedAt ?? Date.now() : Date.now()) })), links: links.results, campaign: { completed: Math.min(7, count?.total ?? 0), total: 7 }, weekly: { completed: weekly?.total ?? 0, target: 5, unlocked: (weekly?.total ?? 0) >= 5 } };
 }

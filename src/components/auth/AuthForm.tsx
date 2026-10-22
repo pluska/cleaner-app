@@ -159,11 +159,12 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 w-full max-w-md bg-white p-6 rounded-lg shadow-sm border border-gray-200"
+      className="space-y-4 w-full max-w-md"
     >
       <div>
         <Input
           type="email"
+          label={t("Email", language)}
           placeholder={t("Email", language)}
           value={email}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -176,6 +177,7 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
       <div className="space-y-1">
         <Input
           type="password"
+          label={t("Password", language)}
           placeholder={t("Password", language)}
           value={password}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

@@ -1,3 +1,5 @@
+import { sparkCleanPalette as palette } from './sparkclean-palette';
+
 export type ThemeType = 'brand' | 'ranger' | 'noble' | 'high_elf';
 
 export interface Theme {
@@ -26,20 +28,20 @@ export const themes: Record<ThemeType, Theme> = {
     id: 'brand',
     name: 'SparkClean Brand',
     colors: {
-      primary: '#3B82F6', // brand blue
-      secondary: '#10B981', // brand green
-      background: '#FFFFFF',
-      surface: '#F8F9FA',
-      text: '#111827', // dark slate
-      border: '#E5E7EB',
-      accent: '#F59E0B', // gold
+      primary: palette.sparklin.navy,
+      secondary: palette.status.clean,
+      background: palette.surface.ice,
+      surface: palette.surface.white,
+      text: palette.ink.DEFAULT,
+      border: palette.sparklin.skyLight,
+      accent: palette.sparklin.gold,
     },
     assets: {
       bgPattern: 'none',
       buttonTexture: 'clean',
     },
     typography: {
-      heading: 'sans-serif',
+      heading: 'var(--font-lora), Georgia, serif',
     },
   },
   ranger: {

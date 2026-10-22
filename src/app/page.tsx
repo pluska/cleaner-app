@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 import { LanguageSwitcher } from "@/components/ui/layout/LanguageSwitcher";
 
+import { BrandLogo } from "@/components/ui/layout/BrandLogo";
 import { Button } from "@/components/ui/forms/Button";
 import { useRouter } from "next/navigation";
 import {
@@ -31,30 +32,30 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-base to-bg">
+    <div className="landing min-h-screen">
       {/* Navigation */}
-      <nav className="flex items-center justify-between p-4 sm:p-6 max-w-7xl mx-auto relative z-50">
-        <div className="flex items-center space-x-2">
-          <Sparkles className="h-8 w-8 text-blue-600 animate-pulse" />
-          <span className="text-xl sm:text-2xl font-bold text-dark">SparkClean</span>
-        </div>
+      <header className="landing-header"><nav className="landing-nav">
+        <BrandLogo priority />
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center space-x-4">
+        <div className="landing-nav-desktop">
           <LanguageSwitcher />
-          <Button variant="ghost" className="px-8 text-lg h-12" onClick={handleSignIn}>
+          <Button variant="secondary" onClick={handleSignIn}>
             {t("Sign In", language)}
           </Button>
-          <Button variant="primary" className="px-8 text-lg h-12" onClick={handleGetStarted}>
+          <Button variant="primary"  onClick={handleGetStarted}>
             {t("Get Started", language)}
           </Button>
         </div>
 
         {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center">
+        <div className="landing-nav-mobile">
           <LanguageSwitcher />
-          <button 
-            className="ml-4 p-2 text-dark focus:outline-none" 
+          <button
+            className="landing-menu-toggle"
+            aria-label="Menu"
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="landing-mobile-menu"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -63,7 +64,7 @@ export default function Home() {
 
         {/* Mobile Dropdown Menu */}
         {isMobileMenuOpen && (
-          <div className="absolute top-full left-0 right-0 mt-2 mx-4 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 flex flex-col space-y-4 md:hidden">
+          <div id="landing-mobile-menu" className="landing-mobile-menu">
             <Button variant="ghost" className="w-full justify-center text-lg h-12" onClick={handleSignIn}>
               {t("Sign In", language)}
             </Button>
@@ -72,11 +73,11 @@ export default function Home() {
             </Button>
           </div>
         )}
-      </nav>
+      </nav></header>
 
       {/* Hero Section */}
-      <main className="max-w-7xl mx-auto px-6 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <main className="landing-main">
+        <div className="landing-hero">
           {/* Left Column - Headline & Subheadline */}
           <HeroSection
             onGetStarted={handleGetStarted}
@@ -89,9 +90,8 @@ export default function Home() {
         <UserPainsSection />
         <GamificationFeatures />
         <CTASection onGetStarted={handleGetStarted} />
+        <Footer />
       </main>
-
-      <Footer />
     </div>
   );
 }

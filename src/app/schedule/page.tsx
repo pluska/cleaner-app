@@ -1,5 +1,6 @@
 "use client";
 
+import { HouseholdWorkLink } from '@/components/households/HouseholdWorkLink';
 import { useLanguage } from "@/contexts/LanguageContext";
 import { t } from "@/libs/translations";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
@@ -71,6 +72,7 @@ export default function SchedulePage() {
         <SettingsMenu />
       </div>
 
+      <HouseholdWorkLink />
       {error && <p role="alert" className="text-red-700 mb-4">{language === 'es' ? 'No pudimos cargar el calendario.' : 'Could not load the calendar.'}</p>}
       {loading && <p role="status">{language === 'es' ? 'Cargando…' : 'Loading…'}</p>}
       <div className="bg-white rounded-[32px] p-6 shadow-sm border border-gray-100">

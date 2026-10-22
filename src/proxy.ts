@@ -4,7 +4,7 @@ import { authConfig } from './auth.config';
 
 const passthrough: NextMiddleware = () => undefined;
 const authorize = NextAuth(authConfig).auth(passthrough);
-export const middleware: NextMiddleware = async (request,event) => {
+export const proxy: NextMiddleware = async (request,event) => {
   // Auth.js replaces the request origin with AUTH_URL/NEXTAUTH_URL internally.
   // Navigation within the app must stay on the actual preview/development host.
   const response = await authorize(request,event);
@@ -20,7 +20,7 @@ export const middleware: NextMiddleware = async (request,event) => {
   result.headers.set('location',new URL(`${target.pathname}${target.search}${target.hash}`,origin).href);
   return result;
 };
-export default middleware;
+export default proxy;
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon\\.ico).*)'],

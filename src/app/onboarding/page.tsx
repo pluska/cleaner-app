@@ -1,5 +1,7 @@
 "use client";
 
+import { BrandLogo } from "@/components/ui/layout/BrandLogo";
+
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -262,11 +264,10 @@ export default function OnboardingPage() {
     const isEs = language === "es";
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-base to-bg flex flex-col items-center justify-center p-6">
+      <div className="onboarding-screen min-h-screen bg-base flex flex-col items-center justify-center p-6">
         <div className="w-full max-w-2xl mb-8 flex justify-between items-center px-4">
           <div className="flex items-center space-x-2">
-            <Sparkles className="h-8 w-8 text-blue-600 animate-pulse" />
-            <span className="text-2xl font-bold text-gray-900">SparkClean</span>
+            <BrandLogo priority />
           </div>
           <div className="text-sm font-medium text-gray-500 bg-white px-3 py-1 rounded-full shadow-sm border border-gray-100">
             {formStep + 1} / 6
@@ -513,7 +514,7 @@ export default function OnboardingPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-base to-bg flex items-center justify-center p-6">
+      <div className="onboarding-screen min-h-screen bg-base flex items-center justify-center p-6">
         <Card className="p-8 text-center max-w-md mx-auto shadow-xl">
           <div className="flex flex-col items-center space-y-4">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
@@ -533,12 +534,11 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-base to-bg flex items-center justify-center p-6">
+    <div className="onboarding-screen min-h-screen bg-base flex items-center justify-center p-6">
       <Card className="p-10 max-w-md mx-auto w-full shadow-2xl border-t-4 border-t-primary">
         <div className="text-center mb-10">
           <div className="flex items-center justify-center space-x-2 mb-6">
-            <Sparkles className="h-10 w-10 text-blue-600 animate-pulse" />
-            <span className="text-3xl font-bold text-gray-900 tracking-tight">SparkClean</span>
+            <BrandLogo priority />
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-3">
             {language === "es" ? "Configurando tu viaje" : "Setting up your journey"}

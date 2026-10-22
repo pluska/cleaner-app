@@ -1,5 +1,36 @@
 import { sql } from "drizzle-orm";
-import { sqliteTable, text, integer, primaryKey, index, check, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, primaryKey, index, check, uniqueIndex, foreignKey } from "drizzle-orm/sqlite-core";
+
+// Households manage membership separately from personal progress and tasks.
+export const households = sqliteTable("households", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  ownerId: text("ownerId").notNull().references(() => users.id, { onDelete: "restrict" }),
+  createdAt: integer("createdAt").notNull(),
+}, table => [index("households_owner_idx").on(table.ownerId), check("household_name_length", sql`length(trim(${table.name})) BETWEEN 1 AND 80`)]);
+
+export const householdMembers = sqliteTable("householdMembers", {
+  householdId: text("householdId").notNull().references(() => households.id, { onDelete: "cascade" }),
+  userId: text("userId").notNull().references(() => users.id, { onDelete: "cascade" }),
+  joinedAt: integer("joinedAt").notNull(),
+}, table => [primaryKey({ columns: [table.householdId, table.userId] }), index("household_members_user_idx").on(table.userId)]);
+
+export const householdPreferences = sqliteTable("householdPreferences", {
+  userId: text("userId").primaryKey().references(() => users.id, { onDelete: "cascade" }),
+  householdId: text("householdId").notNull(),
+}, table => [foreignKey({columns:[table.householdId,table.userId],foreignColumns:[householdMembers.householdId,householdMembers.userId]}).onDelete("cascade")]);
+
+export const householdInvitations = sqliteTable("householdInvitations", {
+  id: text("id").primaryKey(),
+  householdId: text("householdId").notNull().references(() => households.id, { onDelete: "cascade" }),
+  invitedBy: text("invitedBy").notNull().references(() => users.id, { onDelete: "cascade" }),
+  email: text("email").notNull(),
+  tokenHash: text("tokenHash").notNull().unique(),
+  createdAt: integer("createdAt").notNull(), expiresAt: integer("expiresAt").notNull(),
+  revokedAt: integer("revokedAt"), acceptedAt: integer("acceptedAt"),
+  acceptedBy: text("acceptedBy").references(() => users.id, { onDelete: "set null" }),
+  acceptanceId: text("acceptanceId"),
+}, table => [index("household_invites_household_idx").on(table.householdId, table.expiresAt),check("household_invitation_expiry",sql`${table.expiresAt}>${table.createdAt}`)]);
 
 // 1. Core Users and Profiles (Auth.js & Gamification)
 export const users = sqliteTable("users", {
@@ -375,3 +406,41 @@ export const usageCounters = sqliteTable("usageCounters", {
   ceiling: integer("ceiling").notNull(),
   expires: integer("expires").notNull(),
 }, table => [index("usage_expiry").on(table.expires),check("usage_limit",sql`${table.count} <= ${table.ceiling}`)]);
+
+// Shared work is separate from legacy personal templates; no implicit data migration.
+export const householdWorkState = sqliteTable('householdWorkState', {
+  householdId: text('householdId').primaryKey().references(()=>households.id,{onDelete:'cascade'}),
+  version: integer('version').notNull().default(0),
+  resources: integer('resources').notNull().default(0),
+  timezone: text('timezone').notNull().default('UTC'),
+  planToken: text('planToken'),
+});
+export const householdRooms = sqliteTable('householdRooms', {
+  id: text('id').primaryKey(), householdId: text('householdId').notNull().references(()=>households.id,{onDelete:'cascade'}),
+  name: text('name').notNull(), kind: text('kind').notNull().default('general'),
+},t=>[uniqueIndex('household_room_scope').on(t.id,t.householdId),uniqueIndex('household_room_name').on(t.householdId,t.name)]);
+export const householdTasks = sqliteTable('householdTasks', {
+  id: text('id').primaryKey(),householdId:text('householdId').notNull().references(()=>households.id,{onDelete:'cascade'}),
+  roomId:text('roomId').notNull(),title:text('title').notNull(),description:text('description'),
+  minutes:integer('minutes').notNull(),rrule:text('rrule').notNull(),startDate:integer('startDate').notNull(),endDate:integer('endDate'),
+  assigneeId:text('assigneeId').references(()=>users.id,{onDelete:'set null'}),archived:integer('archived',{mode:'boolean'}).notNull().default(false),
+  createdAt:integer('createdAt').notNull(),
+},t=>[uniqueIndex('household_task_scope').on(t.id,t.householdId),index('household_tasks_household').on(t.householdId,t.archived),foreignKey({columns:[t.roomId,t.householdId],foreignColumns:[householdRooms.id,householdRooms.householdId]}),check('shared_task_minutes',sql`${t.minutes} BETWEEN 1 AND 120`)]);
+export const householdOccurrences=sqliteTable('householdOccurrences',{
+  taskId:text('taskId').notNull(),householdId:text('householdId').notNull(),dueDate:text('dueDate').notNull(),
+  assigneeId:text('assigneeId').references(()=>users.id,{onDelete:'set null'}),completedAt:integer('completedAt'),
+},t=>[primaryKey({columns:[t.taskId,t.dueDate]}),foreignKey({columns:[t.taskId,t.householdId],foreignColumns:[householdTasks.id,householdTasks.householdId]}),index('household_occurrence_day').on(t.householdId,t.dueDate)]);
+export const householdAvailability=sqliteTable('householdAvailability',{
+  householdId:text('householdId').notNull(),userId:text('userId').notNull(),days:integer('days').notNull().default(127),
+  dailyMinutes:integer('dailyMinutes').notNull().default(0),resting:integer('resting',{mode:'boolean'}).notNull().default(false),
+},t=>[primaryKey({columns:[t.householdId,t.userId]}),foreignKey({columns:[t.householdId,t.userId],foreignColumns:[householdMembers.householdId,householdMembers.userId]}).onDelete('cascade'),check('availability_days',sql`${t.days} BETWEEN 0 AND 127`),check('availability_minutes',sql`${t.dailyMinutes} BETWEEN 0 AND 240`)]);
+export const householdCompletions=sqliteTable('householdCompletions',{
+  taskId:text('taskId').notNull(),householdId:text('householdId').notNull(),dueDate:text('dueDate').notNull(),
+  userId:text('userId').references(()=>users.id,{onDelete:'set null'}),name:text('name').notNull(),title:text('title').notNull(),minutes:integer('minutes').notNull(),
+  xp:integer('xp').notNull(),coins:integer('coins').notNull(),activityDate:text('activityDate').notNull(),createdAt:integer('createdAt').notNull(),
+},t=>[primaryKey({columns:[t.taskId,t.dueDate]}),foreignKey({columns:[t.taskId,t.householdId],foreignColumns:[householdTasks.id,householdTasks.householdId]}),index('household_completion_day').on(t.householdId,t.activityDate)]);
+export const householdTaskRequests=sqliteTable('householdTaskRequests',{
+  id:text('id').primaryKey(),taskId:text('taskId').notNull(),householdId:text('householdId').notNull(),dueDate:text('dueDate').notNull(),
+  fromUserId:text('fromUserId').references(()=>users.id,{onDelete:'set null'}),toUserId:text('toUserId').references(()=>users.id,{onDelete:'set null'}),
+  status:text('status').notNull().default('pending'),createdAt:integer('createdAt').notNull(),expiresAt:integer('expiresAt').notNull(),
+},t=>[foreignKey({columns:[t.taskId,t.householdId],foreignColumns:[householdTasks.id,householdTasks.householdId]}),index('household_request_scope').on(t.householdId,t.status),uniqueIndex('one_pending_handoff').on(t.taskId,t.dueDate).where(sql`${t.status}='pending'`)]);
