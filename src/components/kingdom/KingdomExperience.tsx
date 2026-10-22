@@ -57,13 +57,13 @@ export default function KingdomExperience(){
   return <main className="kingdom-shell">
     <header className="kingdom-header"><div className="kingdom-brand"><BrandLogo href="/kingdom" priority/><small>Tu reino, un reto a la vez</small></div><div className="kingdom-wallet"><span><Sparkles size={17}/>{data?.profile.xp??0} XP</span><span><Coins size={17}/>{data?.profile.coins??0}</span><strong>Nv. {data?.profile.level??1}</strong></div></header>
     <section className="kingdom-world">
-      <Canvas buildings={editing?positions:data?.buildings??[]} selected={selected} editing={editing} zoom={zoom} onSelect={setSelected} onMove={move}/>
+      <Canvas buildings={editing?positions:data?.buildings??[]} selected={selected} editing={editing} zoom={zoom} bannerUnlocked={data?.weekly.unlocked??false} onSelect={setSelected} onMove={move}/>
       <div className="kingdom-caption"><span>VALLE DE LA AURORA</span><h1>Un hogar que florece.</h1><p>{data?.profile.resting?"El reino descansa contigo.":"Hoy, una pequeña misión puede cambiarlo todo."}</p></div>
       <div className="kingdom-tools"><button title="Acercar" aria-label="Acercar" onClick={()=>setZoom(z=>Math.min(2,z+.2))}><Plus/></button><button title="Alejar" aria-label="Alejar" onClick={()=>setZoom(z=>Math.max(.5,z-.2))}><Minus/></button><button title="Mover edificios" aria-label="Mover edificios" aria-pressed={editing} disabled={busy||!data} onClick={()=>{setEditing(!editing);setPositions(data?.buildings??[]);}}><Move/></button>{editing&&<><button title="Guardar aldea" aria-label="Guardar aldea" disabled={busy} onClick={save}><Save/></button><button title="Cancelar" aria-label="Cancelar" onClick={()=>{setEditing(false);setPositions(data?.buildings??[]);}}><RotateCcw/></button></>}</div>
       <nav className="kingdom-nav" aria-label="Navegación principal"><Link href="/kingdom" aria-current="page"><Crown/>Reino</Link><Link href="/dashboard"><CalendarDays/>Agenda</Link><Link href="/store"><ShoppingBag/>Tienda</Link><button disabled={busy||!data||editing} aria-pressed={!!data?.profile.resting} onClick={()=>action(()=>patch({resting:!data?.profile.resting}))}><Moon/>Descanso</button></nav>
     </section>
     <aside className="kingdom-panel">
-      <div className="kingdom-guide"><Image unoptimized src="/sparklin/sparklin-avatar.webp" alt="Sparklin" width="64" height="64"/><div><small>SPARKLIN TE ACOMPAÑA</small><h2>{chapters[Math.min(6,data?.campaign.completed??0)]}</h2><p>Capítulo {Math.min(7,(data?.campaign.completed??0)+1)} de 7</p></div></div>
+      <div className="kingdom-guide"><Image unoptimized src="/kingdom/sparklin.webp" alt="Sparklin" width="64" height="64"/><div><small>SPARKLIN TE ACOMPAÑA</small><h2>{chapters[Math.min(6,data?.campaign.completed??0)]}</h2><p>Capítulo {Math.min(7,(data?.campaign.completed??0)+1)} de 7</p></div></div>
       <progress aria-label="Campaña" value={data?.campaign.completed??0} max="7"/>
       {error&&<div className="kingdom-error" role="alert">{error}<button onClick={()=>action(load)}><RefreshCw size={16}/>Reintentar</button></div>}
       {message&&<p className="kingdom-success" role="status">{message}</p>}

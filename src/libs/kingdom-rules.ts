@@ -1,8 +1,8 @@
 export const BUILDINGS = [
-  { kind: "TOWER", name: "Torre de Sparklin", en: "Sparklin's tower", asset: "/assets/tower_clean.webp", x: 5, y: 3 },
-  { kind: "TAVERN", name: "Taberna", en: "Tavern", asset: "/assets/tavern_clean.webp", x: 3, y: 6 },
-  { kind: "WELL", name: "Pozo", en: "Well", asset: "/assets/well_clean.webp", x: 8, y: 6 },
-  { kind: "ENTRANCE", name: "Entrada", en: "Entrance", asset: "/assets/tower_clean.webp", x: 6, y: 9 },
+  { kind: "TOWER", name: "Torre de Sparklin", en: "Sparklin's tower", asset: "/kingdom/tower1.webp", x: 5, y: 3 },
+  { kind: "TAVERN", name: "Taberna", en: "Tavern", asset: "/kingdom/tavern3d.webp", x: 3, y: 6 },
+  { kind: "WELL", name: "Pozo", en: "Well", asset: "/kingdom/well3d.webp", x: 8, y: 6 },
+  { kind: "ENTRANCE", name: "Entrada", en: "Entrance", asset: "/kingdom/gate3d.webp", x: 6, y: 9 },
 ] as const;
 export function localDay(date: Date, timezone: string) {
   return new Intl.DateTimeFormat("en-CA", { timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit" }).format(date);

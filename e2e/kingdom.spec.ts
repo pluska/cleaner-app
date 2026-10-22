@@ -4,6 +4,11 @@ import { test, expect } from '@playwright/test';
 test('mission → rewards → upgrade → persisted kingdom', async ({ page }, testInfo) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
+  const artwork = new Map<string, number>();
+  page.on('response', response => {
+    const path = new URL(response.url()).pathname;
+    if (path.startsWith('/kingdom/') && /\.(webp|svg)$/.test(path)) artwork.set(path, response.status());
+  });
   const email = `kingdom-e2e-${crypto.randomUUID()}@example.invalid`;
   const password = `Quest-${crypto.randomUUID()}-A1`;
   const signup = await page.request.post('/api/auth/signup', { data: { email, password } });
@@ -31,6 +36,17 @@ test('mission → rewards → upgrade → persisted kingdom', async ({ page }, t
   await page.goto('/kingdom');
   await expect(page.getByRole('heading', { name: 'Un hogar que florece.' })).toBeVisible();
   await expect(page.locator('.kingdom-canvas canvas')).toBeVisible();
+  await expect(page.locator('.kingdom-canvas')).toHaveAttribute('data-scene-state', 'ready');
+  await expect.poll(() => page.locator('.kingdom-canvas').evaluate(element => JSON.parse((element as HTMLElement).dataset.renderedBuildings || '[]').length)).toBe(4);
+  for (const name of ['terrain.webp', 'tower1.webp', 'tower2.webp', 'tower3.webp', 'tavern3d.webp', 'well3d.webp', 'gate3d.webp', 'household-banner.svg', 'sparklin.webp']) {
+    await expect.poll(() => artwork.get(`/kingdom/${name}`)).toBe(200);
+  }
+  const rendered: {asset:string;width:number;height:number;sourceWidth:number;sourceHeight:number}[] = await page.locator('.kingdom-canvas').evaluate(element => JSON.parse((element as HTMLElement).dataset.renderedBuildings || '[]'));
+  expect(rendered.map(item => item.asset).sort()).toEqual(['/kingdom/tower1.webp', '/kingdom/tavern3d.webp', '/kingdom/well3d.webp', '/kingdom/gate3d.webp'].sort());
+  for (const item of rendered) {
+    expect(item.width).toBeGreaterThan(0);
+    expect(Math.abs(item.width / item.height - item.sourceWidth / item.sourceHeight)).toBeLessThan(.001);
+  }
   await expect(page.getByRole('heading', { name: task.title })).toBeVisible();
   await page.getByRole('button', { name: '5 min', exact: true }).click();
   await expect(page.getByText('Sin misiones pendientes para esta selección.')).toBeVisible();
@@ -78,5 +94,28 @@ test('mission → rewards → upgrade → persisted kingdom', async ({ page }, t
   await expect(page.getByRole('button', { name: 'Taberna Nv. 2' })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: testInfo.outputPath('kingdom-after.png'), fullPage: true });
+  // Earn upgrades through real completions, then verify the rendered tower tiers.
+  for (let index = 0; index < 4; index++) {
+    const response = await page.request.post('/api/tasks', { data: {
+      title: `Misión de arte ${index + 1}`, roomId: area.id, frequency: 'once',
+      startDate: before.today, importanceLevel: 5,
+    } });
+    expect(response.status()).toBe(201);
+    const { task: extra } = await response.json();
+    expect((await page.request.post(`/api/tasks/${extra.id}/complete`, { data: { dueDate: before.today } })).ok()).toBe(true);
+  }
+  await page.reload();
+  await page.getByText('Edificios y habitaciones', { exact: true }).click();
+  await page.getByRole('button', { name: 'Torre de Sparklin Nv. 1' }).click();
+  for (const level of [2, 3]) {
+    await page.getByRole('button', { name: `Mejorar · ${(level - 1) * 4} monedas` }).click();
+    await expect(page.getByRole('heading', { name: new RegExp(`^Nivel ${level} ·`) })).toBeVisible();
+    await expect.poll(() => page.locator('.kingdom-canvas').evaluate(element =>
+      JSON.parse((element as HTMLElement).dataset.renderedBuildings || '[]').find((building: {id:string}) => building.id.endsWith(':TOWER'))?.asset
+    )).toBe(`/kingdom/tower${level}.webp`);
+  }
+  await expect(page.getByText('Estandarte semanal desbloqueado', { exact: true })).toBeVisible();
+  expect((await kingdom()).buildings.find((b: {kind:string}) => b.kind === 'TOWER').level).toBe(3);
+  await page.screenshot({ path: testInfo.outputPath('kingdom-tower3.png'), fullPage: true });
   expect(errors).toEqual([]);
 });

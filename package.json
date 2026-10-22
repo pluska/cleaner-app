@@ -5,6 +5,7 @@
   "scripts": {
     "images:optimize": "node scripts/optimize-images.mjs",
     "icons:generate": "node scripts/generate-favicons-and-og.mjs",
+    "kingdom:art": "node scripts/prepare-kingdom-art.mjs",
     "dev": "next dev --turbopack",
     "build": "opennextjs-cloudflare build",
     "build:next": "next build --webpack",

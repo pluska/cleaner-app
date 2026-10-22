@@ -22,6 +22,7 @@ Reference: [approved Figma file](https://www.figma.com/design/KbdaVK1RegHyjr8Z9H
 - Completing eligible work credits the actual contributor's personal XP, coins, activity and streak, plus one common household resource. A single database transaction protects all balances and prevents duplicate rewards. Household due dates use the household timezone; contributor activity uses their personal timezone.
 - Shared completion contributes to weekly statistics and personal campaign progress. Common resources are persisted separately; household world construction and spending are a subsequent slice.
 - Canonical `/favicon.ico` is owned by `src/app/favicon.ico`. The identical public duplicate was removed, and the icon generator now preserves this single route.
+- The live kingdom now loads the supplied 3D-style terrain, tavern, well and entrance artwork, plus all three tower tiers and the new Sparklin guide. Original source images remain in `design/sparkclean/assets`; proportional WebP derivatives are generated with `npm run kingdom:art`. Grid guides appear while editing, saved layouts and game rules persist, and the supplied weekly banner appears after earning five completions.
 
 ## Household rollout
 
@@ -41,7 +42,7 @@ Owners generate and copy invitations themselves; no email or other message is au
 2. Ownership and inventories for avatars, items, clothes and skins; purchases and supervised-account approvals.
 3. Monthly event definitions and developer publishing flow, participation and reward claims.
 4. Opt-in seasonal/weather appearance, location preferences, reduced effects and dark mode.
-5. Shared kingdom construction and resource spending, evolving dwelling structures, and remaining dashboard/world compositions from Figma.
+5. Shared kingdom construction and resource spending, evolving dwelling structures, and remaining dashboard/layout compositions from Figma. The supplied personal-world artwork and tower tier visuals are integrated.
 
 These remaining feature flows are designed in Figma but are not yet implemented.
 

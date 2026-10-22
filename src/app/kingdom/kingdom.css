@@ -9,5 +9,8 @@
 
 .kingdom-edit-help{font-size:12px;line-height:1.5;color:#4a607a}.kingdom-position{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;font-size:12px;align-items:center}.kingdom-position button{min-width:44px;min-height:44px;border:1px solid var(--line);border-radius:6px;background:#ebf4fa}
 
-/* Official wordmark and semantic brand colors; keep the live Pixi world intact. */
+/* Official wordmark and semantic brand colors. */
 .kingdom-brand{flex-direction:column;align-items:flex-start;gap:0}.kingdom-brand .brand-logo{width:132px}.kingdom-brand small{font-size:9px;line-height:12px}.kingdom-tools button,.kingdom-nav,.mission-dialog{border-radius:12px}.kingdom-tools button{border-color:var(--line)}
+
+.kingdom-world{background:#ebf4fa}.kingdom-canvas{top:110px;bottom:90px}.kingdom-caption span,.kingdom-caption p{color:#4a607a}.kingdom-guide img{width:64px;height:64px;object-fit:contain;object-position:center;background:#ebf4fa;border-radius:12px}.kingdom-scene-loading{position:absolute;inset:0;display:grid;place-items:center;color:#4a607a;font-size:13px;z-index:1;pointer-events:none}
+@media(max-width:760px){.kingdom-canvas{top:105px;bottom:70px}}
